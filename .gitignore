@@ -1,0 +1,25 @@
+# NPM Cache Directory & NPM Logs
+.npm
+*.log
+.npm-debug.log*
+
+#Output of 'npm pack'
+*.tgz
+
+# Eslint Cache
+.eslintcache
+
+# VSCode Cache
+.vscode/
+
+# Node Modules
+node_modules/
+
+# Enviroment Variables
+.env
+
+# Plug'n'Play File 
+.pnp.*
+
+# Yarn File
+.yarn/*

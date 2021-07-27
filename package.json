@@ -1,0 +1,13 @@
+{
+  "name": "hitomi",
+  "version": "1.0.0",
+  "description": "A lightweight discord library made for NodeJS",
+  "types": "./types/index.d.ts",
+  "main": "src/main.js",
+  "repository": "git@github.com:IsisDiscord/hitomi.git",
+  "author": "@Loliticos, @Deivinni, @LordLucas",
+  "license": "Apache",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
