@@ -12,6 +12,11 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "events": "^3.3.0"
+    "erlpack": "^0.1.3",
+    "events": "^3.3.0",
+    "ws": "^8.0.0"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0"
   }
 }
