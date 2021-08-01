@@ -1,6 +1,12 @@
 const EventEmitter = require("events");
 const Websocket = require("ws");
 
+let Erlpack;
+
+try {
+  Erlpack = require("erlpack");
+} catch {}
+
 const Constants = require("../../utils/Constants")
 
 module.exports = class Shard extends EventEmitter {
@@ -18,8 +24,8 @@ module.exports = class Shard extends EventEmitter {
 
     this.status = "IDLE";
 
-    Object.defineProperty(this, 'manager', { value: manager, writable: false });
-    Object.defineProperty(this, 'connection', { value: null, writable: true });
+    Object.defineProperty(this, "manager", { value: manager, writable: false });
+    Object.defineProperty(this, "connection", { value: null, writable: true });
   }
 
   connect() {
@@ -31,9 +37,9 @@ module.exports = class Shard extends EventEmitter {
 
     this.status = "CONNECTED";
 
-    this.connection.on("message", (data) => this.websocketMessageReceive(data));
-    this.connection.on("open", () => this.websocketConnectionOpen());
-    this.connection.on("error", (error) => websocketError(error));
+    this.connection.on("message", this.websocketMessageReceive);
+    this.connection.on("open", this.websocketConnectionOpen);
+    this.connection.on("error", this.websocketError);
     this.connection.on("close", (...args) => this.websocketCloseConnection(...args));
   }
 
@@ -55,7 +61,7 @@ module.exports = class Shard extends EventEmitter {
   }
 
   async websocketMessageReceive(data) {
-    data = JSON.parse(data.toString());
+    data = Erlpack ? Erlpack.unpack(data) : JSON.parse(data.toString());
 
     this.packetReceive(data);
   }
@@ -88,12 +94,8 @@ module.exports = class Shard extends EventEmitter {
     }
 
     switch (packet.op) {
-      case Constants.OP_CODES.EVENT: {
-        return this.manager.handlePacket(packet);
-      }
-      case Constants.OP_CODES.HEARTBEAT: {
-        return this.sendHeartbeat();
-      }
+      case Constants.OP_CODES.EVENT: return this.manager.handlePacket(packet);
+      case Constants.OP_CODES.HEARTBEAT: return this.sendHeartbeat();
       case Constants.OP_CODES.HEARTBEAT_ACK: {
         this.lastHeartbeatAck = true;
         this.lastHeartbeatReceived = Date.now();
@@ -158,9 +160,10 @@ module.exports = class Shard extends EventEmitter {
   }
 
   sendWebsocketMessage(data) {
-    if (this.status !== "CLOSED") this.connection.send(JSON.stringify(data), (error) => {
-      this.manager.client.emit("shardError", error, this.id);
-    });
+    if (this.status !== "CLOSED")
+      this.connection.send([Erlpack ? Erlpack.pack : JSON.stringify](data), (error) => {
+        this.manager.client.emit("shardError", error, this.id);
+      });
   }
 
   disconnect(reconnect = false) {
