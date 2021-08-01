@@ -5,7 +5,7 @@ const BASE_URL = "wss://gateway.discord.gg/"
 
 module.exports = class GatewayManager {
   constructor (client) {
-    this.url = `${BASE_URL}?v=${client.options.websocket.version}&encoding=etf`;
+    this.websocketURL = `${BASE_URL}?v=${client.options.websocket.version}&encoding=etf`;
 
     Object.defineProperty(this, "client", { value: client, writable: false });
     Object.defineProperty(this, "queue", { value: null, writable: true });

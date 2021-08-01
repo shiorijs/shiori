@@ -8,7 +8,6 @@ module.exports = class Shard extends EventEmitter {
   constructor (manager, id) {
     super();
 
-    this.manager = manager;
     this.id = id;
 
     this.sequence = -1;
@@ -18,11 +17,12 @@ module.exports = class Shard extends EventEmitter {
 
     this.status = "IDLE";
 
+    Object.defineProperty(this, 'manager', { value: manager, writable: false });
     Object.defineProperty(this, 'connection', { value: null, writable: true });
   }
 
   async connect() {
-    this.connection = new Websocket(this.manager.url, { perMessageDeflate: false })
+    this.connection = new Websocket(this.manager.websocketURL, { perMessageDeflate: false })
 
     this.status = "CONNECTED";
 

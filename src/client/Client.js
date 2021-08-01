@@ -13,26 +13,15 @@ module.exports = class Client extends EventEmitter {
         version: 9
       },
       shardCount: 1,
-      blockedEvents: []
+      blockedEvents: [],
+      autoReconnect: true
     }, clientOptions);
     this.ws = new GatewayManager(this);
 
-    Object.defineProperty(this, "users", { value: new Collection(), writable: true });
-    Object.defineProperty(this, "guilds", { value: new Collection(), writable: true });
-    Object.defineProperty(this, "channels", { value: new Collection(), writable: true });
-
-    Object.defineProperty(this, "token", {
-      configurable: true,
-      enumerable: false,
-      writable: true,
-      value: token
-    });
-
-    const shards = Array.from({ length: this.options.shardCount }, (_, i) => i);
-
-    this.options.shards = [
-      ...new Set(shards)
-    ];
+    Object.defineProperty(this, "users", { value: new Collection(), writable: false });
+    Object.defineProperty(this, "guilds", { value: new Collection(), writable: false });
+    Object.defineProperty(this, "channels", { value: new Collection(), writable: false });
+    Object.defineProperty(this, "token", { value: token, writable: false });
 
     if(this.options.hasOwnProperty("intents")) {
       if(Array.isArray(this.options.intents)) {
@@ -48,7 +37,17 @@ module.exports = class Client extends EventEmitter {
   }
 
   async start() {
-    return this.ws.createShardConnection();
+    const shards = Array.from({ length: this.options.shardCount }, (_, i) => i);
+
+    this.options.shards = [...new Set(shards)];
+
+    try {
+      this.ws.createShardConnection();
+    } catch (error) {
+      if (!this.options.autoReconnect) throw error
+
+      setTimeout(() => this.start, 3000);
+    }
   };
 
   /**
