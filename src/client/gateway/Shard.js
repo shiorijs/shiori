@@ -11,7 +11,7 @@ module.exports = class Shard extends EventEmitter {
     this.manager = manager;
     this.id = id;
 
-    this.sequence = 0;
+    this.sequence = -1;
     this.sessionId = null;
     this.lastHeartbeatAcked = true;
     this.heartbeatInterval = null;
@@ -32,12 +32,10 @@ module.exports = class Shard extends EventEmitter {
     this.connection.on("close", (...args) => this.websocketCloseConnection(...args));
   }
 
-  async websocketCloseConnection(event) {
-    const error = event?.error ?? event;
-
+  async websocketCloseConnection(error) {
     this.status = "CLOSED";
 
-    console.error(event);
+    console.error(`Código de erro: ${error}`);
   }
 
   async websocketMessageReceive(data) {
@@ -63,16 +61,19 @@ module.exports = class Shard extends EventEmitter {
 
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat();
+        break;
       }
     }
 
     switch (packet.op) {
       case Constants.OP_CODES.HEARTBEAT: {
         this.sendHeartbeat();
+        break;
       }
       case Constants.OP_CODES.HEARTBEAT_ACK: {
         this.lastHeartbeatAck = true;
         this.lastHeartbeatReceived = Date.now();
+        break;
       }
       case Constants.OP_CODES.HELLO: {
         if (packet.d?.heartbeat_interval) {
@@ -96,12 +97,15 @@ module.exports = class Shard extends EventEmitter {
          this.identify();
          this.sendHeartbeat();
        }
+       break;
       }
       case Constants.OP_CODES.INVALID_SESSION: {
         this.sessionId = null;
         this.sequence = 0;
 
         if (packet.d) return this.identify();
+
+        break;
       }
     }
   }
@@ -110,8 +114,8 @@ module.exports = class Shard extends EventEmitter {
     const { client } = this.manager;
 
     const d = {
-      intents: client.options.intents,
       token: client.token,
+      intents: client.options.intents,
       shard: [this.id, client.options.shardCount],
       v: 9,
       properties: {
@@ -121,9 +125,7 @@ module.exports = class Shard extends EventEmitter {
       }
     };
 
-    console.log(d);
-
-    return this.sendWebsocketMessage({ op: Constants.OP_CODES.RESUME, d });
+    return this.sendWebsocketMessage({ op: Constants.OP_CODES.IDENTIFY, d });
   }
 
   sendHeartbeat() {

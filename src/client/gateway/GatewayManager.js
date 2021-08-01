@@ -28,7 +28,7 @@ module.exports = class GatewayManager {
       .catch((error) => console.error(error))
 
     if (this.queue.size) {
-      setTimeout(() => this.createShardConnection(), 3000)
+      setTimeout(() => this.connectShard(), 3000)
     }
   }
 
