@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A lightweight discord library made for NodeJS",
   "types": "./types/index.d.ts",
-  "main": "src/main.js",
+  "main": "./src/index.js",
   "repository": "git@github.com:IsisDiscord/hitomi.git",
   "author": "@Loliticos, @Deivinni, @LordLucas",
   "license": "Apache",

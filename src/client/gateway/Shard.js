@@ -23,7 +23,11 @@ module.exports = class Shard extends EventEmitter {
     Object.defineProperty(this, 'connection', { value: null, writable: true });
   }
 
-  async connect() {
+  connect() {
+    // First you need to disconnect the shard.
+    // If you want to close the connection without reconnecting, use Shard#disconnect(false)
+    if (this.status !== "IDLE") return;
+
     this.connection = new Websocket(this.manager.websocketURL, { perMessageDeflate: false })
 
     this.status = "CONNECTED";
@@ -38,7 +42,7 @@ module.exports = class Shard extends EventEmitter {
     this.status = "CLOSED";
 
     this.emit("connectionClosed", code, reason, this.id);
-    this.disconnect();
+    this.disconnect(true);
   }
 
   async websocketError(error) {
@@ -137,7 +141,7 @@ module.exports = class Shard extends EventEmitter {
       token: client.token,
       intents: client.options.intents,
       shard: [this.id, client.options.shardCount],
-      v: 9,
+      v: client.options.websocket.version,
       properties: {
         os: process.platform,
         browser: "hitomi",
@@ -160,7 +164,7 @@ module.exports = class Shard extends EventEmitter {
     });
   }
 
-  disconnect(options = {}, error) {
+  disconnect(reconnect = false) {
     if (!this.connection) return;
 
     if (this.heartbeatInterval) {
@@ -172,7 +176,6 @@ module.exports = class Shard extends EventEmitter {
     try {
       this.connection.terminate();
     } catch (error) {
-      this.manager.client.emit("shardError", error, this.id);
       this.manager.client.emit("shardError", error, this.id);
     }
 
@@ -186,16 +189,13 @@ module.exports = class Shard extends EventEmitter {
     this.emit("disconnect", error);
 
     if (this.sessionId) this.sessionId = null;
-    if (this.manager.client.options.autoReconnect) {
-      if (this.reconnectAttempts) {
-        return this.emit("disconnect", "Too many attempts");
-      }
+    if (reconnect && this.manager.client.options.autoReconnect) {
+      if (this.reconnectAttempts >= 5) return this.emit("disconnect", "Too many attempts");
 
-      setTimeout(() => {
-        this.manager.createShardConnection();
-      }, this.reconnectInterval)
+      setTimeout(() => this.connect(), this.reconnectInterval);
 
       this.reconnectInterval = this.reconnectInterval + 3000;
+      this.reconnectAttempts++;
     }
   }
 }
