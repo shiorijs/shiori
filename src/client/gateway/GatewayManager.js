@@ -10,7 +10,7 @@ module.exports = class GatewayManager {
      * @private
      * @type {string}
     */
-    this.websocketURL = `${BASE_URL}?v=${client.options.websocket.version}&encoding=etf`;
+    this.websocketURL = `${BASE_URL}?v=${client.options.websocket.version}&encoding=json`;
 
     Object.defineProperty(this, "client", { value: client, writable: false });
     /**

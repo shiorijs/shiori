@@ -1,6 +1,5 @@
 const EventEmitter = require("events");
 const Websocket = require("ws");
-const Erlpack = require("erlpack");
 
 const Constants = require("../../utils/Constants")
 
@@ -56,7 +55,7 @@ module.exports = class Shard extends EventEmitter {
   }
 
   async websocketMessageReceive(data) {
-    data = Erlpack.unpack(data);
+    data = JSON.parse(data.toString());
 
     this.packetReceive(data);
   }
@@ -159,7 +158,7 @@ module.exports = class Shard extends EventEmitter {
   }
 
   sendWebsocketMessage(data) {
-    if (this.status !== "CLOSED") this.connection.send(Erlpack.pack(data), (error) => {
+    if (this.status !== "CLOSED") this.connection.send(JSON.stringify(data), (error) => {
       this.manager.client.emit("shardError", error, this.id);
     });
   }
