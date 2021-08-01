@@ -5,11 +5,10 @@ const BASE_URL = "wss://gateway.discord.gg/"
 
 module.exports = class GatewayManager {
   constructor (client) {
-    this.client = client;
+    this.url = `${BASE_URL}?v=${client.options.websocket.version}&encoding=etf`;
 
-    this.url = `${BASE_URL}?v=${client.options.gatewayVersion}&encoding=etf`;
-
-    Object.defineProperty(this, 'queue', { value: null, writable: true });
+    Object.defineProperty(this, "client", { value: client, writable: false });
+    Object.defineProperty(this, "queue", { value: null, writable: true });
   }
 
   async createShardConnection() {

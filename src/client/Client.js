@@ -9,15 +9,17 @@ module.exports = class Client extends EventEmitter {
     super();
 
     this.options = Object.assign({
-      gatewayVersion: 9,
+      websocket: {
+        version: 9
+      },
       shardCount: 1,
       blockedEvents: []
     }, clientOptions);
-
-    this.users = new Collection();
-    this.guilds = new Collection();
-    this.channels = new Collection();
     this.ws = new GatewayManager(this);
+
+    Object.defineProperty(this, "users", { value: new Collection(), writable: true });
+    Object.defineProperty(this, "guilds", { value: new Collection(), writable: true });
+    Object.defineProperty(this, "channels", { value: new Collection(), writable: true });
 
     Object.defineProperty(this, "token", {
       configurable: true,
