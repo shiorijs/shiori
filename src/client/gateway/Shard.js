@@ -14,6 +14,8 @@ module.exports = class Shard extends EventEmitter {
     this.sessionId = null;
     this.lastHeartbeatAcked = true;
     this.heartbeatInterval = null;
+    this.reconnectInterval = 3000;
+    this.reconnectAttempts = 0;
 
     this.status = "IDLE";
 
@@ -28,14 +30,18 @@ module.exports = class Shard extends EventEmitter {
 
     this.connection.on("message", (data) => this.websocketMessageReceive(data));
     this.connection.on("open", () => this.websocketConnectionOpen());
-    this.connection.on("error", (error) => console.error(error));
+    this.connection.on("error", (error) => websocketError(error));
     this.connection.on("close", (...args) => this.websocketCloseConnection(...args));
   }
 
-  async websocketCloseConnection(error) {
+  async websocketCloseConnection(code, reason) {
     this.status = "CLOSED";
 
-    console.error(`Código de erro: ${error}`);
+    this.emit("connectionClosed", code, reason, this.id);
+  }
+
+  async websocketError(error) {
+    this.emit("error", error, this.id);
   }
 
   async websocketMessageReceive(data) {
@@ -136,5 +142,43 @@ module.exports = class Shard extends EventEmitter {
 
   sendWebsocketMessage(data) {
     if (this.status !== "CLOSED") this.connection.send(Erlpack.pack(data), (err) => console.error(err));
+  }
+
+  disconnect(options = {}, error) {
+    if (!this.connection) return;
+
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval);
+
+      this.heartbeatInterval = null;
+    }
+
+    try {
+      this.connection.terminate();
+    } catch (error) {
+      this.emit("error", error, this.id)
+    }
+
+    this.connection = null;
+
+    /**
+    * Fired when the shard disconnects
+    * @event Shard#disconnect
+    * @prop {Error?} err The error, if any
+    */
+    this.manager.client.emit("disconnect", error);
+
+    if (this.sessionId) this.sessionId = null;
+    if (this.manager.client.options.autoReconnect) {
+      if (this.reconnectAttempts) {
+        return this.manager.client.emit("disconnect", "Too many attempts");
+      }
+
+      setTimeout(() => {
+        this.manager.createShardConnection();
+      }, this.reconnectInterval)
+
+      this.reconnectInterval = this.reconnectInterval + 3000;
+    }
   }
 }
