@@ -38,6 +38,7 @@ module.exports = class Shard extends EventEmitter {
     this.status = "CLOSED";
 
     this.emit("connectionClosed", code, reason, this.id);
+    this.disconnect();
   }
 
   async websocketError(error) {
@@ -163,7 +164,7 @@ module.exports = class Shard extends EventEmitter {
 
     /**
     * Fired when the shard disconnects
-    * @event Shard#disconnect
+    * @event Client#disconnect
     * @prop {Error?} err The error, if any
     */
     this.manager.client.emit("disconnect", error);
