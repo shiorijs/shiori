@@ -66,9 +66,11 @@ module.exports = class Shard extends EventEmitter {
     }
 
     switch (packet.op) {
+      case Constants.OP_CODES.EVENT: {
+        return this.manager.handlePacket(packet);
+      }
       case Constants.OP_CODES.HEARTBEAT: {
-        this.sendHeartbeat();
-        break;
+        return this.sendHeartbeat();
       }
       case Constants.OP_CODES.HEARTBEAT_ACK: {
         this.lastHeartbeatAck = true;

@@ -10,7 +10,8 @@ module.exports = class Client extends EventEmitter {
 
     this.options = Object.assign({
       gatewayVersion: 9,
-      shardCount: 1
+      shardCount: 1,
+      blockedEvents: []
     }, clientOptions);
 
     this.users = new Collection();

@@ -1,4 +1,5 @@
 const Shard = require("./Shard");
+const PacketHandlers = require("./handlers/")
 
 const BASE_URL = "wss://gateway.discord.gg/"
 
@@ -32,9 +33,13 @@ module.exports = class GatewayManager {
     }
   }
 
-  async websocketMessageReceive(data) {
-    data = Erlpack.unpack(data);
+  handlePacket(packet, shard) {
+    if (packet) {
+      if (!this.client.options.blockedEvents.includes(packet.t)) {
+        if (PacketHandlers[packet.t]) PacketHandlers[packet.t](this.client, packet, shard);
+      }
+    }
 
-    console.log(data);
+    return true;
   }
 }
