@@ -42,7 +42,13 @@ module.exports = class Shard extends EventEmitter {
   }
 
   async websocketError(error) {
-    this.emit("error", error, this.id);
+    /**
+    * Fired when an error occurs in a shard
+    * @event Client#shardError
+    * @prop {Error} error The error that occurred
+    * @prop {Number} id The ID of the shard
+    */
+    this.manager.client.emit("shardError", error, this.id);
   }
 
   async websocketMessageReceive(data) {
@@ -52,7 +58,15 @@ module.exports = class Shard extends EventEmitter {
   }
 
   async websocketConnectionOpen() {
-    console.log("Conexão aberta")
+    this.status = "OPEN";
+
+    /**
+    * Fired when the shard establishes a connection
+    * @event Shard#connect
+    * @prop {Number} id The ID of the shard
+    */
+    this.emit("connect", this.id);
+    this.lastHeartbeatAck = true;
   }
 
   async packetReceive(packet) {
@@ -61,8 +75,6 @@ module.exports = class Shard extends EventEmitter {
     switch (packet.t) {
       case "READY": {
         this.sessionId = packet.d.session_id;
-
-        console.log("Conectado!");
 
         this.status = "READY";
 
@@ -82,6 +94,7 @@ module.exports = class Shard extends EventEmitter {
       case Constants.OP_CODES.HEARTBEAT_ACK: {
         this.lastHeartbeatAck = true;
         this.lastHeartbeatReceived = Date.now();
+
         break;
       }
       case Constants.OP_CODES.HELLO: {
@@ -142,7 +155,9 @@ module.exports = class Shard extends EventEmitter {
   }
 
   sendWebsocketMessage(data) {
-    if (this.status !== "CLOSED") this.connection.send(Erlpack.pack(data), (err) => console.error(err));
+    if (this.status !== "CLOSED") this.connection.send(Erlpack.pack(data), (error) => {
+      this.manager.client.emit("shardError", error, this.id);
+    });
   }
 
   disconnect(options = {}, error) {
@@ -157,22 +172,23 @@ module.exports = class Shard extends EventEmitter {
     try {
       this.connection.terminate();
     } catch (error) {
-      this.emit("error", error, this.id)
+      this.manager.client.emit("shardError", error, this.id);
+      this.manager.client.emit("shardError", error, this.id);
     }
 
     this.connection = null;
 
     /**
     * Fired when the shard disconnects
-    * @event Client#disconnect
-    * @prop {Error?} err The error, if any
+    * @event Shard#disconnect
+    * @prop {Error?} error The error that occurred
     */
-    this.manager.client.emit("disconnect", error);
+    this.emit("disconnect", error);
 
     if (this.sessionId) this.sessionId = null;
     if (this.manager.client.options.autoReconnect) {
       if (this.reconnectAttempts) {
-        return this.manager.client.emit("disconnect", "Too many attempts");
+        return this.emit("disconnect", "Too many attempts");
       }
 
       setTimeout(() => {
