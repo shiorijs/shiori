@@ -46,7 +46,7 @@ module.exports = class Client extends EventEmitter {
     } catch (error) {
       if (!this.options.autoReconnect) throw error
 
-      setTimeout(() => this.start, 3000);
+      setTimeout(() => this.ws.createShardConnection(), 3000);
     }
   };
 
