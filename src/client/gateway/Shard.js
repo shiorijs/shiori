@@ -37,9 +37,9 @@ module.exports = class Shard extends EventEmitter {
 
     this.status = "CONNECTED";
 
-    this.connection.on("message", this.websocketMessageReceive);
-    this.connection.on("open", this.websocketConnectionOpen);
-    this.connection.on("error", this.websocketError);
+    this.connection.on("message", (message) => this.websocketMessageReceive(message));
+    this.connection.on("open", () => this.websocketConnectionOpen());
+    this.connection.on("error", (error) => this.websocketError(error));
     this.connection.on("close", (...args) => this.websocketCloseConnection(...args));
   }
 
@@ -60,7 +60,7 @@ module.exports = class Shard extends EventEmitter {
     this.manager.client.emit("shardError", error, this.id);
   }
 
-  async websocketMessageReceive(data) {
+  websocketMessageReceive(data) {
     data = Erlpack ? Erlpack.unpack(data) : JSON.parse(data.toString());
 
     this.packetReceive(data);
@@ -142,7 +142,7 @@ module.exports = class Shard extends EventEmitter {
       token: client.token,
       intents: client.options.intents,
       shard: [this.id, client.options.shardCount],
-      v: client.options.websocket.version,
+      v: client.options.ws.version,
       properties: {
         os: process.platform,
         browser: "hitomi",
@@ -160,8 +160,10 @@ module.exports = class Shard extends EventEmitter {
   }
 
   sendWebsocketMessage(data) {
+    const method = Erlpack ? Erlpack.pack : JSON.stringify;
+
     if (this.status !== "CLOSED")
-      this.connection.send([Erlpack ? Erlpack.pack : JSON.stringify](data), (error) => {
+      this.connection.send(method(data), (error) => {
         this.manager.client.emit("shardError", error, this.id);
       });
   }

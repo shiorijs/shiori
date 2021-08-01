@@ -48,11 +48,12 @@ module.exports = class GatewayManager {
 
     this.queue.delete(shard);
 
-    await shard.connect()
-      .catch((error) => {
-        if (!error || !error.code) this.queue.add(shard);
-        else throw error;
-      })
+    try {
+      await shard.connect();
+    } catch (error) {
+      if (!error || !error.code) this.queue.add(shard);
+      else throw error;
+    }
 
     if (this.queue.size) setTimeout(() => this.connectShard(), 3000);
   }
