@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const { WSEvents } = require('../../../utils/Constants');
+const { WSEvents } = require("../../../utils/Constants");
 
 const handlers = {};
 

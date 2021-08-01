@@ -1,7 +1,13 @@
 const Shard = require("./Shard");
-const PacketHandlers = require("./handlers/")
+const PacketHandlers = require("./handlers/");
 
-const BASE_URL = "wss://gateway.discord.gg/"
+let Erlpack;
+
+try {
+  Erlpack = require("erlpack");
+} catch {}
+
+const BASE_URL = "wss://gateway.discord.gg/";
 
 module.exports = class GatewayManager {
   constructor (client) {
@@ -10,7 +16,7 @@ module.exports = class GatewayManager {
      * @private
      * @type {string}
     */
-    this.websocketURL = `${BASE_URL}?v=${client.options.websocket.version}&encoding=json`;
+    this.websocketURL = `${BASE_URL}?v=${client.options.ws.version}&encoding=${Erlpack ? "etf" : "json"}`;
 
     Object.defineProperty(this, "client", { value: client, writable: false });
     /**
@@ -48,7 +54,7 @@ module.exports = class GatewayManager {
         else throw error;
       })
 
-    if (this.queue.size) setTimeout(() => this.connectShard(), 3000)
+    if (this.queue.size) setTimeout(() => this.connectShard(), 3000);
   }
 
   handlePacket(packet, shard) {
