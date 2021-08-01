@@ -85,8 +85,6 @@ module.exports = class Shard extends EventEmitter {
         }
 
         if (this.sessionId) {
-          console.log("mandando status resume")
-
           this.sendWebsocketMessage({
             op: Constants.OP_CODES.RESUME,
             d: {
