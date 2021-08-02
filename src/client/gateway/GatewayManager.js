@@ -58,6 +58,11 @@ module.exports = class GatewayManager {
     if (this.queue.size) setTimeout(() => this.connectShard(), 3000);
   }
 
+  /**
+  * Handle the received packet and trigger the corresponding event.
+  * @param {Object} packet The packet to handle
+  * @param {Shard} shard The shard which the packet was received
+  */
   handlePacket(packet, shard) {
     if (!packet) return false;
 
