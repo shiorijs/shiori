@@ -7,6 +7,8 @@ const Endpoints = require("../utils/Endpoints");
 
 // Structures
 const Guild = require("../structures/Guild");
+const User = require("../structures/User");
+const Channel = require("../structures/Channel");
 
 module.exports = class Client extends EventEmitter {
   constructor (token, clientOptions) {
@@ -28,9 +30,9 @@ module.exports = class Client extends EventEmitter {
     this.ws = new GatewayManager(this);
 
     Object.defineProperties(this, {
-      "users": { value: new Collection(), writable: false },
+      "users": { value: new Collection(User), writable: false },
       "guilds": { value: new Collection(Guild), writable: false },
-      "channels": { value: new Collection(), writable: false },
+      "channels": { value: new Collection(Channel), writable: false },
       "token": { value: token, writable: false }
     });
 

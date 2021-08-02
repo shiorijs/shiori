@@ -15,7 +15,7 @@ module.exports = class RestManager {
    * @param {String} [method] The HTTP method to use
    * @param {String} [url] URL to make the request to
    * @param {Object} [data] The data to be sent
-   * @param {Boolean | undefined} [authenticate] Whether to authenticate the request
+   * @param {Boolean} [authenticate] Whether to authenticate the request
    */
   async request(method, url, data, authenticate = true) {
     const headers = {
