@@ -3,7 +3,13 @@ require("dotenv").config();
 const { Client } = require("./src/")
 
 const client = new Client(process.env.DISCORD_TOKEN, {
-  intents: 13827
+  intents: 13827,
+  rest: { fetchAllUsers: true }
 });
 
-client.start();
+client.start()
+  .then(() => {
+    client.on("ready", () => {
+      console.log(client.guilds)
+    })
+  })

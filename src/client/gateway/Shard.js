@@ -28,9 +28,11 @@ module.exports = class Shard extends EventEmitter {
     Object.defineProperty(this, "connection", { value: null, writable: true });
   }
 
+  /**
+  * Connects the shard and create a websocket connection for them.
+  */
   connect() {
     // First you need to disconnect the shard.
-    // If you want to close the connection without reconnecting, use Shard#disconnect(false)
     if (this.status !== "IDLE") return;
 
     this.connection = new Websocket(this.manager.websocketURL, { perMessageDeflate: false })
@@ -43,6 +45,11 @@ module.exports = class Shard extends EventEmitter {
     this.connection.on("close", (...args) => this.websocketCloseConnection(...args));
   }
 
+  /**
+  * Fired when websocket closes the connection
+  * @param {Number} code The error code received
+  * @param {String} reason Reason for the disconnect
+  */
   async websocketCloseConnection(code, reason) {
     this.status = "CLOSED";
 
@@ -50,6 +57,10 @@ module.exports = class Shard extends EventEmitter {
     this.disconnect(true);
   }
 
+  /**
+  * Fired when occurs an error in the websocket connection.
+  * @param {Error} error The error that occurred
+  */
   async websocketError(error) {
     /**
     * Fired when an error occurs in a shard
@@ -60,12 +71,19 @@ module.exports = class Shard extends EventEmitter {
     this.manager.client.emit("shardError", error, this.id);
   }
 
+  /**
+  * Fired when websocket receives a message
+  * @param {data} Message received from the websocket
+  */
   websocketMessageReceive(data) {
     data = Erlpack ? Erlpack.unpack(data) : JSON.parse(data.toString());
 
     this.packetReceive(data);
   }
 
+  /**
+  * Fired when a connection with websocket opens.
+  */
   async websocketConnectionOpen() {
     this.status = "OPEN";
 
@@ -78,6 +96,10 @@ module.exports = class Shard extends EventEmitter {
     this.lastHeartbeatAck = true;
   }
 
+  /**
+  * Fired when a packate is received
+  * @param {Object} packet The packet received
+  */
   async packetReceive(packet) {
     if (packet.s) this.sequence = packet.s;
 
@@ -94,7 +116,7 @@ module.exports = class Shard extends EventEmitter {
     }
 
     switch (packet.op) {
-      case Constants.OP_CODES.EVENT: return this.manager.handlePacket(packet);
+      case Constants.OP_CODES.EVENT: return this.manager.handlePacket(packet, this);
       case Constants.OP_CODES.HEARTBEAT: return this.sendHeartbeat();
       case Constants.OP_CODES.HEARTBEAT_ACK: {
         this.lastHeartbeatAck = true;
@@ -135,6 +157,9 @@ module.exports = class Shard extends EventEmitter {
     }
   }
 
+  /**
+  * Identify the connection. Required  for discord to recognize who is connecting
+  */
   async identify() {
     const { client } = this.manager;
 
@@ -153,12 +178,21 @@ module.exports = class Shard extends EventEmitter {
     return this.sendWebsocketMessage({ op: Constants.OP_CODES.IDENTIFY, d });
   }
 
+  /**
+  * Sends heartbeat to discord. Required to keep a connection
+  */
   sendHeartbeat() {
     this.lastHeartbeatAcked = false;
 
     this.sendWebsocketMessage({ op: Constants.OP_CODES.HEARTBEAT, d: this.sequence });
   }
 
+  /**
+  * Send a message to the websocket
+  * @param {Object} data Message to send
+  * @param {Number} data.op Gateway OP code
+  * @param {} data.d Data to send
+  */
   sendWebsocketMessage(data) {
     const method = Erlpack ? Erlpack.pack : JSON.stringify;
 
@@ -168,6 +202,10 @@ module.exports = class Shard extends EventEmitter {
       });
   }
 
+  /**
+  * Disconnect the shard
+  * @param {Boolean} [reconnect] Whether to reconnect after disconnecting
+  */
   disconnect(reconnect = false) {
     if (!this.connection) return;
 

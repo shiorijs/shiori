@@ -7,6 +7,9 @@
   "repository": "git@github.com:IsisDiscord/hitomi.git",
   "author": "@Loliticos, @Deivinni, @LordLucas",
   "license": "Apache",
+  "scripts": {
+    "lint:fix": "eslint --fix"
+  },
   "engines": {
     "node": ">=14.0.0"
   },

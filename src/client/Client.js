@@ -5,6 +5,9 @@ const GatewayManager = require("./gateway/GatewayManager");
 const Constants = require("../utils/Constants");
 const Endpoints = require("../utils/Endpoints");
 
+// Structures
+const Guild = require("../structures/Guild");
+
 module.exports = class Client extends EventEmitter {
   constructor (token, clientOptions) {
     super();
@@ -13,17 +16,20 @@ module.exports = class Client extends EventEmitter {
 
     this.options = Object.assign({
       ws: { version: 9 },
-      rest: { version: Constants.REST.API_VERSION },
+      rest: {
+        version: Constants.REST.API_VERSION,
+        fetchAllUsers: false
+      },
       shardCount: 1,
       blockedEvents: [],
       autoReconnect: true
     }, clientOptions);
-  
+
     this.ws = new GatewayManager(this);
 
     Object.defineProperties(this, {
       "users": { value: new Collection(), writable: false },
-      "guilds": { value: new Collection(), writable: false },
+      "guilds": { value: new Collection(Guild), writable: false },
       "channels": { value: new Collection(), writable: false },
       "token": { value: token, writable: false }
     });

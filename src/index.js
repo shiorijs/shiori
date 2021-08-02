@@ -6,5 +6,8 @@ module.exports = {
   Collection: require("./utils/Collection"),
   GatewayManager: require("./client/gateway/GatewayManager"),
   Client: require("./client/Client"),
-  Constants: require("./utils/Constants")
+  Constants: require("./utils/Constants"),
+
+  // Structures
+  Guild: require("./structures/Guild")
 };
