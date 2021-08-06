@@ -1,6 +1,7 @@
 const EventEmitter = require("events");
 const Collection = require("../utils/Collection");
 const GatewayManager = require("./gateway/GatewayManager");
+const RestManager = require("../rest/RestManager");
 
 const Constants = require("../utils/Constants");
 const Endpoints = require("../utils/Endpoints");
@@ -10,7 +11,7 @@ const Guild = require("../structures/Guild");
 const User = require("../structures/User");
 const Channel = require("../structures/Channel");
 
-module.exports = class Client extends EventEmitter {
+class Client extends EventEmitter {
   constructor (token, clientOptions) {
     super();
 
@@ -28,6 +29,7 @@ module.exports = class Client extends EventEmitter {
     }, clientOptions);
 
     this.ws = new GatewayManager(this);
+    this.rest = new RestManager(this);
 
     Object.defineProperties(this, {
       "users": { value: new Collection(User), writable: false },
@@ -47,6 +49,10 @@ module.exports = class Client extends EventEmitter {
         this.options.intents = bitmask;
       }
     }
+  }
+
+  get api() {
+    return this.rest.api;
   }
 
   async start () {
