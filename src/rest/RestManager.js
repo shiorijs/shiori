@@ -1,5 +1,5 @@
 const axios = require("axios");
-const METHODS = ['get', 'post', 'patch', 'put', 'delete', 'head'];
+const METHODS = ["get", "post", "patch", "put", "delete", "head"];
 
 const Constants = require("../utils/Constants");
 
@@ -25,8 +25,6 @@ module.exports = class RestManager {
       "User-Agent": this.userAgent,
       "Content-Type": "application/json"
     };
-
-    console.log(method, url, data)
 
     if (authenticate) headers.Authorization = `Bot ${this.client.token}`;
 

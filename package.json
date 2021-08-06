@@ -8,6 +8,7 @@
   "author": "@Loliticos, @Deivinni, @LordLucas",
   "license": "Apache",
   "scripts": {
+    "lint": "eslint src",
     "lint:fix": "eslint --fix"
   },
   "engines": {
