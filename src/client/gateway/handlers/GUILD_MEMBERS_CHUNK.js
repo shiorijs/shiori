@@ -5,9 +5,8 @@ module.exports = (client, { d: data }, shard) => {
 
   if (!guild) return;
 
-  data.members.map(member => {
-    member.id = member.user.id;
-
-    return guild.members.add(member);
-  })
+  for (const member of data.members) {
+    guild.members.add(member.user.id, member);
+    client.users.add(member.user.id, member.user);
+  }
 };

@@ -11,7 +11,7 @@ const Guild = require("../structures/Guild");
 const User = require("../structures/User");
 const Channel = require("../structures/Channel");
 
-class Client extends EventEmitter {
+module.exports = class Client extends EventEmitter {
   constructor (token, clientOptions) {
     super();
 
@@ -27,6 +27,8 @@ class Client extends EventEmitter {
       blockedEvents: [],
       autoReconnect: true
     }, clientOptions);
+
+    if (this.options.shardCount <= 0) throw new Error("shardCount cannot be lower or equal to 0");
 
     this.ws = new GatewayManager(this);
     this.rest = new RestManager(this);
@@ -73,8 +75,8 @@ class Client extends EventEmitter {
    * @param {String} type Type of the structure to fetch, user, role, channel or guild
    * @param {String} id ID of an user, role, channel or guild to fetch
   */
-  async getInformation (type, ...id) {
-    const url = Endpoints[type.replace(/[ ]/g, "_")](...id);
+  async getInformation (type, id) {
+    const url = Endpoints[type.replace(/[ ]/g, "_")](id);
 
     return this.api.request("GET", url, null, true);
   };

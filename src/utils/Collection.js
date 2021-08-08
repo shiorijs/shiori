@@ -11,20 +11,18 @@ module.exports = class Collection extends Map {
 
   /**
   * Adds a item on the collection
+  * @param {String} id The item id, to be used as the key
   * @param {Object} item The item to be added
-  * @param {String} item.id The item id, to be used as the key
   * @param {Boolean} [replace] Whether to replace an existing item with the same ID
   * @returns {Class} The created item
   */
-  add (item, replace = false) {
-    if (!item.id) throw new Error("Missing item#id");
+  add (id, item, replace = false) {
+    if (!id) throw new Error("Missing id");
     if (this.has(item.id) && !replace) return this.get(item.id);
 
-    if (!item instanceof this.baseClass) item = new this.baseClass(item);
+    if (!(item instanceof this.baseClass || item.constructor.name === this.baseClass.name)) item = new this.baseClass(item);
 
-    this.set(item.id, item);
-
-    return item;
+    return (this.set(id, item), item);
   }
 
   /**
@@ -64,7 +62,7 @@ module.exports = class Collection extends Map {
   remove(item) {
     if (!this.has(object.id)) return null;
 
-    // Means: execute the first parameter and return the last
+    // This will execute all of the parameters and return the last
     return (this.delete(item.id), this.get(item.id));
   }
 }

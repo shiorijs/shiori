@@ -9,7 +9,5 @@ const client = new Client(process.env.DISCORD_TOKEN, {
 
 client.start()
   .then(() => {
-    client.on("ready", () => {
-      console.log(client.guilds)
-    })
+    client.on("messageCreate", () => console.log(client.guilds))
   })
