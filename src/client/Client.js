@@ -4,7 +4,6 @@ const GatewayManager = require("./gateway/GatewayManager");
 const RestManager = require("../rest/RestManager");
 
 const Constants = require("../utils/Constants");
-const Endpoints = require("../utils/Endpoints");
 
 // Structures
 const Guild = require("../structures/Guild");
@@ -72,8 +71,6 @@ module.exports = class Client extends EventEmitter {
    * @param {String} id ID of an user, role, channel or guild to fetch
   */
   async getInformation (type, id) {
-    const url = Endpoints[type.replace(/[ ]/g, "_")](id);
-
-    return this.api.request("GET", url, null, true);
+    return true
   };
 };
