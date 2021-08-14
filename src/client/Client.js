@@ -9,7 +9,7 @@ const Endpoints = require("../utils/Endpoints");
 // Structures
 const Guild = require("../structures/Guild");
 const User = require("../structures/User");
-const Channel = require("../structures/Channel");
+const Channel = require("../structures/TextChannel");
 
 module.exports = class Client extends EventEmitter {
   constructor (token, clientOptions) {
@@ -51,10 +51,6 @@ module.exports = class Client extends EventEmitter {
         this.options.intents = bitmask;
       }
     }
-  }
-
-  get api() {
-    return this.rest.api;
   }
 
   async start () {
