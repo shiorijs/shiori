@@ -32,7 +32,6 @@ module.exports = class Shard extends EventEmitter {
   * Connects the shard and create a websocket connection for them.
   */
   connect() {
-    // First you need to disconnect the shard.
     if (this.status !== "IDLE") return;
 
     this.connection = new Websocket(this.manager.websocketURL, { perMessageDeflate: false })
@@ -73,7 +72,7 @@ module.exports = class Shard extends EventEmitter {
 
   /**
   * Fired when websocket receives a message
-  * @param {data} Message received from the websocket
+  * @param {Object} data received from the websocket
   */
   websocketMessageReceive(data) {
     data = Erlpack ? Erlpack.unpack(data) : JSON.parse(data.toString());
@@ -97,7 +96,7 @@ module.exports = class Shard extends EventEmitter {
   }
 
   /**
-  * Fired when a packate is received
+  * Fired when a packet is received
   * @param {Object} packet The packet received
   */
   async packetReceive(packet) {
@@ -191,13 +190,13 @@ module.exports = class Shard extends EventEmitter {
   * Send a message to the websocket
   * @param {Object} data Message to send
   * @param {Number} data.op Gateway OP code
-  * @param {} data.d Data to send
+  * @param {Object} data.d Data to send
   */
   sendWebsocketMessage(data) {
-    const method = Erlpack ? Erlpack.pack : JSON.stringify;
+    const pack = Erlpack ? Erlpack.pack : JSON.stringify;
 
     if (this.status !== "CLOSED")
-      this.connection.send(method(data), (error) => {
+      this.connection.send(pack(data), (error) => {
         this.manager.client.emit("shardError", error, this.id);
       });
   }
@@ -218,7 +217,7 @@ module.exports = class Shard extends EventEmitter {
     try {
       this.connection.terminate();
     } catch (error) {
-      this.manager.client.emit("shardError", error, this.id);
+      return this.manager.client.emit("shardError", error, this.id);
     }
 
     this.connection = null;
@@ -226,13 +225,14 @@ module.exports = class Shard extends EventEmitter {
     /**
     * Fired when the shard disconnects
     * @event Shard#disconnect
-    * @prop {Error?} error The error that occurred
+    * @prop {String} reason The reason why the shard disconnected
     */
-    this.emit("disconnect", error);
+    this.emit("disconnect", "ASKED");
 
     if (this.sessionId) this.sessionId = null;
+    if (this.sequence) this.sequence = -1;
     if (reconnect && this.manager.client.options.autoReconnect) {
-      if (this.reconnectAttempts >= 5) return this.emit("disconnect", "Too many attempts");
+      if (this.reconnectAttempts >= 5) return this.emit("disconnect", "ATTEMPTS_ULTRAPASSED");
 
       setTimeout(() => this.connect(), this.reconnectInterval);
 

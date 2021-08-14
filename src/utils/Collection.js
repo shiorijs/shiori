@@ -13,14 +13,15 @@ module.exports = class Collection extends Map {
   * Adds a item on the collection
   * @param {String} id The item id, to be used as the key
   * @param {Object} item The item to be added
-  * @param {Boolean} [replace] Whether to replace an existing item with the same ID
+  * @param {Array<Object>} extra Extra parameters to be used when creating the class
   * @returns {Class} The created item
   */
-  add (id, item, replace = false) {
+  add (id, item, ...extra) {
     if (!id) throw new Error("Missing id");
-    if (this.has(item.id) && !replace) return this.get(item.id);
+    if (this.has(id)) return this.get(id);
 
-    if (!(item instanceof this.baseClass || item.constructor.name === this.baseClass.name)) item = new this.baseClass(item);
+    if (!(item instanceof this.baseClass || item.constructor.name === this.baseClass.name))
+      item = new this.baseClass(item, ...extra);
 
     return (this.set(id, item), item);
   }
