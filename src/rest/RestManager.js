@@ -11,6 +11,7 @@ module.exports = class RestManager {
     this.apiURL = `${Constants.REST.BASE_URL}/v9`;
 
     this.api = buildRoute(this);
+    this.ratelimits = {};
   };
 
   /**
@@ -33,12 +34,14 @@ module.exports = class RestManager {
       delete options.data.reason;
     }
 
-    return axios({
+    const result = await axios({
       url: `${this.apiURL}/${url.replace(/[/]?(\w+)/, '$1')}`,
       method: method.toLowerCase(),
       data: options.data,
       headers
-    }).then((data) => console.log(data.headers));
+    });
+
+    if (!result) return;
 
     /*
     Dessa forma não está funcionando, não sei o por quê
