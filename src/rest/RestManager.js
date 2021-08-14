@@ -27,7 +27,11 @@ module.exports = class RestManager {
       "Content-Type": "application/json"
     };
 
-    if (options.authenticate) headers.Authorization = `Bot ${this.client.token}`;
+    if (options?.authenticate) headers.Authorization = `Bot ${this.client.token}`;
+    if (options?.data !== undefined && options.data.reason) {
+      headers["X-Audit-Log-Reason"] = options.data.reason;
+      delete options.data.reason;
+    }
 
     return axios({
       url: `${this.apiURL}/${url.replace(/[/]?(\w+)/, '$1')}`,
