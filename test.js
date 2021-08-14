@@ -9,5 +9,9 @@ const client = new Client(process.env.DISCORD_TOKEN, {
 
 client.start()
   .then(() => {
-    client.on("messageCreate", console.log)
+    /*
+    Enviar mensgagem:
+    client.rest.api
+      .channels["857279585568686100"]
+      .messages.post({ data: { content: "oi" }, authenticate: true })*/
   })
