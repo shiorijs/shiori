@@ -1,6 +1,6 @@
 module.exports = {
   REST: {
-    BASE_URL: "https://discord.com/api/v",
+    BASE_URL: "https://discord.com/api",
     API_VERSION: 9
   },
   OP_CODES: {
