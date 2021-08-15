@@ -69,7 +69,7 @@ module.exports = class RestManager {
     }).catch(error => {
       const response = error.response.data;
       if (response.message.includes("rate limited")) return this.client.emit(
-        "error", `You are being ratelimited. Wait ${response.retry_after} before making another request.`
+        "error", `You are being ratelimited. Wait ${response.retry_after} seconds before making another request.`
       )
 
       success = false;
