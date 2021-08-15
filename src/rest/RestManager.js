@@ -64,7 +64,7 @@ module.exports = class RestManager {
       method: method.toLowerCase(),
       data: options.data,
       headers
-    });
+    }).catch(error => error);
 
     if (!result || result.headers == undefined) return;
 
@@ -75,7 +75,14 @@ module.exports = class RestManager {
 
     const retryAfter = parseInt(result.headers["retry-after"]) * 1000;
 
-    if (retryAfter > 0) {
+    if (retryAfter > 0 || result.status === 429) {
+      this.client.emit("warn", `
+        Rate-Limit hit on route "${route}"
+        Global: ${Boolean(result.headers["x-ratelimit-global"])}
+        Requests: ${this.ratelimits[route].remaining}/${this.ratelimits[route].limit} left
+        Reset ${this.ratelimits[route].resetAfter} (ms)
+      `)
+
       if (result.headers["x-ratelimit-global"]) {
         this.globalBlocked = true;
         setTimeout(() => this.globalUnblock(), retryAfter);
@@ -109,8 +116,6 @@ module.exports = class RestManager {
 function buildRoute(manager, route = "/") {
   return new Proxy({}, {
     get(_, method) {
-       if (method === 'toString') return () => route;
-
        if (METHODS.includes(method)) {
          return options =>
            manager.request(
