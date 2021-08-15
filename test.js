@@ -9,9 +9,12 @@ const client = new Client(process.env.DISCORD_TOKEN, {
 
 client.on("messageCreate", (data) => {
   if (data.content === "log") {
+    const emoji = encodeURIComponent("🕵️‍♀️");
+
     client.rest.api
       .channels["857279585568686100"]
-      .messages.post({ data: { content: "oi" }, authenticate: true })
+      .messages["876458102428422244"]
+      .reactions[emoji]["@me"].put({ authenticate: true });
   }
 })
 
