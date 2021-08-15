@@ -5,15 +5,19 @@ const Bucket = require("./Bucket");
 const Constants = require("../utils/Constants");
 
 module.exports = class RestManager {
+  #requestQueue;
+
   constructor (client) {
     this.client = client;
     this.userAgent = `Hitomi (https://github.com/IsisDiscord/hitomi, ${require("../../package.json").version})`;
 
-    // Fazer com que o usuário escolha.
+    // TODO: Fazer com que o usuário escolha.
     this.apiURL = `${Constants.REST.BASE_URL}/v9`;
 
     this.api = buildRoute(this);
     this.ratelimits = {};
+    this.globalBlocked = false;
+    this.#requestQueue = [];
   };
 
   /**
@@ -27,12 +31,10 @@ module.exports = class RestManager {
   async request(method, url, options) {
     const route = this.routefy(url);
 
-    console.log(route)
-    /*
-
     if (!this.ratelimits[route]) this.ratelimits[route] = new Bucket();
+    const queue = () => this.ratelimits[route].queue(() => this.#make(method, url, options, route));
 
-    this.ratelimits[route].queue(() => this.#make(method, url, options, route));*/
+    (this.globalBlocked && options.authenticate) ? this.#requestQueue.push(() => queue()) : queue();
   }
 
   /**
@@ -51,8 +53,8 @@ module.exports = class RestManager {
       "Content-Type": "application/json"
     };
 
-    if (options.authenticate) headers.Authorization = `Bot ${this.client.token}`;
-    if (options.data?.reason !== undefined) {
+    if (options?.authenticate) headers.Authorization = `Bot ${this.client.token}`;
+    if (options?.data?.reason !== undefined) {
       headers["X-Audit-Log-Reason"] = options.data.reason;
       delete options.data.reason;
     }
@@ -71,10 +73,32 @@ module.exports = class RestManager {
 
     this.ratelimits[route].remaining = Number(result.headers["x-ratelimit-remaining"]);
     this.ratelimits[route].resetAfter = Number(result.headers["x-ratelimit-reset-after"]) * 1000;
+
+    let retryAfter = result.headers["retry-after"];
+    // If retry after is not undefined, it means we hit a rate limit.
+    retryAfter = retryAfter !== undefined
+      ? Number(retryAfter) * 1000
+      : 0;
+
+    if (retryAfter > 0) {
+      // If x-ratelimit-global is not undefined, it means we got global rate limited
+      if (result.headers["x-ratelimit-global"] !== undefined) {
+        this.globalBlocked = true;
+        setTimeout(() => this.globalUnblock(), retryAfter);
+      } else {
+        this.ratelimits[route].resetAfter = retryAfter + Date.now();
+      }
+    }
+  }
+
+  globalUnblock() {
+    this.globalBlocked = false;
+
+    while (this.#requestQueue.length) this.#requestQueue.shift()();
   }
 
   routefy(url) {
-    if (!/channels|guilds|webhooks/.test(url)) url = url.replace(/\d{17,19}/g, ":id")
+    if (!/channels|guilds|webhooks/.test(url)) url = url.replace(/\d{16,18}/g, ":id")
 
     url = url
       .replace(/\/reactions\/[^/]+/g, "/reactions/:id")
