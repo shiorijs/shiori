@@ -6,18 +6,25 @@ module.exports = class Bucket {
   }
 
   checkRateLimit() {
-    const now = Date.now();
+    return new Promise((resolve) => {
+      const now = Date.now();
+      if (!this.resetAfter || this.resetAfter < now) {
+        this.resetAfter = now;
+        this.remaining = 1;
+      }
 
-    if (!this.resetAfter || this.resetAfter < now) this.resetAfter = now;
+      if (this.remaining <= 0) return setTimeout(
+        () => this.checkRateLimit(), Math.max(0, this.resetAfter - now) + 1
+      );
 
-    if (this.remaining <= 0 && this.resetAfter > 0)
-      return setTimeout(() => this.checkRateLimit(), this.resetAfter);
+      this.remaining -= 1;
 
-    this.remaining -= 1;
+      this.routeQueue.shift()().then((data) => {
+        if (this.routeQueue.length) this.checkRateLimit();
 
-    this.routeQueue.shift()().then(() => {
-      if (this.routeQueue.length) return this.checkRateLimit();
-    });
+        return resolve(data);
+      });
+    })
   }
 
   /**

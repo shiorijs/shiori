@@ -34,7 +34,7 @@ module.exports = class RestManager {
     if (!this.ratelimits[route]) this.ratelimits[route] = new Bucket();
     const queue = () => this.ratelimits[route].queue(() => this.#make(method, url, options, route));
 
-    (this.globalBlocked && options.authenticate) ? this.#requestQueue.push(() => queue()) : queue();
+    return (this.globalBlocked && options.authenticate) ? this.#requestQueue.push(() => queue()) : queue();
   }
 
   /**
@@ -68,27 +68,25 @@ module.exports = class RestManager {
 
     if (!result || result.headers == undefined) return;
 
-    if (this.ratelimits[route].limit === 1)
-      this.ratelimits[route].limit = result.headers["x-ratelimit-limit"];
+    if (result.headers["x-ratelimit-limit"])
+      this.ratelimits[route].limit = Number(result.headers["x-ratelimit-limit"]);
 
     this.ratelimits[route].remaining = Number(result.headers["x-ratelimit-remaining"]);
-    this.ratelimits[route].resetAfter = Number(result.headers["x-ratelimit-reset-after"]) * 1000;
 
-    let retryAfter = result.headers["retry-after"];
-    // If retry after is not undefined, it means we hit a rate limit.
-    retryAfter = retryAfter !== undefined
-      ? Number(retryAfter) * 1000
-      : 0;
+    const retryAfter = parseInt(result.headers["retry-after"]) * 1000;
 
     if (retryAfter > 0) {
-      // If x-ratelimit-global is not undefined, it means we got global rate limited
-      if (result.headers["x-ratelimit-global"] !== undefined) {
+      if (result.headers["x-ratelimit-global"]) {
         this.globalBlocked = true;
         setTimeout(() => this.globalUnblock(), retryAfter);
       } else {
         this.ratelimits[route].resetAfter = retryAfter + Date.now();
       }
+    } else {
+      this.ratelimits[route].resetAfter = Date.now();
     }
+
+    return result.data;
   }
 
   globalUnblock() {
