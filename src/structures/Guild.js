@@ -7,4 +7,4 @@ module.exports = class Guild {
 
     this.members = new Collection(Member);
   }
-}
+};

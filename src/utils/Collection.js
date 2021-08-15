@@ -3,7 +3,7 @@ module.exports = class Collection extends Map {
   * Construct a Collection
   * @param {Class} baseClass The class that all items should extend
   */
-  constructor(baseClass) {
+  constructor (baseClass) {
     super();
 
     this.baseClass = baseClass;
@@ -31,14 +31,14 @@ module.exports = class Collection extends Map {
   * @param {Function} func A function that takes an object and returns true if it matches
   * @returns {Array<Class>} An array containing all the objects that matched
   */
-  filter(func) {
+  filter (func) {
     const array = [];
 
     for (const item of this.values) {
       if (func(item)) array.push(item);
     }
 
-    return array
+    return array;
   }
 
   /**
@@ -46,7 +46,7 @@ module.exports = class Collection extends Map {
   * @param {Function} func A function that takes an object and returns something
   * @returns {Array} An array containing the results
   */
-  map(func) {
+  map (func) {
     const array = [];
 
     for (const item of this.values()) array.push(func(item));
@@ -60,10 +60,10 @@ module.exports = class Collection extends Map {
   * @param {String} item.id The ID of the object
   * @returns {Class?} The removed object, or null if nothing was removed
   */
-  remove(item) {
-    if (!this.has(object.id)) return null;
+  remove (item) {
+    if (!this.has(item.id)) return null;
 
     // This will execute all of the parameters and return the last
     return (this.delete(item.id), this.get(item.id));
   }
-}
+};

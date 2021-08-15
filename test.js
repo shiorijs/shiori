@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const { Client } = require("./src/")
+const { Client } = require("./src/");
 
 const client = new Client(process.env.DISCORD_TOKEN, {
   intents: 13827,
@@ -18,9 +18,9 @@ client.on("messageCreate", (data) => {
         .reactions[emoji]["@me"].put({ authenticate: true }).then(console.log);
     }
   }
-})
+});
 
 client.on("warn", (warn) => console.log(warn));
-client.on("error", (error) => console.error(error))
+client.on("error", (error) => console.error(error));
 
 client.start();

@@ -39,7 +39,7 @@ module.exports = class Client extends EventEmitter {
       "token": { value: token, writable: false }
     });
 
-    if (this.options.hasOwnProperty("intents")) {
+    if (Object.prototype.hasOwnProperty.call(this.options, "intents")) {
       if (Array.isArray(this.options.intents)) {
         let bitmask = 0;
 
@@ -52,7 +52,14 @@ module.exports = class Client extends EventEmitter {
     }
   }
 
-  async start () {
+  /**
+   * Create a connection between your bot and discord.
+   * @example
+   * const client = new Hitomi.Client("TOKEN", {});
+   *
+   * client.start();
+   */
+  start () {
     const shards = Array.from({ length: this.options.shardCount }, (_, i) => i);
 
     this.options.shards = [...new Set(shards)];
@@ -60,17 +67,17 @@ module.exports = class Client extends EventEmitter {
     try {
       this.ws.createShardConnection();
     } catch (error) {
-      if (!this.options.autoReconnect) throw error
+      if (!this.options.autoReconnect) throw error;
 
       setTimeout(() => this.ws.createShardConnection(), 3000);
     }
-  };
+  }
 
   /**
-   * @param {String} type Type of the structure to fetch, user, role, channel or guild
-   * @param {String} id ID of an user, role, channel or guild to fetch
+  * @param {String} type Type of the structure to fetch, user, role, channel or guild
+  * @param {String} id ID of an user, role, channel or guild to fetch
   */
-  async getInformation (type, id) {
-    return true
-  };
+  getInformation () {
+    return true;
+  }
 };

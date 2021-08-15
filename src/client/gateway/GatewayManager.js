@@ -5,6 +5,7 @@ let Erlpack;
 
 try {
   Erlpack = require("erlpack");
+  /* eslint-disable no-empty */
 } catch {}
 
 const BASE_URL = "wss://gateway.discord.gg/";
@@ -31,7 +32,7 @@ module.exports = class GatewayManager {
   /**
   * Connect all shards and create a websocket connection for each one.
   */
-  async createShardConnection() {
+  createShardConnection () {
     const { shards } = this.client.options;
 
     this.queue = new Set(shards.map(id => new Shard(this, id)));
@@ -43,7 +44,7 @@ module.exports = class GatewayManager {
   * Connects the last shard of the queue.
   * @private
   */
-  async connectShard() {
+  async connectShard () {
     const [shard] = this.queue;
 
     this.queue.delete(shard);
@@ -63,7 +64,7 @@ module.exports = class GatewayManager {
   * @param {Object} packet The packet to handle
   * @param {Shard} shard The shard which the packet was received
   */
-  handlePacket(packet, shard) {
+  handlePacket (packet, shard) {
     if (!packet) return false;
 
     if (!this.client.options.blockedEvents.includes(packet.t)) {
@@ -74,4 +75,4 @@ module.exports = class GatewayManager {
 
     return true;
   }
-}
+};

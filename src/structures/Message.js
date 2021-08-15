@@ -1,5 +1,3 @@
-const Collection = require("../utils/Collection");
-
 module.exports = class Message {
   constructor (data, client) {
     this.id = data.id;
@@ -13,4 +11,4 @@ module.exports = class Message {
 
     Object.definedProperty(this, "client", { value: client });
   }
-}
+};

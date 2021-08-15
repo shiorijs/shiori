@@ -6,9 +6,7 @@
   },
   "extends": [ "eslint:recommended" ],
   "parserOptions": {
-    "ecmaVersion": 2021,
-    "sourceType": "script",
-    "impliedStrict": true
+    "ecmaVersion": 2021
   },
   "rules": {
     "brace-style": ["error", "1tbs"],
@@ -66,7 +64,6 @@
     "space-in-parens": "error",
     "semi": "error",
     "semi-spacing": "error",
-    "strict": ["error", "global"],
     "sort-vars": "error",
     "use-isnan": "error"
   }

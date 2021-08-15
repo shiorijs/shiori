@@ -5,7 +5,7 @@ module.exports = class Bucket {
     this.routeQueue = [];
   }
 
-  checkRateLimit() {
+  checkRateLimit () {
     return new Promise((resolve) => {
       const now = Date.now();
       if (!this.resetAfter || this.resetAfter < now) {
@@ -24,16 +24,16 @@ module.exports = class Bucket {
 
         return resolve(data);
       });
-    })
+    });
   }
 
   /**
   * Queue a function in the bucket
   * @param {Function} callback - the callack to execute
   */
-  queue(callback) {
+  queue (callback) {
     this.routeQueue.push(callback);
 
-    return this.checkRateLimit()
+    return this.checkRateLimit();
   }
-}
+};

@@ -5,9 +5,10 @@ let Erlpack;
 
 try {
   Erlpack = require("erlpack");
+  /* eslint-disable no-empty */
 } catch {}
 
-const Constants = require("../../utils/Constants")
+const Constants = require("../../utils/Constants");
 
 module.exports = class Shard extends EventEmitter {
   constructor (manager, id) {
@@ -31,10 +32,10 @@ module.exports = class Shard extends EventEmitter {
   /**
   * Connects the shard and create a websocket connection for them.
   */
-  connect() {
+  connect () {
     if (this.status !== "IDLE") return;
 
-    this.connection = new Websocket(this.manager.websocketURL, { perMessageDeflate: false })
+    this.connection = new Websocket(this.manager.websocketURL, { perMessageDeflate: false });
 
     this.status = "CONNECTED";
 
@@ -49,7 +50,7 @@ module.exports = class Shard extends EventEmitter {
   * @param {Number} code The error code received
   * @param {String} reason Reason for the disconnect
   */
-  async websocketCloseConnection(code, reason) {
+  websocketCloseConnection (code, reason) {
     this.status = "CLOSED";
 
     this.emit("connectionClosed", code, reason, this.id);
@@ -60,7 +61,7 @@ module.exports = class Shard extends EventEmitter {
   * Fired when occurs an error in the websocket connection.
   * @param {Error} error The error that occurred
   */
-  async websocketError(error) {
+  websocketError (error) {
     /**
     * Fired when an error occurs in a shard
     * @event Client#shardError
@@ -74,16 +75,16 @@ module.exports = class Shard extends EventEmitter {
   * Fired when websocket receives a message
   * @param {Object} data received from the websocket
   */
-  websocketMessageReceive(data) {
+  websocketMessageReceive (data) {
     data = Erlpack ? Erlpack.unpack(data) : JSON.parse(data.toString());
 
     this.packetReceive(data);
   }
 
   /**
-  * Fired when a connection with websocket opens.
+  * Fired when the connection with websocket opens.
   */
-  async websocketConnectionOpen() {
+  websocketConnectionOpen () {
     this.status = "OPEN";
 
     /**
@@ -99,7 +100,7 @@ module.exports = class Shard extends EventEmitter {
   * Fired when a packet is received
   * @param {Object} packet The packet received
   */
-  async packetReceive(packet) {
+  packetReceive (packet) {
     if (packet.s) this.sequence = packet.s;
 
     switch (packet.t) {
@@ -138,12 +139,12 @@ module.exports = class Shard extends EventEmitter {
               session_id: this.sessionId,
               seq: this.sequence
             }
-         });
-       } else {
-         this.identify();
-         this.sendHeartbeat();
-       }
-       break;
+          });
+        } else {
+          this.identify();
+          this.sendHeartbeat();
+        }
+        break;
       }
       case Constants.OP_CODES.INVALID_SESSION: {
         this.sessionId = null;
@@ -159,7 +160,7 @@ module.exports = class Shard extends EventEmitter {
   /**
   * Identify the connection. Required  for discord to recognize who is connecting
   */
-  async identify() {
+  identify () {
     const { client } = this.manager;
 
     const d = {
@@ -180,7 +181,7 @@ module.exports = class Shard extends EventEmitter {
   /**
   * Sends heartbeat to discord. Required to keep a connection
   */
-  sendHeartbeat() {
+  sendHeartbeat () {
     this.lastHeartbeatAcked = false;
 
     this.sendWebsocketMessage({ op: Constants.OP_CODES.HEARTBEAT, d: this.sequence });
@@ -192,7 +193,7 @@ module.exports = class Shard extends EventEmitter {
   * @param {Number} data.op Gateway OP code
   * @param {Object} data.d Data to send
   */
-  sendWebsocketMessage(data) {
+  sendWebsocketMessage (data) {
     const pack = Erlpack ? Erlpack.pack : JSON.stringify;
 
     if (this.status !== "CLOSED")
@@ -205,7 +206,7 @@ module.exports = class Shard extends EventEmitter {
   * Disconnect the shard
   * @param {Boolean} [reconnect] Whether to reconnect after disconnecting
   */
-  disconnect(reconnect = false) {
+  disconnect (reconnect = false) {
     if (!this.connection) return;
 
     if (this.heartbeatInterval) {
@@ -240,4 +241,4 @@ module.exports = class Shard extends EventEmitter {
       this.reconnectAttempts++;
     }
   }
-}
+};

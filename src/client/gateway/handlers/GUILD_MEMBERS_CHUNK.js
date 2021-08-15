@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 module.exports = (client, { d: data }, shard) => {
   const guild = client.guilds.get(data.guild_id);

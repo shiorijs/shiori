@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = async (client, { d: data }, shard) => {
+module.exports = (client, { d: data }, shard) => {
   let channel = client.channels.get(data.channel_id);
 
   client.emit("messageCreate", data);
@@ -24,4 +24,4 @@ module.exports = async (client, { d: data }, shard) => {
   if (guild !== undefined) data.guild = guild;
 
   client.emit("messageCreate", data);*/
-}
+};

@@ -15,7 +15,7 @@ module.exports = {
     REQUEST_GUILD_MEMBERS: 8,
     INVALID_SESSION: 9,
     HELLO: 10,
-    HEARTBEAT_ACK: 11,
+    HEARTBEAT_ACK: 11
   },
   INTENTS: {
     guilds:                 1 << 0,
@@ -83,6 +83,6 @@ module.exports = {
     "INTERACTION_CREATE",
     "STAGE_INSTANCE_CREATE",
     "STAGE_INSTANCE_UPDATE",
-    "STAGE_INSTANCE_DELETE",
+    "STAGE_INSTANCE_DELETE"
   ]
 };

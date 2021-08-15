@@ -9,7 +9,7 @@
   "license": "Apache",
   "scripts": {
     "lint": "eslint src",
-    "lint:fix": "eslint --fix"
+    "lint:fix": "eslint --fix ."
   },
   "engines": {
     "node": ">=14.0.0"
