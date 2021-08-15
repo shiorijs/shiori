@@ -59,8 +59,6 @@ module.exports = class RestManager {
       delete options.data.reason;
     }
 
-    let success = true
-
     const result = await axios({
       url: `${this.apiURL}/${url.replace(/[/]?(\w+)/, '$1')}`,
       method: method.toLowerCase(),
@@ -71,11 +69,9 @@ module.exports = class RestManager {
       if (response.message.includes("rate limited")) return this.client.emit(
         "error", `You are being ratelimited. Wait ${response.retry_after} seconds before making another request.`
       )
-
-      success = false;
     });
 
-    if (!result || result.headers == undefined || !success) return;
+    if (!result || result.headers == undefined) return;
 
     if (result.headers["x-ratelimit-limit"])
       this.ratelimits[route].limit = Number(result.headers["x-ratelimit-limit"]);
