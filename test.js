@@ -20,6 +20,7 @@ client.on("messageCreate", (data) => {
   }
 })
 
-client.on("warn", (warn) => console.log(warn))
+client.on("warn", (warn) => console.log(warn));
+client.on("error", (error) => console.error(error))
 
 client.start();
