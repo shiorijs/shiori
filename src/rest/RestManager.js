@@ -86,12 +86,8 @@ module.exports = class RestManager {
       if (result.headers["x-ratelimit-global"]) {
         this.globalBlocked = true;
         setTimeout(() => this.globalUnblock(), retryAfter);
-      } else {
-        this.ratelimits[route].resetAfter = retryAfter + Date.now();
-      }
-    } else {
-      this.ratelimits[route].resetAfter = Date.now();
-    }
+      } else this.ratelimits[route].resetAfter = retryAfter + Date.now();
+    } else this.ratelimits[route].resetAfter = Date.now();
 
     return result.data;
   }
