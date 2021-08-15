@@ -3,6 +3,9 @@
 module.exports = async (client, { d: data }, shard) => {
   let channel = client.channels.get(data.channel_id);
 
+  client.emit("messageCreate", data);
+
+  /*
   if (channel === undefined)
     channel = await client.api.guilds[data.guild_id].channels[data.channel_id].get();
 
@@ -20,5 +23,5 @@ module.exports = async (client, { d: data }, shard) => {
 
   if (guild !== undefined) data.guild = guild;
 
-  client.emit("messageCreate", data);
+  client.emit("messageCreate", data);*/
 }
