@@ -23,7 +23,7 @@ module.exports = class Bucket {
 
         if (this.globalLimited) {
           const timeout = Number(this.globalReset) + Date.now();
-          
+
           delayPromise = delay(timeout);
         } else {
           delayPromise = delay(this.reset - Date.now());
@@ -32,12 +32,7 @@ module.exports = class Bucket {
         await delayPromise;
       }
 
-      if (!this.globalReset || this.globalReset < Date.now()) {
-        this.globalReset = Date.now() + 1000;
-        this.globalRemaining = Infinity;
-      }
-
-      this.globalRemaining -= 1;
+      if (!this.globalReset || this.globalReset < Date.now()) this.globalReset = Date.now() + 1000;
 
       this.#tasks.shift()().then((data) => {
         if (this.#tasks.length) this.checkRateLimit();
