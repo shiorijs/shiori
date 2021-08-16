@@ -4,9 +4,15 @@ const METHODS = ["get", "post", "patch", "put", "delete", "head"];
 const Bucket = require("./Bucket");
 const Constants = require("../utils/Constants");
 
-module.exports = class RestManager {
-  #requestQueue;
+function getAPIOffset(serverDate) {
+  return new Date(serverDate).getTime() - Date.now();
+}
 
+function calculateReset(reset, serverDate) {
+  return new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverDate);
+}
+
+module.exports = class RestManager {
   constructor (client) {
     this.client = client;
     this.userAgent = `Hitomi (https://github.com/IsisDiscord/hitomi, ${require("../../package.json").version})`;
@@ -15,8 +21,6 @@ module.exports = class RestManager {
     this.apiURL = `${Constants.REST.BASE_URL}/v9`;
 
     this.ratelimits = {};
-    this.globalBlocked = false;
-    this.#requestQueue = [];
   };
 
   get api () {
@@ -31,13 +35,14 @@ module.exports = class RestManager {
    * @param {Object} [options.data] The data to be sent
    * @param {Boolean} [options.authenticate] Whether to authenticate the request
    */
-  async request(method, url, options) {
+  async request(method, url, options = {}) {
     const route = this.routefy(url);
 
-    if (!this.ratelimits[route]) this.ratelimits[route] = new Bucket();
-    const queue = () => this.ratelimits[route].queue(() => this.#make(method, url, options || {}, route));
+    if (options.authenticate === undefined) options.authenticate = true;
 
-    return (this.globalBlocked && options.authenticate) ? this.#requestQueue.push(() => queue()) : queue();
+    if (!this.ratelimits[route]) this.ratelimits[route] = new Bucket();
+
+    return this.ratelimits[route].queue(() => this.#make(method, url, options, route))
   }
 
   /**
@@ -55,8 +60,6 @@ module.exports = class RestManager {
       "User-Agent": this.userAgent,
       "Content-Type": "application/json"
     };
-
-    if (options.authenticate === undefined) options.authenticate = true;
 
     if (options?.authenticate) headers.Authorization = `Bot ${this.client.token}`;
     if (options?.data?.reason !== undefined) {
@@ -82,34 +85,42 @@ module.exports = class RestManager {
 
     if (!result || result.headers == undefined) return;
 
-    if (result.headers["x-ratelimit-limit"])
-      this.ratelimits[route].limit = Number(result.headers["x-ratelimit-limit"]);
+    const serverDate = result.headers['date'];
+    const remaining = result.headers['x-ratelimit-remaining'];
+    const limit = result.headers['x-ratelimit-limit'];
+    const reset = result.headers['x-ratelimit-reset'];
 
-    this.ratelimits[route].remaining = Number(result.headers["x-ratelimit-remaining"]);
+    this.ratelimits[route].limit = limit !== null ? Number(limit) : 1;
+    this.ratelimits[route].remaining = remaining !== null ? Number(remaining) : 1;
+    this.ratelimits[route].reset = reset !== null
+      ? calculateReset(reset, serverDate)
+      : Date.now();
 
-    const retryAfter = parseInt(result.headers["retry-after"]) * 1000;
+    if (route.includes("reactions")) {
+      this.ratelimits[route].reset = new Date(serverDate).getTime() - getAPIOffset(serverDate) + 250;
+    }
 
-    if (retryAfter > 0 || result.status === 429) {
+    const retryAfter = Number(result.headers["retry-after"]) * 1000 ?? -1;
+
+    if (retryAfter > 0) {
+      if (result.headers["x-ratelimit-global"]) {
+        this.ratelimits[route].globalBlocked = true;
+        this.ratelimits[route].globalReset = Date.now() + retryAfter;
+      } else {
+        this.ratelimits[route].reset = retryAfter;
+      }
+    }
+
+    if (result.status === 429) {
       this.client.emit("warn", `
         Rate-Limit hit on route "${route}"
         Global: ${Boolean(result.headers["x-ratelimit-global"])}
         Requests: ${this.ratelimits[route].remaining}/${this.ratelimits[route].limit} left
-        Reset ${this.ratelimits[route].resetAfter} (ms)
-      `)
-
-      if (result.headers["x-ratelimit-global"]) {
-        this.globalBlocked = true;
-        setTimeout(() => this.globalUnblock(), retryAfter);
-      } else this.ratelimits[route].resetAfter = retryAfter + Date.now();
-    } else this.ratelimits[route].resetAfter = Date.now();
+        Reset ${this.ratelimits[route].reset} (ms)
+      `);
+    }
 
     return result.data || undefined;
-  }
-
-  globalUnblock() {
-    this.globalBlocked = false;
-
-    while (this.#requestQueue.length) this.#requestQueue.shift()();
   }
 
   routefy(url) {

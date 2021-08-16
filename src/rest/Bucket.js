@@ -1,27 +1,57 @@
+const delay = async (ms) =>
+  await new Promise((resolve) => {
+    setTimeout(() => resolve(true), ms)
+  })
+
 module.exports = class Bucket {
-  constructor () {
-    this.remaining = 1;
-    this.limit = 1;
-    this.resetAfter = 0;
-    this.routeQueue = [];
+  #tasks = [];
+  remaining = 1;
+  reset = 0;
+
+  get globalLimited() {
+    return this.globalBlocked && Date.now() < Number(this.globalReset);
+  }
+
+  get localLimited() {
+    return this.remaining <= 0 && Date.now() < this.reset;
+  }
+
+  async globalDelayFor(ms) {
+    return await new Promise((resolve) => {
+      setTimeout(() => {
+        this.globalDelay = null
+        resolve()
+      }, ms)
+    })
   }
 
   checkRateLimit () {
-    return new Promise((resolve) => {
-      const now = Date.now();
-      if (!this.resetAfter || this.resetAfter < now) {
-        this.resetAfter = now;
-        this.remaining = 1;
+    return new Promise(async (resolve) => {
+      while (this.globalLimited || this.localLimited) {
+        let delayPromise
+
+        if (this.globalLimited) {
+          const timeout = Number(this.globalReset) + Date.now()
+
+          if (!this.globalDelay) this.globalDelay = this.globalDelayFor(timeout);
+
+          delayPromise = this.globalDelay;
+        } else {
+          delayPromise = delay(this.reset - Date.now())
+        }
+
+        await delayPromise;
       }
 
-      if (this.remaining <= 0) return setTimeout(
-        () => this.checkRateLimit(), Math.max(0, this.resetAfter - now) + 1
-      );
+      if (!this.globalReset || this.globalReset < Date.now()) {
+        this.globalReset = Date.now() + 1000
+        this.globalRemaining = Infinity;
+      }
 
-      this.remaining -= 1;
+      this.globalRemaining -= 1;
 
-      this.routeQueue.shift()().then((data) => {
-        if (this.routeQueue.length) this.checkRateLimit();
+      this.#tasks.shift()().then((data) => {
+        if (this.#tasks.length) this.checkRateLimit();
 
         return resolve(data);
       });
@@ -33,7 +63,7 @@ module.exports = class Bucket {
   * @param {Function} callback - the callack to execute
   */
   queue (callback) {
-    this.routeQueue.push(callback);
+    this.#tasks.push(callback);
 
     return this.checkRateLimit();
   }

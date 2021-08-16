@@ -9,7 +9,7 @@ const client = new Client(process.env.DISCORD_TOKEN, {
 
 client.on("messageCreate", async (message) => {
   if (message.content === "react") {
-    const emojis = ["🕵", "😎", "😱"];
+    const emojis = ["🕵", "😎", "😱", "🚀", "✨"];
 
     for (const emoji of emojis) message.addReaction(emoji);
   }
@@ -18,6 +18,15 @@ client.on("messageCreate", async (message) => {
     const msg = await message.channel.send("Hello");
 
     setTimeout(() => msg.edit("Dudek gay"), 3000);
+  }
+
+  if (message.content === "tratelimit") {
+    await message.channel.send("First");
+    await message.channel.send("Second");
+    await message.channel.send("Third");
+    await message.channel.send("Fourth");
+    await message.channel.send("Fifth");
+    await message.channel.send("Six");
   }
 });
 

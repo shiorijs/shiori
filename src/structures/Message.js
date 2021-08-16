@@ -134,6 +134,17 @@ class Message extends Base {
   }
 
   /**
+    * Creates a reaction in this message.
+    * @returns {Promise<void>}
+    */
+  async addReaction (reaction) {
+    await this.client.rest.api
+      .channels(this.channel.id)
+      .messages(this.id)
+      .reactions[encodeURIComponent(reaction)]["@me"].put();
+  }
+
+  /**
     * Edits a message.
     * @params {MessageEditOptions} options The options to be used when editing the message
     * @returns {Promise<void>}
