@@ -38,7 +38,7 @@ class Message extends Base {
       this.guildID = data.guild_id;
     }
 
-    if (data.user?.id) {
+    if (data.author?.id) {
       /**
        * The user that created the message
        * @type {User}
