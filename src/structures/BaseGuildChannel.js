@@ -1,4 +1,5 @@
 const Channel = require("./Channel");
+const Collection = require("../utils/Collection");
 const { ChannelTypes } = require("../utils/Constants");
 
 /**
@@ -13,13 +14,20 @@ class BaseGuildChannel extends Channel {
      * Guild this channel belongs to
      * @type {Guild}
      */
-     this.guild = data.guild;
+    this.guildId = data.guildId;
 
-     /**
+    /**
       * The type of the channel
       * @type {String}
       */
-     this.type = ChannelTypes[data.type] ?? 'UNKNOWN';
+    this.type = ChannelTypes[data.type] ?? "UNKNOWN";
+
+    /**
+     * Messages that belongs to this channel
+     * @type {Collection<String, Message>}
+     * @name BaseGuildChannel#messages
+     */
+    Object.defineProperty(this, "messages", { value: new Collection(), writable: true });
   }
 
   _update (data) {
@@ -27,14 +35,14 @@ class BaseGuildChannel extends Channel {
      * The id of this channel
      * @type {String}
      */
-    this.id = data.id
+    this.id = data.id;
 
     if (data.name) {
       /**
        * The name of this channel
        * @type {String}
        */
-      this.name = data.name
+      this.name = data.name;
     }
 
     if (data.position) {

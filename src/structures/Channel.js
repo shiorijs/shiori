@@ -1,4 +1,4 @@
-const Base = require('./Base');
+const Base = require("./Base");
 const { ChannelTypes } = require("../utils/Constants");
 
 /**
@@ -6,17 +6,17 @@ const { ChannelTypes } = require("../utils/Constants");
  * @extends {Base}
  */
 class Channel extends Base {
-  constructor(client, data) {
+  constructor (data, client) {
     super(client);
 
     /**
      * The channel's id
      * @type {String}
      */
-    this.id = data.id
+    this.id = data.id;
   }
 
-  static transform(data, client) {
+  static transform (data, client) {
     const TextChannel = require("./TextChannel");
 
     switch (data.type) {

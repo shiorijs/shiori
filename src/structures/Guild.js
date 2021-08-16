@@ -40,13 +40,10 @@ class Guild extends Base {
 
     if (data.channels) {
       for (const _channel of data.channels) {
-        _channel.guild = this;
+        _channel.guildId = this.id;
         const channel = Channel.transform(_channel, this.client);
 
-        if (!channel.id) {
-          //console.log(_channel);
-          continue
-        };
+        if (!channel.id) continue;
 
         this.channels.add(channel.id, channel);
         this.client.channelMap[channel.id] = this.id;
@@ -61,6 +58,6 @@ class Guild extends Base {
       this.name = data.name;
     }
   }
-};
+}
 
 module.exports = Guild;

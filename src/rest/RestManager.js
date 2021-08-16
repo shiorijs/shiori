@@ -14,11 +14,14 @@ module.exports = class RestManager {
     // TODO: Fazer com que o usuário escolha.
     this.apiURL = `${Constants.REST.BASE_URL}/v9`;
 
-    this.api = buildRoute(this);
     this.ratelimits = {};
     this.globalBlocked = false;
     this.#requestQueue = [];
   };
+
+  get api () {
+    return buildRoute(this);
+  }
 
   /**
    * Make an HTTP request to the Discord API
@@ -121,8 +124,8 @@ module.exports = class RestManager {
 };
 
 function buildRoute(manager) {
-  const route = [""];
-  const emptyFunction = () => { };
+  const route = [];
+  const emptyFunction = () => {};
 
   const handler = {
     get (_, method) {
@@ -134,7 +137,7 @@ function buildRoute(manager) {
       return new Proxy(emptyFunction, handler);
     },
     apply (_target, _, args) {
-      route.push(...args.filter(Boolean));
+      route.push(...args);
 
       return new Proxy(emptyFunction, handler);
     }

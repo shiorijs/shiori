@@ -55,6 +55,6 @@ class Member extends Base {
       this.permissions = data.permissions;
     }
   }
-};
+}
 
 module.exports = Member;

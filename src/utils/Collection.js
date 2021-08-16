@@ -59,6 +59,6 @@ class Collection extends Map {
     // This will execute all of the parameters and return the last
     return (this.delete(item.id), this.get(item.id));
   }
-};
+}
 
 module.exports = Collection;

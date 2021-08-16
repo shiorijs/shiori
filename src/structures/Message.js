@@ -81,7 +81,7 @@ class Message extends Base {
         users: data.mentions || [],
         roles: data.mention_roles || [],
         channels: data.mention_channels || []
-      }
+      };
     }
 
     if (data.attachments) {
@@ -125,19 +125,24 @@ class Message extends Base {
     }
   }
 
-  delete () {
-    return this.client.rest.api.channels[this.channelID].messages[this.id].delete();
+  /**
+    * Deletes this message.
+    * @returns {Promise<void>}
+    */
+  async delete () {
+    await this.client.rest.api.channels(this.channel.id).messages(this.id).delete();
   }
 
-  edit (options) {
+  /**
+    * Edits a message.
+    * @params {MessageEditOptions} options The options to be used when editing the message
+    * @returns {Promise<void>}
+    */
+  async edit (options) {
     if (typeof (options) === "string") options = { content: options };
 
-    return this.client.rest.api.channels[this.channelID].messages[this.id].patch({ data: options });
+    await this.client.rest.api.channels(this.channel.id).messages(this.id).patch({ data: options });
   }
-
-  addReaction (reaction) {
-    return this.client.addMessageReaction(this.id, this.channelID, reaction)
-  }
-};
+}
 
 module.exports = Message;

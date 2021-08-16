@@ -65,6 +65,6 @@ class User extends Base {
       this.flags = data.flags ?? 0;
     }
   }
-};
+}
 
 module.exports = User;
