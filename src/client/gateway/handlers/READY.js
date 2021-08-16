@@ -1,6 +1,6 @@
 const User = require("../../../structures/User");
 
-module.exports = (client, { d: data }, shard) => {
+module.exports = (client, { d: data }) => {
   if (!client.user) {
     client.user = data.user;
     client.users.set(client.user.id, new User(client.user, client));

@@ -1,7 +1,7 @@
 const User = require("../../../structures/User");
 const Member = require("../../../structures/Member");
 
-module.exports = (client, { d: data }, shard) => {
+module.exports = (client, { d: data }) => {
   const guild = client.guilds.get(data.guild_id);
 
   if (!guild) return;
