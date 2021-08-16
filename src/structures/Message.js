@@ -24,18 +24,18 @@ class Message extends Base {
 
     if (data.channel_id) {
       /**
-       * The channel id in which the message was sent
-       * @type {String}
+       * The channel in which the message was sent
+       * @type {BaseGuildChannel}
        */
-      this.channelID = data.channel_id;
+      this.channel = this.client.getChannel(data.channel_id) || { id: data.channel_id };
     }
 
     if (data.guild_id) {
       /**
-       * The guild id in which the message was sent
-       * @type {String}
+       * The guild in which the message was sent
+       * @type {Guild}
        */
-      this.guildID = data.guild_id;
+      this.guild = this.client.guilds.get(data.guild_id) || { id: data.guild_id };
     }
 
     if (data.author?.id) {

@@ -8,7 +8,7 @@ const client = new Client(process.env.DISCORD_TOKEN, {
 });
 
 client.on("messageCreate", async (message) => {
-  console.log(client.users, client.guilds)
+  console.log(message);
 
   if (message.content === "react") {
     const emojis = ["🕵", "😎", "😱"];

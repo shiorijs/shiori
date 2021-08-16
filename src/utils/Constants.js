@@ -86,3 +86,39 @@ module.exports = {
     "STAGE_INSTANCE_DELETE"
   ]
 };
+
+module.exports.ChannelTypes = createEnum([
+  /* A text channel within a server */
+  "GUILD_TEXT",
+  /* A direct message between users */
+  "DM",
+  /* A voice channel within a server */
+  "GUILD_VOICE",
+  /* A direct message between multiple users */
+  "GROUP_DM",
+  /* An organizational category that contains up to 50 channels */
+  "GUILD_CATEGORY",
+  /* A channel that users can follow and crosspost into their own server */
+  "GUILD_NEWS",
+  /* A channel in which game developers can sell their game on Discord */
+  "GUILD_STORE",
+  ...Array(3).fill(null),
+  /* A temporary sub-channel within a GUILD_NEWS channel */
+  "GUILD_NEWS_THREAD",
+  /* A temporary sub-channel within a GUILD_TEXT channel */
+  "GUILD_PUBLIC_THREAD",
+  /* A temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission */
+  "GUILD_PRIVATE_THREAD",
+  /* A voice channel for hosting events with an audience */
+  "GUILD_STAGE_VOICE",
+]);
+
+function createEnum(keys) {
+  const obj = {};
+  for (const [index, key] of keys.entries()) {
+    if (key === null) continue;
+    obj[key] = index;
+    obj[index] = key;
+  }
+  return obj;
+}

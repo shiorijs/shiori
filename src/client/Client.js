@@ -28,10 +28,11 @@ module.exports = class Client extends EventEmitter {
     this.rest = new RestManager(this);
 
     Object.defineProperties(this, {
-      "users": { value: new Collection(), writable: false },
-      "guilds": { value: new Collection(), writable: false },
-      "channels": { value: new Collection(), writable: false },
-      "token": { value: token, writable: false }
+      users: { value: new Collection(), writable: false },
+      guilds: { value: new Collection(), writable: false },
+      channels: { value: new Collection(), writable: false },
+      token: { value: token, writable: false },
+      channelMap: { value: { }, writable: true }
     });
 
     if (Object.prototype.hasOwnProperty.call(this.options, "intents")) {
@@ -81,5 +82,13 @@ module.exports = class Client extends EventEmitter {
       .channels[channelID]
       .messages[messageID]
       .reactions[encodeURIComponent(reaction)]["@me"].put();
+  }
+
+  getChannel (channelId) {
+    const guildId = this.channelMap[channelId];
+
+    if (!guildId) return null;
+
+    else return this.guilds.get(guildId).channels.get(channelId);
   }
 };

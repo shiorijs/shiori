@@ -1,6 +1,6 @@
 const Base = require("./Base");
+const Channel = require("./Channel");
 const Collection = require("../utils/Collection");
-const Member = require("./Member");
 
 /**
   * Represents a discord guild
@@ -16,9 +16,17 @@ class Guild extends Base {
 
     /**
      * The members that are in this guild
-     * @type {Collcection<String, Member>}
+     * @type {Collection<String, Member>}
+     * @name Guild#Members
      */
-    this.members = new Collection(Member);
+    Object.defineProperty(this, "members", { value: new Collection(), writable: true });
+
+    /**
+     * The channels that exists in this guild
+     * @type {Collection<String, Channel>}
+     * @name Guild#Channels
+     */
+    Object.defineProperty(this, "channels", { value: new Collection(), writable: true });
 
     this._update(data);
   }
@@ -30,39 +38,27 @@ class Guild extends Base {
      */
     this.id = data.id;
 
-    if (data.username) {
+    if (data.channels) {
+      for (const _channel of data.channels) {
+        _channel.guild = this;
+        const channel = Channel.transform(_channel, this.client);
+
+        if (!channel.id) {
+          //console.log(_channel);
+          continue
+        };
+
+        this.channels.add(channel.id, channel);
+        this.client.channelMap[channel.id] = this.id;
+      }
+    }
+
+    if (data.name) {
       /**
-       * The username that belongs to this user
+       * Guild Name
        * @type {String}
        */
-      this.username = data.username;
-    }
-
-    if (data.bot !== undefined) {
-      /**
-       * Whether this user is a bot or not
-       * @type {Boolean}
-       */
-      this.bot = data.bot;
-    }
-
-    if (data.premium_type) {
-      /**
-       * The type of Nitro subscription on a user's account
-       * 0 = No subscription
-       * 1 = Nitro Classic
-       * 2 = Nitro
-       * @type {Number}
-       */
-      this.premiumType = data.premium_type ?? 0;
-    }
-
-    if (data.flags) {
-      /**
-       * The author flags
-       * @type {Number}
-       */
-      this.flags = data.flags ?? 0;
+      this.name = data.name;
     }
   }
 };
