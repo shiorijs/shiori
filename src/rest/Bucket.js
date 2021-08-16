@@ -16,35 +16,24 @@ module.exports = class Bucket {
     return this.remaining <= 0 && Date.now() < this.reset;
   }
 
-  async globalDelayFor(ms) {
-    return await new Promise((resolve) => {
-      setTimeout(() => {
-        this.globalDelay = null
-        resolve()
-      }, ms)
-    })
-  }
-
   checkRateLimit () {
     return new Promise(async (resolve) => {
       while (this.globalLimited || this.localLimited) {
         let delayPromise
 
         if (this.globalLimited) {
-          const timeout = Number(this.globalReset) + Date.now()
-
-          if (!this.globalDelay) this.globalDelay = this.globalDelayFor(timeout);
-
-          delayPromise = this.globalDelay;
+          const timeout = Number(this.globalReset) + Date.now();
+          
+          delayPromise = delay(timeout);
         } else {
-          delayPromise = delay(this.reset - Date.now())
+          delayPromise = delay(this.reset - Date.now());
         }
 
         await delayPromise;
       }
 
       if (!this.globalReset || this.globalReset < Date.now()) {
-        this.globalReset = Date.now() + 1000
+        this.globalReset = Date.now() + 1000;
         this.globalRemaining = Infinity;
       }
 
