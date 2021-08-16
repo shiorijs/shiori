@@ -56,10 +56,7 @@ module.exports = class RestManager {
    * @param {String} route The cleaned route. Used for ratelimit identifying
    */
   async #make(method, url, options, route) {
-    const headers = {
-      "User-Agent": this.userAgent,
-      "Content-Type": "application/json"
-    };
+    const headers = { "User-Agent": this.userAgent, "Content-Type": "application/json" };
 
     if (options?.authenticate) headers.Authorization = `Bot ${this.client.token}`;
     if (options?.data?.reason !== undefined) {
@@ -90,7 +87,6 @@ module.exports = class RestManager {
     const limit = result.headers['x-ratelimit-limit'];
     const reset = result.headers['x-ratelimit-reset'];
 
-    this.ratelimits[route].limit = limit !== null ? Number(limit) : 1;
     this.ratelimits[route].remaining = remaining !== null ? Number(remaining) : 1;
     this.ratelimits[route].reset = reset !== null
       ? calculateReset(reset, serverDate)
@@ -115,8 +111,8 @@ module.exports = class RestManager {
       this.client.emit("warn", `
         Rate-Limit hit on route "${route}"
         Global: ${Boolean(result.headers["x-ratelimit-global"])}
-        Requests: ${this.ratelimits[route].remaining}/${this.ratelimits[route].limit} left
-        Reset ${this.ratelimits[route].reset} (ms)
+        Requests: ${this.ratelimits[route].remaining}/${limit} left
+        Reset ${this.ratelimits[route].reset}
       `);
     }
 
