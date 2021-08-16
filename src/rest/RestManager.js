@@ -120,19 +120,26 @@ module.exports = class RestManager {
   }
 };
 
-function buildRoute(manager, route = "/") {
-  return new Proxy({}, {
-    get(_, method) {
-       if (METHODS.includes(method)) {
-         return options =>
-           manager.request(
-             method,
-             route.substring(0, route.length - 1),
-             options
-           );
-       }
+function buildRoute(manager) {
+  const route = [""];
+  const emptyFunction = () => { };
 
-       return buildRoute(manager, route + method + '/');
-     }
-  })
+  const handler = {
+    get (_, method) {
+      if (METHODS.includes(method)) {
+        return (options) =>
+          manager.request(method, route.join("/"), options);
+      }
+
+      route.push(method);
+      return new Proxy(emptyFunction, handler);
+    },
+    apply (_target, _, args) {
+      route.push(...args.filter(Boolean));
+
+      return new Proxy(emptyFunction, handler);
+    }
+  }
+
+  return new Proxy(emptyFunction, handler);
 }

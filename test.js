@@ -19,7 +19,7 @@ client.on("messageCreate", async (message) => {
   if (message.content == "dmessage") {
     // GET guilds/{guild.id}/bans
     client.rest.api
-      .guilds[message.guild_id]
+      .guilds(message.guildID)
       .bans.get().then(console.log)
   }
 });
