@@ -8,19 +8,16 @@ const client = new Client(process.env.DISCORD_TOKEN, {
 });
 
 client.on("messageCreate", async (message) => {
-  console.log(message);
-
   if (message.content === "react") {
     const emojis = ["🕵", "😎", "😱"];
 
     for (const emoji of emojis) message.addReaction(emoji);
   }
 
-  if (message.content == "dmessage") {
-    // GET guilds/{guild.id}/bans
-    client.rest.api
-      .guilds(message.guildID)
-      .bans.get().then(console.log)
+  if (message.content === "say") {
+    const msg = await message.channel.send("Hello");
+
+    setTimeout(() => msg.edit("Dudek gay"), 3000);
   }
 });
 

@@ -2,7 +2,7 @@
  * Represents a discord structure.
  */
 class Base {
-  constructor(client) {
+  constructor (client) {
     /**
      * The client that instantiated this
      * @name Base#client
@@ -13,11 +13,11 @@ class Base {
   }
 
 
-  _update(data) {;
+  _update (data) {
     return data;
   }
 
-  valueOf() {
+  valueOf () {
     return this.id;
   }
 }

@@ -110,10 +110,10 @@ module.exports.ChannelTypes = createEnum([
   /* A temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission */
   "GUILD_PRIVATE_THREAD",
   /* A voice channel for hosting events with an audience */
-  "GUILD_STAGE_VOICE",
+  "GUILD_STAGE_VOICE"
 ]);
 
-function createEnum(keys) {
+function createEnum (keys) {
   const obj = {};
   for (const [index, key] of keys.entries()) {
     if (key === null) continue;

@@ -1,4 +1,5 @@
 const BaseGuildChannel = require("./BaseGuildChannel");
+const Message = require("./Message");
 
 /**
  * Represents a text channel.
@@ -8,7 +9,7 @@ class TextChannel extends BaseGuildChannel {
   constructor (data, client) {
     super(data, client);
 
-     this._update(data);
+    this._update(data);
   }
 
   _update (data) {
@@ -29,6 +30,26 @@ class TextChannel extends BaseGuildChannel {
        */
       this.topic = data.topic;
     }
+  }
+
+  /**
+    * Create a message in this text channel.
+    * @returns {Promise<Message>}
+    */
+  send (options) {
+    if (typeof (options) === "string") options = { content: options };
+
+    return this.client.rest.api.channels(this.id).messages.post({ data: options })
+      .then((data) => new Message(data, this.client));
+  }
+
+  /**
+   * Delete this channel.
+   * @param {String} [reason] Reason for deleting this channel
+   * @returns {Promise<void>}
+   */
+  async delete (reason) {
+    await this.client.rest.api.channels(this.id).delete({ data: { reason } });
   }
 }
 
