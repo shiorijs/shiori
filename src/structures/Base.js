@@ -12,7 +12,6 @@ class Base {
     Object.defineProperty(this, "client", { value: client });
   }
 
-
   _update (data) {
     return data;
   }
