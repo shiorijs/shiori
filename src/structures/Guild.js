@@ -15,16 +15,16 @@ class Guild extends Base {
     super(client);
 
     /**
-     * The members that are in this guild
+     * Members that belongs to this guild
      * @type {Collection<String, Member>}
-     * @name Guild#Members
+     * @name Guild#members
      */
     Object.defineProperty(this, "members", { value: new Collection(), writable: true });
 
     /**
-     * The channels that exists in this guild
+     * Channels that belongs to this guild
      * @type {Collection<String, Channel>}
-     * @name Guild#Channels
+     * @name Guild#channels
      */
     Object.defineProperty(this, "channels", { value: new Collection(), writable: true });
 
