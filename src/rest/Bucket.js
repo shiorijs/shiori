@@ -1,6 +1,7 @@
 module.exports = class Bucket {
   constructor () {
     this.remaining = 1;
+    this.limit = 1;
     this.resetAfter = 0;
     this.routeQueue = [];
   }

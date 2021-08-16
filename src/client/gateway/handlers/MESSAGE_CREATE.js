@@ -1,9 +1,9 @@
-"use strict";
+const Message = require("../../../structures/Message");
 
 module.exports = (client, { d: data }, shard) => {
   let channel = client.channels.get(data.channel_id);
 
-  client.emit("messageCreate", data);
+  client.emit("messageCreate", new Message(data, client));
 
   /*
   if (channel === undefined)

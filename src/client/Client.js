@@ -80,4 +80,11 @@ module.exports = class Client extends EventEmitter {
   getInformation () {
     return true;
   }
+
+  addMessageReaction (messageID, channelID, reaction) {
+    return this.rest.api
+      .channels[channelID]
+      .messages[messageID]
+      .reactions[encodeURIComponent(reaction)]["@me"].put();
+  }
 };

@@ -32,7 +32,7 @@ module.exports = class RestManager {
     const route = this.routefy(url);
 
     if (!this.ratelimits[route]) this.ratelimits[route] = new Bucket();
-    const queue = () => this.ratelimits[route].queue(() => this.#make(method, url, options, route));
+    const queue = () => this.ratelimits[route].queue(() => this.#make(method, url, options || {}, route));
 
     return (this.globalBlocked && options.authenticate) ? this.#requestQueue.push(() => queue()) : queue();
   }
@@ -53,6 +53,8 @@ module.exports = class RestManager {
       "Content-Type": "application/json"
     };
 
+    if (options.authenticate === undefined) options.authenticate = true;
+
     if (options?.authenticate) headers.Authorization = `Bot ${this.client.token}`;
     if (options?.data?.reason !== undefined) {
       headers["X-Audit-Log-Reason"] = options.data.reason;
@@ -66,9 +68,13 @@ module.exports = class RestManager {
       headers
     }).catch(error => {
       const response = error.response.data;
-      if (response.message.includes("rate limited")) return this.client.emit(
-        "error", `You are being ratelimited. Wait ${response.retry_after} seconds before making another request.`
-      )
+      if (response.message.includes("rate limited")) {
+        const prefix = response.global ? "global" : "local";
+
+        return this.client.emit(
+          "error", `You are being ${prefix} ratelimited. Wait ${response.retry_after} seconds before making another request.`
+        );
+      }
     });
 
     if (!result || result.headers == undefined) return;
@@ -94,7 +100,7 @@ module.exports = class RestManager {
       } else this.ratelimits[route].resetAfter = retryAfter + Date.now();
     } else this.ratelimits[route].resetAfter = Date.now();
 
-    return result.data;
+    return result.data || undefined;
   }
 
   globalUnblock() {

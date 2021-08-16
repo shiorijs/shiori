@@ -7,16 +7,20 @@ const client = new Client(process.env.DISCORD_TOKEN, {
   rest: { fetchAllUsers: true }
 });
 
-client.on("messageCreate", (data) => {
-  if (data.content === "log") {
-    const emojis = [encodeURIComponent("🕵"), encodeURIComponent("😎")];
+client.on("messageCreate", async (message) => {
+  if (message.content === "react") {
+    const emojis = ["🕵", "😎", "😱"];
 
-    for (const emoji of emojis) {
-      client.rest.api
-        .channels["857279585568686100"]
-        .messages[data.id]
-        .reactions[emoji]["@me"].put({ authenticate: true }).then(console.log);
-    }
+    for (const emoji of emojis) message.addReaction(emoji);
+
+    console.log(client.rest.ratelimits);
+  }
+
+  if (message.content == "dmessage") {
+    // GET guilds/{guild.id}/bans
+    client.rest.api
+      .guilds[message.guild_id]
+      .bans.get().then(console.log)
   }
 });
 
