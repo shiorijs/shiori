@@ -9,5 +9,6 @@ module.exports = {
   Constants: require("./utils/Constants"),
 
   // Structures
-  Guild: require("./structures/Guild")
+  Guild: require("./structures/Guild"),
+  Message: require("./structures/Message")
 };

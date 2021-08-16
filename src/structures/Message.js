@@ -12,16 +12,6 @@ class Message extends Base {
   constructor (data, client) {
     super(client);
 
-    /**
-     * Mentions included in the message
-     * @typedef {Object} MessageMentions
-     * @property {Boolean} everyone Whether the message mentions everyone
-     * @property {Array<String>} users The users that were mentioned in the message
-     * @property {Array<String>} roles The roles that were mentioned in the message
-     * @property {Array<String>} channels The channels that were mentioned in the message
-     */
-    this.mentions = { everyone: null, users: null, roles: null, channels: null };
-
     this._update(data);
   }
 
@@ -72,12 +62,25 @@ class Message extends Base {
       this.timestamp = new Date(data.timestamp);
     }
 
+    /**
+     * Reference object that contains all the mentions in the message
+     * @typedef {Object} MessageMentions
+     * @property {Boolean} everyone Whether the message mentions everyone
+     * @property {Array<String>} users The users that were mentioned in the message
+     * @property {Array<String>} roles The roles that were mentioned in the message
+     * @property {Array<String>} channels The channels that were mentioned in the message
+     */
+
     if (data.mentions) {
+      /**
+       * Mentions that are included in this message
+       * @type {MessageMentions}
+       */
       this.mentions = {
-        everyone: Boolean(data.mention_everyone),
-        users: data.mentions,
-        roles: data.mention_roles,
-        channels: data.mention_channels
+        everyone: Boolean(data.mention_everyone) ?? false,
+        users: data.mentions || [],
+        roles: data.mention_roles || [],
+        channels: data.mention_channels || []
       }
     }
 
