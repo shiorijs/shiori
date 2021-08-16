@@ -127,8 +127,7 @@ function buildRoute(manager) {
   const handler = {
     get (_, method) {
       if (METHODS.includes(method)) {
-        return (options) =>
-          manager.request(method, route.join("/"), options);
+        return (options) => manager.request(method, route.join("/"), options);
       }
 
       route.push(method);
