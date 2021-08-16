@@ -63,7 +63,7 @@ class Message extends Base {
     }
 
     /**
-     * Reference object that contains all the mentions in the message
+     * Reference object that contains all the mentions in this message
      * @typedef {Object} MessageMentions
      * @property {Boolean} everyone Whether the message mentions everyone
      * @property {Array<String>} users The users that were mentioned in the message
