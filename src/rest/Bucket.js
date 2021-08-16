@@ -44,7 +44,7 @@ module.exports = class Bucket {
 
   /**
   * Queue a function in the bucket
-  * @param {Function} callback - the callack to execute
+  * @param {Function} callback - the callback to execute
   */
   queue (callback) {
     this.#tasks.push(callback);
