@@ -43,7 +43,7 @@ class Message extends Base {
        * The user that created the message
        * @type {User}
        */
-      this.author = this.client.users.get(data.user.id);
+      this.author = this.client.users.get(data.author.id);
     }
 
     if (data.content) {

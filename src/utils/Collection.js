@@ -1,27 +1,20 @@
 module.exports = class Collection extends Map {
   /**
   * Construct a Collection
-  * @param {Class} baseClass The class that all items should extend
   */
-  constructor (baseClass) {
+  constructor () {
     super();
-
-    this.baseClass = baseClass;
   }
 
   /**
   * Adds a item on the collection
   * @param {String} id The item id, to be used as the key
   * @param {Object} item The item to be added
-  * @param {Array<Object>} extra Extra parameters to be used when creating the class
-  * @returns {Class} The created item
+  * @returns {Object} The created item
   */
-  add (id, item, ...extra) {
+  add (id, item) {
     if (!id) throw new Error("Missing id");
     if (this.has(id)) return this.get(id);
-
-    if (!(item instanceof this.baseClass || item.constructor.name === this.baseClass.name))
-      item = new this.baseClass(item, ...extra);
 
     return (this.set(id, item), item);
   }

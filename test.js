@@ -8,12 +8,12 @@ const client = new Client(process.env.DISCORD_TOKEN, {
 });
 
 client.on("messageCreate", async (message) => {
+  console.log(client.users, client.guilds)
+
   if (message.content === "react") {
     const emojis = ["🕵", "😎", "😱"];
 
     for (const emoji of emojis) message.addReaction(emoji);
-
-    console.log(client.rest.ratelimits);
   }
 
   if (message.content == "dmessage") {

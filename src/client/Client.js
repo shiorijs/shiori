@@ -5,11 +5,6 @@ const RestManager = require("../rest/RestManager");
 
 const Constants = require("../utils/Constants");
 
-// Structures
-const Guild = require("../structures/Guild");
-const User = require("../structures/User");
-const Channel = require("../structures/TextChannel");
-
 module.exports = class Client extends EventEmitter {
   constructor (token, clientOptions) {
     super();
@@ -33,9 +28,9 @@ module.exports = class Client extends EventEmitter {
     this.rest = new RestManager(this);
 
     Object.defineProperties(this, {
-      "users": { value: new Collection(User), writable: false },
-      "guilds": { value: new Collection(Guild), writable: false },
-      "channels": { value: new Collection(Channel), writable: false },
+      "users": { value: new Collection(), writable: false },
+      "guilds": { value: new Collection(), writable: false },
+      "channels": { value: new Collection(), writable: false },
       "token": { value: token, writable: false }
     });
 

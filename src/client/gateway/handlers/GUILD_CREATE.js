@@ -1,12 +1,12 @@
-"use strict";
+const Guild = require("../../../structures/Guild");
+const Member = require("../../../structures/Member");
 
 module.exports = (client, { d: data }, shard) => {
-  data.shard = shard;
-  const guild = client.guilds.add(data.id, data);
+  const guild = client.guilds.add(data.id, new Guild(data, client));
 
   if (data.members.length) {
     for (const member of data.members) {
-      guild.members.add(member.user.id, member);
+      guild.members.add(member.user.id, new Member(member, client, guild));
     }
   }
 
