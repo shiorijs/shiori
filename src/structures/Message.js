@@ -63,7 +63,7 @@ class Message extends Base {
     }
 
     /**
-     * Reference object that contains all the mentions in this message
+     * Reference object that contains all the mentions in a message
      * @typedef {Object} MessageMentions
      * @property {Boolean} everyone Whether the message mentions everyone
      * @property {Array<String>} users The users that were mentioned in the message
@@ -86,7 +86,7 @@ class Message extends Base {
 
     if (data.attachments) {
       /**
-       * The attachments from the message
+       * The attachments that belongs to the message
        * @type {Array}
        */
       this.attachments = data.attachments;
@@ -94,7 +94,7 @@ class Message extends Base {
 
     if (data.embeds?.length) {
       /**
-       * The embeds from the message
+       * The embeds that belongs to the message
        * @type {Array}
        */
       this.embeds = data.embeds;

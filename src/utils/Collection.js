@@ -1,4 +1,4 @@
-module.exports = class Collection extends Map {
+class Collection extends Map {
   /**
   * Construct a Collection
   */
@@ -60,3 +60,5 @@ module.exports = class Collection extends Map {
     return (this.delete(item.id), this.get(item.id));
   }
 };
+
+module.exports = Collection;

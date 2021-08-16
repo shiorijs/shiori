@@ -18,8 +18,10 @@ node_modules/
 # Enviroment Variables
 .env
 
-# Plug'n'Play File 
+# Plug'n'Play File
 .pnp.*
 
 # Yarn File
 .yarn/*
+
+docs/
