@@ -34,7 +34,7 @@ module.exports = class RestManager {
     if (!this.handlers.has(route)) this.handlers.add(route, new Bucket(this));
 
     const { requestOptions, formatedUrl } = this.#resolveRequest(url, method, options);
-    
+
     return this.handlers.get(route).queueRequest(formatedUrl, requestOptions, route);
   }
 
@@ -63,11 +63,9 @@ module.exports = class RestManager {
   routefy(url) {
     if (!/channels|guilds|webhooks/.test(url)) url = url.replace(/\d{16,18}/g, ":id")
 
-    url = url
+    return url
       .replace(/\/reactions\/[^/]+/g, "/reactions/:id")
       .replace(/\/reactions\/:id\/[^/]+/g, "/reactions/:id/:userID");
-
-    return url;
   }
 };
 
