@@ -5,14 +5,6 @@ const Bucket = require("./Bucket");
 const Constants = require("../utils/Constants");
 const Collection = require("../utils/Collection");
 
-function getAPIOffset(serverDate) {
-  return new Date(serverDate).getTime() - Date.now();
-}
-
-function calculateReset(reset, serverDate) {
-  return new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverDate);
-}
-
 module.exports = class RestManager {
   constructor (client) {
     this.client = client;
