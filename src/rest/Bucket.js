@@ -1,36 +1,85 @@
 const AsyncQueue = require("../utils/AsyncQueue");
 const axios = require("axios");
 
+/**
+ * Returns the API latency.
+ * @params {Date} serverDate The date of the server. (headers.date)
+ * @returns {Date}
+ */
 function getAPIOffset(serverDate) {
   return new Date(serverDate).getTime() - Date.now();
 }
 
+/**
+ * The date in which the ratelimit will reset.
+ * @returns {Date}
+ */
 function calculateReset(reset, serverDate) {
   return new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverDate);
 }
 
+/**
+ * setTimeout but as a promise.
+ * @params {Number} ms Timeout in MS
+ * @returns {Promise<Boolean>}
+ */
 const delay = async (ms) =>
   await new Promise((resolve) => {
     setTimeout(() => resolve(true), ms)
   })
 
+/**
+  * Handle request ratelimits.
+  */
 class Bucket {
+  /**
+   * Queue used to store requests.
+   * @type {AsyncQueue}
+   */
   #asyncQueue = new AsyncQueue();
+  /**
+   * Remaining requests that can be made on this bucket.
+   * @type {Number}
+   */
   remaining = 1;
+  /**
+   * Date in which the ratelimit resets.
+   * @type {Date}
+   */
   reset = 0;
 
   constructor (manager) {
+    /**
+     * Rest Manager.
+     * @type {RestManager}
+     */
     this.manager = manager;
   }
 
+  /**
+   * Whether we're global blocked or not.
+   * @returns {Boolean}
+   */
   get globalLimited() {
     return this.globalBlocked && Date.now() < Number(this.globalReset);
   }
 
+  /**
+   * Whether we're local limited or not.
+   * @returns {Boolean}
+   */
   get localLimited() {
     return this.remaining <= 0 && Date.now() < this.reset;
   }
 
+  /**
+   * Queue a request into the bucket.
+   * @param {String} url URL to make the request to
+   * @param {Object} [options] The options to use on the request
+   * @param {Object} [options.data] The data to be sent
+   * @param {Boolean} [options.authenticate] Whether to authenticate the request
+   * @param {String} route The cleaned route
+   */
   async queueRequest (url, options, route) {
     // Wait for any previous requests to be completed before this one is run
     await this.#asyncQueue.wait();
@@ -42,6 +91,11 @@ class Bucket {
     }
   }
 
+  /**
+   * Executes a request and handle with ratelimits.
+   * TODO: APIResult interface
+   * @returns {APIResult}
+   */
   async executeRequest (url, options, route) {
     while (this.globalLimited || this.localLimited) {
       let timeout;
