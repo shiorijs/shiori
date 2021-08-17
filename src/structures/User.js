@@ -35,7 +35,7 @@ class User extends Base {
        * The avatar of this user
        * @type {String}
        */
-      this.avatar = data.avatar;
+      this.avatarHash = data.avatar;
     }
 
     if (data.bot !== undefined) {
@@ -48,7 +48,7 @@ class User extends Base {
 
     if (data.premium_type) {
       /**
-       * The type of Nitro subscription on a user's account
+       * The type of Nitro subscription this user has
        * 0 = No subscription
        * 1 = Nitro Classic
        * 2 = Nitro
