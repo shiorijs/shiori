@@ -34,8 +34,7 @@ module.exports = class RestManager {
     if (!this.handlers.has(route)) this.handlers.add(route, new Bucket(this));
 
     const { requestOptions, formatedUrl } = this.#resolveRequest(url, method, options);
-
-    // Queue the request
+    
     return this.handlers.get(route).queueRequest(formatedUrl, requestOptions, route);
   }
 
