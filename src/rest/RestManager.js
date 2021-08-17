@@ -39,7 +39,21 @@ class RestManager {
      * @type {Collection<String, Bucket>}
      */
     this.handlers = new Collection();
+
+    this.#deleteEmptyBuckets();
   };
+
+  /**
+   * Deletes all buckets that are labeled as inactive.
+   * @returns {void}
+   */
+  #deleteEmptyBuckets () {
+    for (const [route, bucket] of this.handlers.entries()) {
+      if (bucket.inactive) this.handlers.delete(route);
+    }
+
+    setTimeout(() => this.#deleteEmptyBuckets(), 600000); // 10 Minutes
+  }
 
   /**
    * Build the api route
