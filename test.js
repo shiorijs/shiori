@@ -20,6 +20,10 @@ client.on("messageCreate", async (message) => {
     setTimeout(() => msg.edit("Dudek gay"), 3000);
   }
 
+  if (message.content === "reconnect") {
+    console.log(client.shards.get(0));
+  }
+
   if (message.content === "tratelimit") {
     await message.channel.send("First");
     await message.channel.send("Second");
@@ -30,6 +34,7 @@ client.on("messageCreate", async (message) => {
   }
 });
 
+client.on("shardError", (error) => console.error(error));
 client.on("warn", (warn) => console.log(warn));
 client.on("error", (error) => console.error(error));
 

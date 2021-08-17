@@ -10,23 +10,28 @@ try {
 
 const Constants = require("../../utils/Constants");
 
-module.exports = class Shard extends EventEmitter {
+class Shard extends EventEmitter {
   constructor (manager, id) {
     super();
 
     this.id = id;
-
-    this.sequence = -1;
     this.sessionId = null;
-    this.lastHeartbeatAcked = true;
-    this.heartbeatInterval = null;
     this.reconnectInterval = 3000;
     this.reconnectAttempts = 0;
 
-    this.status = "IDLE";
+    this.setDefaultProperties();
 
     Object.defineProperty(this, "manager", { value: manager, writable: false });
     Object.defineProperty(this, "connection", { value: null, writable: true });
+  }
+
+  setDefaultProperties () {
+    this.sequence = -1;
+    this.lastHeartbeatAcked = true;
+    this.heartbeatInterval = null;
+    this.status = "IDLE";
+    this.lastHeartbeatReceived = 0;
+    this.lastHeartbeatSent = 0;
   }
 
   /**
@@ -37,12 +42,16 @@ module.exports = class Shard extends EventEmitter {
 
     this.connection = new Websocket(this.manager.websocketURL, { perMessageDeflate: false });
 
-    this.status = "CONNECTED";
+    this.status = "CONNECTING";
 
     this.connection.on("message", (message) => this.websocketMessageReceive(message));
     this.connection.on("open", () => this.websocketConnectionOpen());
     this.connection.on("error", (error) => this.websocketError(error));
     this.connection.on("close", (...args) => this.websocketCloseConnection(...args));
+
+    this.connectTimeout = setTimeout(() => {
+      if(this.status === "CONNECTING") this.disconnect(true);
+    }, this.client.options.connectionTimeout);
   }
 
   /**
@@ -53,7 +62,7 @@ module.exports = class Shard extends EventEmitter {
   websocketCloseConnection (code, reason) {
     this.status = "CLOSED";
 
-    this.emit("connectionClosed", code, reason, this.id);
+    this.manager.client.emit("connectionClosed", code, reason, this.id);
     this.disconnect(true);
   }
 
@@ -131,6 +140,9 @@ module.exports = class Shard extends EventEmitter {
           this.heartbeatInterval = setInterval(() => this.sendHeartbeat(), packet.d.heartbeat_interval);
         }
 
+        if (this.connectTimeout) clearTimeout(this.connectTimeout);
+        this.connectTimeout = null;
+
         if (this.sessionId) {
           this.sendWebsocketMessage({
             op: Constants.OP_CODES.RESUME,
@@ -182,7 +194,14 @@ module.exports = class Shard extends EventEmitter {
   * Sends heartbeat to discord. Required to keep a connection
   */
   sendHeartbeat () {
+    if (!this.lastHeartbeatAcked) {
+      this.manager.client.emit("debug", "Discord didn't acknowledge last heartbeat, trying to reconnect.");
+
+      return this.disconnect(true);
+    }
+
     this.lastHeartbeatAcked = false;
+    this.lastHeartbeatSent = Date.now();
 
     this.sendWebsocketMessage({ op: Constants.OP_CODES.HEARTBEAT, d: this.sequence });
   }
@@ -208,6 +227,7 @@ module.exports = class Shard extends EventEmitter {
   */
   disconnect (reconnect = false) {
     if (!this.connection) return;
+    if (this.connection.readyState === Websocket.CLOSED) return;
 
     if (this.heartbeatInterval) {
       clearInterval(this.heartbeatInterval);
@@ -216,12 +236,21 @@ module.exports = class Shard extends EventEmitter {
     }
 
     try {
-      this.connection.terminate();
+      this.connection.removeEventListener("close", this.websocketCloseConnection);
+
+      if (reconnect && this.sessionId) {
+        if (this.connection.readyState === Websocket.OPEN) {
+          this.connection.close(4901, "Reconnecting...");
+        } else {
+          this.connection.terminate();
+        }
+      } else this.connection.close(1000, "Normal");
     } catch (error) {
       return this.manager.client.emit("shardError", error, this.id);
     }
 
     this.connection = null;
+    this.setDefaultProperties();
 
     /**
     * Fired when the shard disconnects
@@ -230,15 +259,21 @@ module.exports = class Shard extends EventEmitter {
     */
     this.emit("disconnect", "ASKED");
 
-    if (this.sessionId) this.sessionId = null;
-    if (this.sequence) this.sequence = -1;
+    if (this.sessionID && this.reconnectAttempts >= 5) {
+      this.manager.client.emit("disconnect", "ATTEMPTS_ULTRAPASSED");
+      this.sessionID = null;
+    }
+
     if (reconnect && this.manager.client.options.autoReconnect) {
-      if (this.reconnectAttempts >= 5) return this.emit("disconnect", "ATTEMPTS_ULTRAPASSED");
+      if (this.sessionId) this.manager.connectShard([this]);
+      else {
+        setTimeout(() => this.manager.connectShard([this]), this.reconnectInterval);
 
-      setTimeout(() => this.connect(), this.reconnectInterval);
-
-      this.reconnectInterval = this.reconnectInterval + 3000;
-      this.reconnectAttempts++;
+        this.reconnectInterval = this.reconnectInterval + 3000;
+        this.reconnectAttempts++;
+      }
     }
   }
 };
+
+module.exports = Shard;

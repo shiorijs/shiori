@@ -13,7 +13,7 @@ class Collection extends Map {
   * @returns {Object} The created item
   */
   add (id, item) {
-    if (!id) throw new Error("Missing id");
+    if (id == undefined) throw new Error("Missing id");
     if (this.has(id)) return this.get(id);
 
     return (this.set(id, item), item);

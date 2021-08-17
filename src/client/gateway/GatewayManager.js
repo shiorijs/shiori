@@ -44,10 +44,11 @@ module.exports = class GatewayManager {
   * Connects the last shard of the queue.
   * @private
   */
-  async connectShard () {
-    const [shard] = this.queue;
+  async connectShard (_shard = null) {
+    const [shard] = _shard || this.queue;
 
     this.queue.delete(shard);
+    this.client.shards.add(shard.id, shard);
 
     try {
       await shard.connect();

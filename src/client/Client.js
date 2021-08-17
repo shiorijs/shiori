@@ -19,7 +19,8 @@ module.exports = class Client extends EventEmitter {
       },
       shardCount: 1,
       blockedEvents: [],
-      autoReconnect: true
+      autoReconnect: true,
+      connectionTimeout: 15000
     }, clientOptions);
 
     if (this.options.shardCount <= 0) throw new Error("shardCount cannot be lower or equal to 0");
@@ -31,6 +32,7 @@ module.exports = class Client extends EventEmitter {
       users: { value: new Collection(), writable: false },
       guilds: { value: new Collection(), writable: false },
       channels: { value: new Collection(), writable: false },
+      shards: { value: new Collection(), writable: false },
       token: { value: token, writable: false },
       channelMap: { value: { }, writable: true }
     });
