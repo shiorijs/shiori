@@ -16,6 +16,8 @@ class Message extends Base {
   }
 
   _update (data) {
+    if (!data) return;
+
     /**
      * Message ID
      * @type {String}
