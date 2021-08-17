@@ -44,17 +44,10 @@ module.exports = class Bucket {
 
   async executeRequest (url, options, route) {
     while (this.globalLimited || this.localLimited) {
-      let delayPromise, timeout;
+      let timeout;
 
-      if (this.globalLimited) {
-        timeout = Number(this.globalReset) + Date.now();
-
-        delayPromise = delay(timeout);
-      } else {
-        timeout = this.reset - Date.now();
-
-        delayPromise = delay(timeout);
-      }
+      if (this.globalLimited) timeout = Number(this.globalReset) + Date.now();
+      else timeout = this.reset - Date.now();
 
       if (this.globalLimited) {
         this.manager.client.emit(
@@ -64,7 +57,7 @@ module.exports = class Bucket {
         this.manager.client.emit("warn", `Waiting ${timeout}ms for rate limit to pass`);
       }
 
-      await delayPromise;
+      await delay(timeout);
     }
 
     const result = await axios({ url, ...options });
