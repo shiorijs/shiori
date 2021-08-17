@@ -1,5 +1,5 @@
 {
-  "name": "hitomi",
+  "name": "hitomi.js",
   "version": "1.0.0",
   "description": "A lightweight discord library made for NodeJS",
   "types": "./types/index.d.ts",
