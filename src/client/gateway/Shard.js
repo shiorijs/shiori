@@ -215,10 +215,10 @@ class Shard extends EventEmitter {
         }
         break;
       }
-      case GatewayOPCodes.RECONNECT: {
+      case Constants.OP_CODES.RECONNECT: {
         this.client.emit("debug", "Reconnecting due to server request", this.id);
         this.disconnect(true);
-        break
+        break;
       }
       case Constants.OP_CODES.INVALID_SESSION: {
         this.sessionId = null;
