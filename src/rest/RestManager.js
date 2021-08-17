@@ -5,14 +5,39 @@ const Bucket = require("./Bucket");
 const Constants = require("../utils/Constants");
 const Collection = require("../utils/Collection");
 
-module.exports = class RestManager {
+/**
+  * Manages all requests.
+  */
+class RestManager {
+  /**
+   * @param {Client} client Hitomi Client
+   */
   constructor (client) {
-    this.client = client;
+    /**
+     * The base hitomi client.
+     * @name RestManager#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, "client", { value: client });
+
+    /**
+     * User Agent to be used on request headers.
+     * @type {String}
+     */
     this.userAgent = `Hitomi (https://github.com/IsisDiscord/hitomi, ${require("../../package.json").version})`;
 
-    // TODO: Fazer com que o usuário escolha.
+    // TODO: Fazer com que o usuário escolha a versão.
+    /**
+     * API Url to be used on requests.
+     * @type {String}
+     */
     this.apiURL = `${Constants.REST.BASE_URL}/v9`;
 
+    /**
+     * Handlers to be used as bucket identifier.
+     * @type {Collection<String, Bucket>}
+     */
     this.handlers = new Collection();
   };
 
@@ -39,7 +64,7 @@ module.exports = class RestManager {
   }
 
   /**
-   * Formats the request data to a usable format for fetch
+   * Formats the request data to a usable format for axios
    * @param request The request data
    */
   #resolveRequest(url, method, options) {
@@ -60,6 +85,11 @@ module.exports = class RestManager {
     return { formatedUrl, requestOptions };
   }
 
+  /**
+   * Formats the url to be used as a bucket identifier
+   * @param {String} url The request URL
+   * @returns {String}
+   */
   routefy(url) {
     if (!/channels|guilds|webhooks/.test(url)) url = url.replace(/\d{16,18}/g, ":id")
 
@@ -91,3 +121,5 @@ function buildRoute(manager) {
 
   return new Proxy(emptyFunction, handler);
 }
+
+module.exports = class RestManager;
