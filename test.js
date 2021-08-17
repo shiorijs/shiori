@@ -30,9 +30,9 @@ client.on("messageCreate", async (message) => {
   }
 });
 
-client.on("shardError", (error) => `Shard Error: ${console.error(error)}`);
-client.on("warn", (warn) => `Aviso ${console.warn(warn)}`);
-client.on("error", (error) => `Erro: ${console.error(error)}`);
-client.on("disconnect", (message) => `Desconectado: ${message}`);
+client.on("shardError", (error, shardID) => console.error(`Shard Error: ${error} ID: ${shardID}`));
+client.on("warn", (warn) => console.warn(`Aviso ${warn}`));
+client.on("error", (error) => console.error(`Erro: ${error}`));
+client.on("disconnect", (message) => console.log(`Desconectado: ${message}`));
 
 client.start();
