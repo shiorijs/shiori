@@ -75,9 +75,9 @@ class RestManager {
     const headers = { "User-Agent": this.userAgent, "Content-Type": "application/json" };
 
     if (options.authenticate === undefined) options.authenticate = true;
-    if (options?.authenticate) headers.Authorization = `Bot ${this.client.token}`;
+    if (options.authenticate) headers.Authorization = `Bot ${this.client.token}`;
 
-    if (options?.data.reason !== undefined) {
+    if (options.data?.reason !== undefined) {
       headers["X-Audit-Log-Reason"] = options.data.reason;
       delete options.data.reason;
     }

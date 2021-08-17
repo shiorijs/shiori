@@ -51,10 +51,10 @@ class Bucket {
 
       if (this.globalLimited) {
         this.manager.client.emit(
-          "warn", `We are globally rate limited, blocking all requests for ${timeout}ms`
+          "debug", `We are globally rate limited, blocking all requests for ${timeout}ms`
         );
       } else {
-        this.manager.client.emit("warn", `Waiting ${timeout}ms for rate limit to pass`);
+        this.manager.client.emit("debug", `Waiting ${timeout}ms for rate limit to pass`);
       }
 
       await delay(timeout);
