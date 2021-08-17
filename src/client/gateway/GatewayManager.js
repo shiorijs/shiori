@@ -47,6 +47,8 @@ module.exports = class GatewayManager {
   async connectShard (_shard = null) {
     const [shard] = _shard || this.queue;
 
+    if (!shard || shard.id == undefined) return;
+
     this.queue.delete(shard);
     this.client.shards.add(shard.id, shard);
 
