@@ -229,7 +229,7 @@ class Shard extends EventEmitter {
 
     if (this.connection.readyState == Websocket.OPEN)
       this.connection.send(pack(data), (error) => {
-        this.manager.client.emit("shardError", error, this.id);
+        if (error) this.manager.client.emit("shardError", error, this.id);
       });
   }
 
