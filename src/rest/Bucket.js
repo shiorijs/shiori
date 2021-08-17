@@ -14,7 +14,7 @@ const delay = async (ms) =>
     setTimeout(() => resolve(true), ms)
   })
 
-module.exports = class Bucket {
+class Bucket {
   #asyncQueue = new AsyncQueue();
   remaining = 1;
   reset = 0;
@@ -98,3 +98,5 @@ module.exports = class Bucket {
     return result.data;
   }
 };
+
+module.exports = Bucket;

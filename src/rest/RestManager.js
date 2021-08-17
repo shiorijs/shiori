@@ -41,6 +41,10 @@ class RestManager {
     this.handlers = new Collection();
   };
 
+  /**
+   * Build the api route
+   * @returns {buildRoute}
+   */
   get api () {
     return buildRoute(this);
   }
@@ -122,4 +126,4 @@ function buildRoute(manager) {
   return new Proxy(emptyFunction, handler);
 }
 
-module.exports = class RestManager;
+module.exports = RestManager;
