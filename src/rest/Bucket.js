@@ -95,7 +95,7 @@ module.exports = class Bucket {
     }
 
     if (result.status === 204) {
-      return res.data;
+      return result.data;
     } else if (result.status === 429) {
       if (this.reset) await delay(this.reset);
 
