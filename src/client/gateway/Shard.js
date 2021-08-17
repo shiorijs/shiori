@@ -21,6 +21,7 @@ class Shard extends EventEmitter {
 
     this.setDefaultProperties();
 
+    Object.defineProperty(this, "client", { value: manager.client, writable: false });
     Object.defineProperty(this, "manager", { value: manager, writable: false });
     Object.defineProperty(this, "connection", { value: null, writable: true });
   }
@@ -48,7 +49,7 @@ class Shard extends EventEmitter {
 
     this.connectTimeout = setTimeout(() => {
       if (this.connection.readyState === Websocket.CONNECTING) this.disconnect(true);
-    }, this.manager.client.options.connectionTimeout);
+    }, this.client.options.connectionTimeout);
   }
 
   /**
@@ -59,7 +60,7 @@ class Shard extends EventEmitter {
   websocketCloseConnection (code, reason) {
     this.status = "CLOSED";
 
-    this.manager.client.emit("connectionClosed", code, reason, this.id);
+    this.client.emit("connectionClosed", code, reason, this.id);
     this.disconnect(true);
   }
 
@@ -74,7 +75,7 @@ class Shard extends EventEmitter {
     * @prop {Error} error The error that occurred
     * @prop {Number} id The ID of the shard
     */
-    this.manager.client.emit("shardError", error, this.id);
+    this.client.emit("shardError", error, this.id);
   }
 
   /**
@@ -101,10 +102,10 @@ class Shard extends EventEmitter {
 
     /**
     * Fired when the shard establishes a connection
-    * @event Shard#connect
+    * @event Client#connect
     * @prop {Number} id The ID of the shard
     */
-    this.emit("connect", this.id);
+    this.client.emit("connect", this.id);
     this.lastHeartbeatAcked = true;
   }
 
@@ -152,7 +153,7 @@ class Shard extends EventEmitter {
           this.sendWebsocketMessage({
             op: Constants.OP_CODES.RESUME,
             d: {
-              token: this.manager.client.token,
+              token: this.client.token,
               session_id: this.sessionId,
               seq: this.sequence
             }
@@ -164,7 +165,7 @@ class Shard extends EventEmitter {
         break;
       }
       case GatewayOPCodes.RECONNECT: {
-        this.manager.client.emit("debug", "Reconnecting due to server request", this.id);
+        this.client.emit("debug", "Reconnecting due to server request", this.id);
         this.disconnect(true);
         break
       }
@@ -207,7 +208,7 @@ class Shard extends EventEmitter {
     if (this.status === "RESUMING") return;
 
     if (!this.lastHeartbeatAcked) {
-      this.manager.client.emit("debug", "Discord didn't acknowledge last heartbeat, trying to reconnect.");
+      this.client.emit("debug", "Discord didn't acknowledge last heartbeat, trying to reconnect.");
 
       return this.disconnect(true);
     }
@@ -229,7 +230,7 @@ class Shard extends EventEmitter {
 
     if (this.connection.readyState == Websocket.OPEN)
       this.connection.send(pack(data), (error) => {
-        if (error) this.manager.client.emit("shardError", error, this.id);
+        if (error) this.client.emit("shardError", error, this.id);
       });
   }
 
@@ -256,7 +257,7 @@ class Shard extends EventEmitter {
         }
       } else this.connection.close(1000, "Normal");
     } catch (error) {
-      return this.manager.client.emit("shardError", error, this.id);
+      return this.client.emit("shardError", error, this.id);
     }
 
     this.connection = null;
@@ -268,14 +269,14 @@ class Shard extends EventEmitter {
     * @prop {String} reason The reason why the shard disconnected
     */
 
-    this.manager.client.emit("disconnect", "ASKED");
+    this.client.emit("disconnect", "ASKED");
 
     if (this.reconnectAttempts >= 5) {
-      this.manager.client.emit("disconnect", "ATTEMPTS_ULTRAPASSED");
+      this.client.emit("disconnect", "ATTEMPTS_ULTRAPASSED");
       return null;
     }
 
-    if (reconnect && this.manager.client.options.autoReconnect) {
+    if (reconnect && this.client.options.autoReconnect) {
       if (this.sessionId) this.connect();
       else {
         setTimeout(() => this.connect(), this.reconnectInterval);
