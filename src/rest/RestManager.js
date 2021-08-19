@@ -42,12 +42,11 @@ class RestManager {
      */
     this.userAgent = `Hitomi (https://github.com/IsisDiscord/hitomi, ${require("../../package.json").version})`;
 
-    // TODO: Fazer com que o usuário escolha a versão.
     /**
      * API Url to be used on requests.
      * @type {String}
      */
-    this.apiURL = `${Constants.REST.BASE_URL}/v9`;
+    this.apiURL = `${Constants.REST.BASE_URL}/v${this.options.version}`;
 
     this.#deleteEmptyBuckets();
   };
