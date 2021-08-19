@@ -22,6 +22,13 @@ class RestManager {
     Object.defineProperty(this, "client", { value: client });
 
     /**
+     * Handlers used to store buckets.
+     * @name RestManager#handlers
+     * @type {Collection<String, Bucket>}
+     */
+    Object.defineProperty(this, "handlers", { value: new Collection() });
+
+    /**
      * User Agent to be used on request headers.
      * @type {String}
      */
@@ -33,12 +40,6 @@ class RestManager {
      * @type {String}
      */
     this.apiURL = `${Constants.REST.BASE_URL}/v9`;
-
-    /**
-     * Handlers to be used as bucket identifier.
-     * @type {Collection<String, Bucket>}
-     */
-    this.handlers = new Collection();
 
     this.#deleteEmptyBuckets();
   };
