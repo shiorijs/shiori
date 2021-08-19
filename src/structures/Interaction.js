@@ -14,12 +14,18 @@ class Interaction extends Base {
      * @type {String}
      */
     this.id = data.id;
-    
+
     /**
       * The interaction's type
       * @type {String}
       */
     this.type = InteractionTypes[data.type] ?? "UNKNOWN";
+
+    /**
+      * Whether this interaction has already been acknowledged.
+      * @type {Boolean}
+      */
+    this.acknowledged = false;
 
     /**
      * The interaction's token
