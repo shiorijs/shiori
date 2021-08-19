@@ -79,13 +79,6 @@ module.exports = class Client extends EventEmitter {
     return true;
   }
 
-  addMessageReaction (messageID, channelID, reaction) {
-    return this.rest.api
-      .channels[channelID]
-      .messages[messageID]
-      .reactions[encodeURIComponent(reaction)]["@me"].put();
-  }
-
   getChannel (channelId) {
     const guildId = this.channelMap[channelId];
 
