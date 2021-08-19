@@ -1,9 +1,8 @@
 module.exports = {
-  GatewayManager: require("./client/gateway/GatewayManager"),
+  // Client
   Client: require("./client/Client"),
 
   // Structures
-  Bucket: require("./rest/Bucket"),
   Guild: require("./structures/Guild"),
   Member: require("./structures/Member"),
   User: require("./structures/User"),
