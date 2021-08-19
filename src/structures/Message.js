@@ -86,7 +86,7 @@ class Message extends Base {
       };
     }
 
-    if (data.attachments) {
+    if (data.attachments?.length) {
       /**
        * The attachments that belongs to the message
        * @type {Array}
@@ -102,7 +102,7 @@ class Message extends Base {
       this.embeds = data.embeds;
     }
 
-    if (data.type) {
+    if (data.type !== undefined) {
       /**
        * The type of the message
        * @type {Number}
@@ -110,7 +110,7 @@ class Message extends Base {
       this.type = data.type;
     }
 
-    if (data.flags) {
+    if (data.flags !== undefined) {
       /**
        * The message flags
        * @type {Number}

@@ -15,10 +15,6 @@ class Base {
   _update (data) {
     return data;
   }
-
-  valueOf () {
-    return this.id;
-  }
 }
 
 module.exports = Base;
