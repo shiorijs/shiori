@@ -11,8 +11,16 @@ const Collection = require("../utils/Collection");
 class RestManager {
   /**
    * @param {Client} client Hitomi Client
+   * @param {Object} [options={}] Options to be used when creating requests.
+   * @param {String} [options.version] Discord API version
+   * @param {Boolean} [options.fetchAllUsers] Whether to get all users. Guild Members intent required
    */
-  constructor (client) {
+  constructor (client, options = {}) {
+    this.options = Object.assign({
+      version: Constants.REST.API_VERSION,
+      fetchAllUsers: false
+    }, options.rest);
+
     /**
      * The base hitomi client.
      * @name RestManager#client
