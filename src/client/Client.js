@@ -84,6 +84,6 @@ module.exports = class Client extends EventEmitter {
 
     if (!guildId) return null;
 
-    else return this.guilds.get(guildId).channels.get(channelId);
+    return this.guilds.get(guildId).channels.get(channelId);
   }
 };
