@@ -11,6 +11,7 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
+      - run: yarn add eslint -D
       - run: yarn run lint
   build:
     docker:
