@@ -12,7 +12,7 @@ jobs:
       - run:
           name: Install Dependencies
           command: yarn install
-      - lint:
+      - run:
           name: Run Lint
           command: yarn lint
       - save_cache:
