@@ -13,10 +13,6 @@ module.exports = class Client extends EventEmitter {
 
     this.options = Object.assign({
       ws: { version: 9 },
-      rest: {
-        version: Constants.REST.API_VERSION,
-        fetchAllUsers: false
-      },
       shardCount: 1,
       blockedEvents: [],
       autoReconnect: true,
@@ -26,7 +22,7 @@ module.exports = class Client extends EventEmitter {
     if (this.options.shardCount <= 0) throw new Error("shardCount cannot be lower or equal to 0");
 
     this.ws = new GatewayManager(this);
-    this.rest = new RestManager(this);
+    this.rest = new RestManager(this, clientOptions);
 
     Object.defineProperties(this, {
       users: { value: new Collection(), writable: false },

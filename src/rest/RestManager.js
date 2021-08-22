@@ -10,8 +10,16 @@ const Collection = require("../utils/Collection");
 class RestManager {
   /**
    * @param {Client} client Hitomi Client
+   * @param {Object} [options={}] Options to be used when creating requests.
+   * @param {String} [options.version] Discord API version
+   * @param {Boolean} [options.fetchAllUsers] Whether to get all users. Guild Members intent required
    */
-  constructor (client) {
+  constructor (client, options = {}) {
+    this.options = Object.assign({
+      version: Constants.REST.API_VERSION,
+      fetchAllUsers: false
+    }, options.rest);
+
     /**
      * The base hitomi client.
      * @name RestManager#client
@@ -33,12 +41,11 @@ class RestManager {
      */
     this.userAgent = `Hitomi (https://github.com/IsisDiscord/hitomi, ${require("../../package.json").version})`;
 
-    // TODO: Fazer com que o usuário escolha a versão.
     /**
      * API Url to be used on requests.
      * @type {String}
      */
-    this.apiURL = `${Constants.REST.BASE_URL}/v9`;
+    this.apiURL = `${Constants.REST.BASE_URL}/v${this.options.version}`;
 
     this.#deleteEmptyBuckets();
   }
