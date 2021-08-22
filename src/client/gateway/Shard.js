@@ -86,7 +86,7 @@ class Shard extends EventEmitter {
       * @type {String}
       */
     this.status = "CONNECTING";
-    this.connection = new Websocket(this.manager.websocketURL, { perMessageDeflate: false });
+    this.connection = new Websocket(this.manager.websocketURL);
 
     this.connection.on("message", (message) => this.websocketMessageReceive(message));
     this.connection.on("open", () => this.websocketConnectionOpen());
