@@ -1,0 +1,20 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@4.1
+
+jobs:
+  build:
+    machine:
+      image: ubuntu-2004:202104-01
+    steps:
+      - node/install-packages:
+          pkg-manager: yarn
+      - run:
+          name: Run Lint
+          command: yarn lint
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
