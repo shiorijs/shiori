@@ -112,7 +112,7 @@ class Interaction extends Base {
     * @arg {Number} [flags] 64 for Ephemeral
     * @returns {Promise}
     */
-  async acknowledge (flags) {
+  acknowledge () {
     if (this.acknowledged) throw new Error("Interaction already acknowledged. Cannot acknowledge more than once");
 
     return this.client.rest.api;

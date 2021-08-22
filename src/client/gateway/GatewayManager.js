@@ -91,6 +91,6 @@ class GatewayManager {
 
     return true;
   }
-};
+}
 
 module.exports = GatewayManager;

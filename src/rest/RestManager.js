@@ -1,4 +1,3 @@
-const axios = require("axios");
 const METHODS = ["get", "post", "patch", "put", "delete", "head"];
 
 const Bucket = require("./Bucket");
@@ -42,7 +41,7 @@ class RestManager {
     this.apiURL = `${Constants.REST.BASE_URL}/v9`;
 
     this.#deleteEmptyBuckets();
-  };
+  }
 
   /**
    * Deletes all buckets that are labeled as inactive.
@@ -72,7 +71,7 @@ class RestManager {
    * @param {Object} [options.data] The data to be sent
    * @param {Boolean} [options.authenticate] Whether to authenticate the request
    */
-  async request (method, url, options = {}) {
+  request (method, url, options = {}) {
     const route = this.routefy(url);
 
     if (!this.handlers.has(route)) this.handlers.add(route, new Bucket(this));
@@ -86,7 +85,7 @@ class RestManager {
    * Formats the request data to a usable format for axios
    * @param request The request data
    */
-  #resolveRequest(url, method, options) {
+  #resolveRequest (url, method, options) {
     const headers = { "User-Agent": this.userAgent, "Content-Type": "application/json" };
 
     if (options.authenticate === undefined) options.authenticate = true;
@@ -97,7 +96,7 @@ class RestManager {
       delete options.data.reason;
     }
 
-    const formatedUrl = `${this.apiURL}/${url.replace(/[/]?(\w+)/, '$1')}`;
+    const formatedUrl = `${this.apiURL}/${url.replace(/[/]?(\w+)/, "$1")}`;
 
     const requestOptions = { data: options.data, method: method.toLowerCase(), headers };
 
@@ -109,16 +108,16 @@ class RestManager {
    * @param {String} url The request URL
    * @returns {String}
    */
-  routefy(url) {
-    if (!/channels|guilds|webhooks/.test(url)) url = url.replace(/\d{16,18}/g, ":id")
+  routefy (url) {
+    if (!/channels|guilds|webhooks/.test(url)) url = url.replace(/\d{16,18}/g, ":id");
 
     return url
       .replace(/\/reactions\/[^/]+/g, "/reactions/:id")
       .replace(/\/reactions\/:id\/[^/]+/g, "/reactions/:id/:userID");
   }
-};
+}
 
-function buildRoute(manager) {
+function buildRoute (manager) {
   const route = [];
   const emptyFunction = () => {};
 
@@ -136,7 +135,7 @@ function buildRoute(manager) {
 
       return new Proxy(emptyFunction, handler);
     }
-  }
+  };
 
   return new Proxy(emptyFunction, handler);
 }

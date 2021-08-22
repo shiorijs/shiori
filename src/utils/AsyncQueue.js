@@ -7,14 +7,14 @@ class AsyncQueue {
    * The promises array
    */
   #promises = [];
-	/**
+  /**
 	 * The remaining amount of queued promises
 	 */
-   get remaining() {
-     return this.#promises.length;
-   }
+  get remaining () {
+    return this.#promises.length;
+  }
 
-	/**
+  /**
 	 * Waits for last promise and queues a new one
 	 * @example
 	 * ```
@@ -35,27 +35,27 @@ class AsyncQueue {
 	 * request(someUrl3, someOptions3); // Will call fetch() after the second finished
 	 * ```
 	 */
-	wait() {
-		const next = this.#promises.length
+  wait () {
+    const next = this.#promises.length
       ? this.#promises[this.#promises.length - 1].promise
       : Promise.resolve();
 
-		let resolve;
+    let resolve;
 
-		const promise = new Promise(res => resolve = res);
+    const promise = new Promise(res => resolve = res);
 
-		this.#promises.push({ resolve, promise });
+    this.#promises.push({ resolve, promise });
 
-		return next;
-	}
+    return next;
+  }
 
-	/**
+  /**
 	 * Frees the queue's lock for the next item to process
 	 */
-	shift() {
-		const deferred = this.#promises.shift();
-		if (deferred) deferred.resolve();
-	}
+  shift () {
+    const deferred = this.#promises.shift();
+    if (deferred) deferred.resolve();
+  }
 }
 
 module.exports = AsyncQueue;

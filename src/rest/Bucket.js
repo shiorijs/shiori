@@ -6,7 +6,7 @@ const axios = require("axios");
  * @params {Date} serverDate The date of the server. (headers.date)
  * @returns {Date}
  */
-function getAPIOffset(serverDate) {
+function getAPIOffset (serverDate) {
   return new Date(serverDate).getTime() - Date.now();
 }
 
@@ -14,7 +14,7 @@ function getAPIOffset(serverDate) {
  * The date in which the ratelimit will reset.
  * @returns {Date}
  */
-function calculateReset(reset, serverDate) {
+function calculateReset (reset, serverDate) {
   return new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverDate);
 }
 
@@ -25,8 +25,8 @@ function calculateReset(reset, serverDate) {
  */
 const delay = async (ms) =>
   await new Promise((resolve) => {
-    setTimeout(() => resolve(true), ms)
-  })
+    setTimeout(() => resolve(true), ms);
+  });
 
 /**
   * Handle request ratelimits.
@@ -59,7 +59,7 @@ class Bucket {
   /**
    * Whether this bucket is inactive. (no pending requests)
    */
-  get inactive() {
+  get inactive () {
     return this.#asyncQueue.remaining === 0 && !(this.globalLimited || this.localLimited);
   }
 
@@ -67,7 +67,7 @@ class Bucket {
    * Whether we're global blocked or not.
    * @returns {Boolean}
    */
-  get globalLimited() {
+  get globalLimited () {
     return this.globalBlocked && Date.now() < Number(this.globalReset);
   }
 
@@ -75,7 +75,7 @@ class Bucket {
    * Whether we're local limited or not.
    * @returns {Boolean}
    */
-  get localLimited() {
+  get localLimited () {
     return this.remaining <= 0 && Date.now() < this.reset;
   }
 
@@ -123,10 +123,9 @@ class Bucket {
 
     const result = await axios({ url, ...options });
 
-    const serverDate = result.headers['date'];
-    const remaining = result.headers['x-ratelimit-remaining'];
-    const limit = result.headers['x-ratelimit-limit'];
-    const reset = result.headers['x-ratelimit-reset'];
+    const serverDate = result.headers.date;
+    const remaining = result.headers["x-ratelimit-remaining"];
+    const reset = result.headers["x-ratelimit-reset"];
 
     this.remaining = remaining !== null ? Number(remaining) : 1;
     this.reset = reset !== null
@@ -158,6 +157,6 @@ class Bucket {
 
     return result.data;
   }
-};
+}
 
 module.exports = Bucket;
