@@ -33,7 +33,7 @@ class Interaction extends Base {
      * @name Interaction#token
      * @readonly
      */
-    Object.defineProperty(this, 'token', { value: data.token });
+    Object.defineProperty(this, "token", { value: data.token });
 
     this._update(data);
   }
@@ -93,7 +93,7 @@ class Interaction extends Base {
    * @type {?TextChannel}
    * @readonly
    */
-  get channel() {
+  get channel () {
     return this.client.getChannel(this.channelId) ?? null;
   }
 

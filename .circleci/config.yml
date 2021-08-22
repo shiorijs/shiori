@@ -5,9 +5,17 @@ name: CircleCI
 on: [ push, pull_request ]
 
 jobs:
+  lint:
+    docker:
+      - image: cimg/node:14.0
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: yarn add eslint
+      - run: yarn run lint
   build:
-    machine:
-      image: ubuntu-2004:202104-01
+    docker:
+      - image: cimg/node:14.0
     steps:
       - run:
           name: Install Dependencies
@@ -20,3 +28,10 @@ jobs:
           key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - lint
+      - build
