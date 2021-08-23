@@ -104,11 +104,32 @@ class Shard extends EventEmitter {
     * @param {String} reason Reason for the disconnect
     * @returns {void}
     */
-  websocketCloseConnection (code, reason) {
+  websocketCloseConnection ({ code } = {}) {
+    const GatewayError = Constants.GatewayErrors;
     this.status = "CLOSED";
 
-    this.client.emit("connectionClosed", code, reason, this.id);
-    this.disconnect(true);
+    switch (code) {
+      case 1000:
+      case GatewayError.UNKNOWN: {
+        this.client.emit('shardError', `Websocket Connection closed with an unknown reason. Trying to reconnect...`, this.id);
+        this.reconnect(true)
+      }
+      case GatewayError.RECONNECT: {
+        this.client.emit('shardError', `Discord asked for us to reconnect. At your service discord!`, this.id);
+        this.reconnect(true)
+      }
+      case GatewayError.INVALID_SEQUENCE: {
+        this.client.emit('shardError', `Discord invalidated our last sequence. Reconnecting...`, this.id);
+        this.reconnect(true)
+      }
+      case GatewayError.INVALID_SESSION: {
+        this.client.emit('shardError', `Discord invalidated our last session. Trying to reconnect...`, this.id);
+        this.reconnect(true)
+      }
+      default: {
+        this.client.emit("shardError", `Unknown Gateway Error: ${code} Closing connection...`, this.id);
+      }
+    }
   }
 
   /**
@@ -170,6 +191,10 @@ class Shard extends EventEmitter {
     switch (packet.t) {
       case "READY": {
         this.sessionId = packet.d.session_id;
+        this.client.emit("shardReady", this.id);
+
+        const percent = (((this.id + 1) / this.client.options.shardCount) * 100).toFixed(1)
+        this.client.emit("debug", `Shard ${this.id} connected! (${percent}%)`)
 
         this.status = "READY";
 
@@ -185,6 +210,7 @@ class Shard extends EventEmitter {
       case Constants.OP_CODES.HEARTBEAT_ACK: {
         this.lastHeartbeatAcked = true;
         this.lastHeartbeatReceived = Date.now();
+        this.latency = this.lastHeartbeatReceived - this.lastHeartbeatSent;
 
         break;
       }
@@ -269,6 +295,14 @@ class Shard extends EventEmitter {
 
     this.lastHeartbeatAcked = false;
     this.lastHeartbeatSent = Date.now();
+
+    if (this.lastHeartbeatReceived) {
+      this.client.emit("debug", `
+      Sending a heartbeat, enjoy it discord!
+
+      Last latency: ${this.lastHeartbeatSent - this.lastHeartbeatReceived}ms
+      `);
+    }
 
     this.sendWebsocketMessage({ op: Constants.OP_CODES.HEARTBEAT, d: this.sequence });
   }

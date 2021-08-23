@@ -124,6 +124,7 @@ class RestManager {
   }
 }
 
+// Based on discord.js api router method.
 function buildRoute (manager) {
   const route = [];
   const emptyFunction = () => {};
