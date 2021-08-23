@@ -2,6 +2,7 @@ const EventEmitter = require("events");
 const Collection = require("../utils/Collection");
 const GatewayManager = require("./gateway/GatewayManager");
 const RestManager = require("../rest/RestManager");
+const PluginsManager = require("../handlers/PluginsManager");
 
 const Constants = require("../utils/Constants");
 
@@ -61,16 +62,12 @@ module.exports = class Client extends EventEmitter {
     try {
       this.ws.createShardConnection();
 
-      this.instantiatePlugins();
+      if (this.options.plugins.length) new PluginsManager(this, this.options.plugins);
     } catch (error) {
       if (!this.options.autoReconnect) throw error;
 
       setTimeout(() => this.ws.createShardConnection(), 3000);
     }
-  }
-
-  async instantiatePlugins () {
-    this.plugins = this.plugins.map(Plugin => new Plugin(this));
   }
 
   /**
