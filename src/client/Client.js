@@ -27,7 +27,6 @@ module.exports = class Client extends EventEmitter {
     Object.defineProperties(this, {
       users: { value: new Collection(), writable: false },
       guilds: { value: new Collection(), writable: false },
-      channels: { value: new Collection(), writable: false },
       shards: { value: new Collection(), writable: false },
       token: { value: token, writable: false },
       channelMap: { value: { }, writable: true }
