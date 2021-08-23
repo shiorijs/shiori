@@ -57,7 +57,7 @@ class Bucket {
   }
 
   /**
-   * Whether this bucket is inactive. (no pending requests)
+   * Whether this bucket is inactive (no pending requests).
    */
   get inactive () {
     return this.#asyncQueue.remaining === 0 && !(this.globalLimited || this.localLimited);
