@@ -87,6 +87,7 @@ class GatewayManager {
       const event = PacketHandlers[packet.t];
 
       if (event) event(this.client, packet, shard);
+      else this.client.emit(packet.t, packet);
     }
 
     return true;
