@@ -128,7 +128,7 @@ module.exports.GatewayErrors = {
   INVALID_API_VERSION: 4012,
   INVALID_INTENT: 4013,
   DISSALLOWED_INTENT: 4014
-}
+};
 
 function createEnum (keys) {
   const obj = {};
