@@ -34,11 +34,12 @@ client.on("ready", () => {
   write("Pronto!");
 });
 
-const write = (content) => process.stdout.write(content);
+const write = (content) => process.stdout.write(`${content}\n`);
 
 client.on("shardError", (error, shardID) => write(`Shard Error: ${error} ID: ${shardID}`));
 client.on("warn", (warn) => write(`Aviso ${warn}`));
 client.on("error", (error) => write(`Erro: ${error}`));
 client.on("disconnect", (message) => write(`Desconectado: ${message}`));
+client.on("debug", (message) => write(message));
 
 client.start();

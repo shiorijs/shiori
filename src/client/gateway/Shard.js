@@ -86,7 +86,7 @@ class Shard extends EventEmitter {
       * @type {String}
       */
     this.status = "CONNECTING";
-    this.connection = new Websocket(this.manager.websocketURL, { perMessageDeflate: false });
+    this.connection = new Websocket(this.manager.websocketURL);
 
     this.connection.on("message", (message) => this.websocketMessageReceive(message));
     this.connection.on("open", () => this.websocketConnectionOpen());
@@ -104,11 +104,36 @@ class Shard extends EventEmitter {
     * @param {String} reason Reason for the disconnect
     * @returns {void}
     */
-  websocketCloseConnection (code, reason) {
-    this.status = "CLOSED";
+  websocketCloseConnection ({ code } = {}) {
+    const GatewayError = Constants.GatewayErrors;
+    let reconnect = true;
 
-    this.client.emit("connectionClosed", code, reason, this.id);
-    this.disconnect(true);
+    switch (code) {
+      case 1000:
+      case GatewayError.UNKNOWN: {
+        this.client.emit("shardError", "Websocket Connection closed with an unknown reason. Trying to reconnect...", this.id);
+        break;
+      }
+      case GatewayError.RECONNECT: {
+        this.client.emit("shardError", "Discord asked for us to reconnect. At your service discord!", this.id);
+        break;
+      }
+      case GatewayError.INVALID_SEQUENCE: {
+        this.client.emit("shardError", "Discord invalidated our last sequence. Reconnecting...", this.id);
+        break;
+      }
+      case GatewayError.INVALID_SESSION: {
+        this.client.emit("shardError", "Discord invalidated our last session. Trying to reconnect...", this.id);
+        break;
+      }
+      default: {
+        this.client.emit("shardError", `Unknown Gateway Error: ${code} Closing connection...`, this.id);
+        reconnect = false;
+        break;
+      }
+    }
+
+    this.disconnect(reconnect);
   }
 
   /**
@@ -170,6 +195,10 @@ class Shard extends EventEmitter {
     switch (packet.t) {
       case "READY": {
         this.sessionId = packet.d.session_id;
+        this.client.emit("shardReady", this.id);
+
+        const percent = (((this.id + 1) / this.client.options.shardCount) * 100).toFixed(1);
+        this.client.emit("debug", `Shard ${this.id} connected! (${percent}%)`);
 
         this.status = "READY";
 
@@ -185,6 +214,7 @@ class Shard extends EventEmitter {
       case Constants.OP_CODES.HEARTBEAT_ACK: {
         this.lastHeartbeatAcked = true;
         this.lastHeartbeatReceived = Date.now();
+        this.latency = this.lastHeartbeatReceived - this.lastHeartbeatSent;
 
         break;
       }
@@ -270,6 +300,14 @@ class Shard extends EventEmitter {
     this.lastHeartbeatAcked = false;
     this.lastHeartbeatSent = Date.now();
 
+    if (this.lastHeartbeatReceived) {
+      this.client.emit("debug", `
+      Sending a heartbeat, enjoy it discord!
+
+      Last latency: ${this.lastHeartbeatSent - this.lastHeartbeatReceived}ms
+      `);
+    }
+
     this.sendWebsocketMessage({ op: Constants.OP_CODES.HEARTBEAT, d: this.sequence });
   }
 
@@ -320,11 +358,10 @@ class Shard extends EventEmitter {
     this.setDefaultProperties();
 
     /**
-    * Fired when the shard disconnects
-    * @event Shard#disconnect
-    * @prop {String} reason The reason why the shard disconnected
-    */
-
+      * Fired when the shard disconnects
+      * @event Shard#disconnect
+      * @prop {String} reason The reason why the shard disconnected
+      */
     this.client.emit("disconnect", "ASKED");
 
     if (this.reconnectAttempts >= 5) {

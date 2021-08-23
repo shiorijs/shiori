@@ -111,11 +111,19 @@ class Bucket {
       else timeout = this.reset - Date.now();
 
       if (this.globalLimited) {
-        this.manager.client.emit(
-          "debug", `We are globally rate limited, blocking all requests for ${timeout}ms`
-        );
+        this.manager.client.emit("debug", `
+        [Global Ratelimit]
+
+        Route: ${route}
+        Must wait ${timeout}ms before proceeding
+
+        All requests will be blocked during this time.`);
       } else {
-        this.manager.client.emit("debug", `Waiting ${timeout}ms for rate limit to pass`);
+        this.manager.client.emit("debug", `
+        [Local Ratelimit]
+
+        Route: ${route}
+        Must wait ${timeout}ms before proceeding`);
       }
 
       await delay(timeout);
