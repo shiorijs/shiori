@@ -17,7 +17,7 @@ class PluginManager {
     for (const Plugin of plugins) {
       const _plugin = new Plugin(this);
 
-      if (_plugin.manager !== undefined && typeof _plugin.name === "string")
+      if (_plugin._manager !== undefined && typeof _plugin.name === "string")
         this.#client[_plugin.name] = _plugin._manager;
 
       this.#plugins.add(_plugin);
