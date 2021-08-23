@@ -2,7 +2,7 @@ const EventEmitter = require("events");
 const Collection = require("../utils/Collection");
 const GatewayManager = require("./gateway/GatewayManager");
 const RestManager = require("../rest/RestManager");
-const PluginsManager = require("../handlers/PluginsManager");
+const PluginsManager = require("../managers/PluginsManager");
 
 const Constants = require("../utils/Constants");
 
@@ -25,6 +25,7 @@ module.exports = class Client extends EventEmitter {
 
     this.ws = new GatewayManager(this);
     this.rest = new RestManager(this, clientOptions);
+    this.plugins = this.options.plugins.map(c => c?.name);
 
     Object.defineProperties(this, {
       users: { value: new Collection(), writable: false },

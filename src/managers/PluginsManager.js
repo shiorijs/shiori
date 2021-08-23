@@ -17,6 +17,9 @@ class PluginManager {
     for (const Plugin of plugins) {
       const _plugin = new Plugin(this);
 
+      if (this.#plugins.find(c => c.name === _plugin.name))
+        throw new Error(`A plugin with the name "${_plugin.name}" already exists on the same client.`);
+
       if (_plugin._manager !== undefined && typeof _plugin.name === "string")
         this.#client[_plugin.name] = _plugin._manager;
 
@@ -43,7 +46,7 @@ class PluginManager {
     }
   }
 
-  emitEvent (eventName, ...args) {
+  emit (eventName, ...args) {
     if (typeof eventName !== "string") {
       throw new Error(`Event Name must be of type string, received ${typeof eventName} instead`);
     }

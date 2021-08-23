@@ -10,8 +10,6 @@ module.exports = {
   Channel: require("./structures/Channel"),
   GuildChannel: require("./structures/BaseGuildChannel"),
   TextChannel: require("./structures/TextChannel"),
-  VoiceChannel: require("./structures/VoiceChannel"),
-  Role: require("./structures/Role"),
   Interaction: require("./structures/Interaction"),
 
   // Utilities
