@@ -16,7 +16,8 @@ module.exports = class Client extends EventEmitter {
       shardCount: 1,
       blockedEvents: [],
       autoReconnect: true,
-      connectionTimeout: 15000
+      connectionTimeout: 15000,
+      plugins: []
     }, clientOptions);
 
     if (this.options.shardCount <= 0) throw new Error("shardCount cannot be lower or equal to 0");
@@ -59,11 +60,17 @@ module.exports = class Client extends EventEmitter {
 
     try {
       this.ws.createShardConnection();
+
+      this.instantiatePlugins();
     } catch (error) {
       if (!this.options.autoReconnect) throw error;
 
       setTimeout(() => this.ws.createShardConnection(), 3000);
     }
+  }
+
+  async instantiatePlugins () {
+    this.plugins = this.plugins.map(Plugin => new Plugin(this));
   }
 
   /**

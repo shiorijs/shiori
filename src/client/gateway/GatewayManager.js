@@ -75,11 +75,11 @@ class GatewayManager {
   }
 
   /**
-  * Handle the received packet and trigger the corresponding event.
-  * @param {Object} packet The packet to handle
-  * @param {Shard} shard The shard which the packet was received
-  * @returns {Boolean}
-  */
+    * Handle the received packet and trigger the corresponding event.
+    * @param {Object} packet The packet to handle
+    * @param {Shard} shard The shard which the packet was received
+    * @returns {Boolean}
+    */
   handlePacket (packet, shard) {
     if (!packet) return false;
 
