@@ -6,7 +6,7 @@ const Base = require("./Base");
   */
 module.exports = class User extends Base {
   /**
-   * @param {Client} client Hitomi Client
+   * @param {Client} client Shiori Client
    * @param {Object} data The user structure data
    */
   constructor (data, client) {

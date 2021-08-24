@@ -7,7 +7,7 @@ const Base = require("./Base");
   */
 module.exports = class Message extends Base {
   /**
-   * @param {Client} client Hitomi Client
+   * @param {Client} client Shiori Client
    * @param {Object} data The message structure data
    */
   constructor (data, client) {

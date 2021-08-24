@@ -8,7 +8,7 @@ const Collection = require("../utils/Collection");
   */
 module.exports = class Guild extends Base {
   /**
-   * @param {Client} client Hitomi Client
+   * @param {Client} client Shiori Client
    * @param {Object} data The guild structure data
    */
   constructor (data, client) {

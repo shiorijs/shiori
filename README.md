@@ -1,2 +1,2 @@
-# hitomi
+# shiori
 A lightweight discord library made for NodeJS.

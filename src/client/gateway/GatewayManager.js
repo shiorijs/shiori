@@ -23,7 +23,7 @@ module.exports = class GatewayManager {
     this.websocketURL = `${BASE_URL}?v=${client.options.ws.version}&encoding=${Erlpack ? "etf" : "json"}`;
 
     /**
-      * Hitomi Client
+      * Shiori Client
       * @private
       * @type {Client}
       * @name GatewayManager#client

@@ -55,7 +55,7 @@ module.exports = class Client extends EventEmitter {
   /**
    * Create a connection between your bot and discord.
    * @example
-   * const client = new Hitomi.Client("TOKEN", {});
+   * const client = new Shiori.Client("TOKEN", {});
    *
    * client.start();
    */

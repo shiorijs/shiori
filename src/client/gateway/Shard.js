@@ -41,7 +41,7 @@ module.exports = class Shard extends EventEmitter {
 
     this.setDefaultProperties();
     /**
-      * Hitomi Client
+      * Shiori Client
       * @private
       * @type {Client}
       * @name Shard#client
