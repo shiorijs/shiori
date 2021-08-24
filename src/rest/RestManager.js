@@ -7,7 +7,7 @@ const Collection = require("../utils/Collection");
 /**
   * Manages all requests.
   */
-class RestManager {
+module.exports = class RestManager {
   /**
    * @param {Client} client Hitomi Client
    * @param {Object} [options={}] Options to be used when creating requests.
@@ -83,9 +83,9 @@ class RestManager {
 
     if (!this.handlers.has(route)) this.handlers.add(route, new Bucket(this));
 
-    const { requestOptions, formatedUrl } = this.#resolveRequest(url, method, options);
+    const { requestOptions, formattedUrl } = this.#resolveRequest(url, method, options);
 
-    return this.handlers.get(route).queueRequest(formatedUrl, requestOptions, route);
+    return this.handlers.get(route).queueRequest(formattedUrl, requestOptions, route);
   }
 
   /**
@@ -103,11 +103,11 @@ class RestManager {
       delete options.data.reason;
     }
 
-    const formatedUrl = `${this.apiURL}/${url.replace(/[/]?(\w+)/, "$1")}`;
+    const formattedUrl = `${this.apiURL}/${url.replace(/[/]?(\w+)/, "$1")}`;
 
     const requestOptions = { data: options.data, method: method.toLowerCase(), headers };
 
-    return { formatedUrl, requestOptions };
+    return { formattedUrl, requestOptions };
   }
 
   /**
@@ -122,7 +122,7 @@ class RestManager {
       .replace(/\/reactions\/[^/]+/g, "/reactions/:id")
       .replace(/\/reactions\/:id\/[^/]+/g, "/reactions/:id/:userID");
   }
-}
+};
 
 // Based on discord.js api router method.
 function buildRoute (manager) {
@@ -147,5 +147,3 @@ function buildRoute (manager) {
 
   return new Proxy(emptyFunction, handler);
 }
-
-module.exports = RestManager;

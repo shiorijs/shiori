@@ -13,7 +13,7 @@ const BASE_URL = "wss://gateway.discord.gg/";
 /**
  * Websocket Manager
  */
-class GatewayManager {
+module.exports = class GatewayManager {
   constructor (client) {
     /**
      * The websocket URL to use
@@ -92,6 +92,4 @@ class GatewayManager {
 
     return true;
   }
-}
-
-module.exports = GatewayManager;
+};

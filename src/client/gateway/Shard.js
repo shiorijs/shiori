@@ -14,7 +14,7 @@ const Constants = require("../../utils/Constants");
  * Represents a discord shard.
  * @extends {EventEmitter}
  */
-class Shard extends EventEmitter {
+module.exports = class Shard extends EventEmitter {
   constructor (manager, id) {
     super();
 
@@ -379,6 +379,4 @@ class Shard extends EventEmitter {
       }
     }
   }
-}
-
-module.exports = Shard;
+};

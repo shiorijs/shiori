@@ -31,7 +31,7 @@ const delay = async (ms) =>
 /**
   * Handle request ratelimits.
   */
-class Bucket {
+module.exports = class Bucket {
   /**
    * Queue used to store requests.
    * @type {AsyncQueue}
@@ -165,6 +165,4 @@ class Bucket {
 
     return result.data;
   }
-}
-
-module.exports = Bucket;
+};

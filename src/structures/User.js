@@ -4,7 +4,7 @@ const Base = require("./Base");
   * Represents a discord user
   * @extends {Base}
   */
-class User extends Base {
+module.exports = class User extends Base {
   /**
    * @param {Client} client Hitomi Client
    * @param {Object} data The user structure data
@@ -65,6 +65,4 @@ class User extends Base {
       this.flags = data.flags ?? 0;
     }
   }
-}
-
-module.exports = User;
+};

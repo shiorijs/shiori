@@ -84,50 +84,37 @@ module.exports = {
     "STAGE_INSTANCE_CREATE",
     "STAGE_INSTANCE_UPDATE",
     "STAGE_INSTANCE_DELETE"
-  ]
-};
-
-module.exports.ChannelTypes = createEnum([
-  /* A text channel within a server */
-  "GUILD_TEXT",
-  /* A direct message between users */
-  "DM",
-  /* A voice channel within a server */
-  "GUILD_VOICE",
-  /* A direct message between multiple users */
-  "GROUP_DM",
-  /* An organizational category that contains up to 50 channels */
-  "GUILD_CATEGORY",
-  /* A channel that users can follow and crosspost into their own server */
-  "GUILD_NEWS",
-  /* A channel in which game developers can sell their game on Discord */
-  "GUILD_STORE",
-  ...Array(3).fill(null),
-  /* A temporary sub-channel within a GUILD_NEWS channel */
-  "GUILD_NEWS_THREAD",
-  /* A temporary sub-channel within a GUILD_TEXT channel */
-  "GUILD_PUBLIC_THREAD",
-  /* A temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission */
-  "GUILD_PRIVATE_THREAD",
-  /* A voice channel for hosting events with an audience */
-  "GUILD_STAGE_VOICE"
-]);
-
-module.exports.GatewayErrors = {
-  UNKNOWN: 4000,
-  UNKNOWN_OPCODE: 4001,
-  DECODE_ERROR: 4002,
-  NOT_AUTHENTICATED: 4003,
-  AUTHENTICATION_FAILED: 4004,
-  ALREADY_AUTHENTICATED: 4005,
-  INVALID_SEQUENCE: 4007,
-  RATE_LIMITED: 4008,
-  INVALID_SESSION: 4009,
-  INVALID_SHARD: 4010,
-  SHARDING_REQUIRED: 4011,
-  INVALID_API_VERSION: 4012,
-  INVALID_INTENT: 4013,
-  DISSALLOWED_INTENT: 4014
+  ],
+  ChannelTypes: createEnum([
+    "GUILD_TEXT", // A text channel within a server
+    "DM", // A direct message between users
+    "GUILD_VOICE", // A voice channel within a server
+    "GROUP_DM", // A direct message between multiple users
+    "GUILD_CATEGORY", // An organizational category that contains up to 50 channels
+    "GUILD_NEWS", // A channel that users can follow and crosspost into their own server
+    "GUILD_STORE", // A channel in which game developers can sell their game on Discord
+    ...Array(3).fill(null),
+    "GUILD_NEWS_THREAD", // A temporary sub-channel within a GUILD_NEWS channel
+    "GUILD_PUBLIC_THREAD", // A temporary sub-channel within a GUILD_TEXT channel
+    "GUILD_PRIVATE_THREAD", // A temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission
+    "GUILD_STAGE_VOICE" // A voice channel for hosting events with an audience
+  ]),
+  GatewayErrors: {
+    UNKNOWN: 4000,
+    UNKNOWN_OPCODE: 4001,
+    DECODE_ERROR: 4002,
+    NOT_AUTHENTICATED: 4003,
+    AUTHENTICATION_FAILED: 4004,
+    ALREADY_AUTHENTICATED: 4005,
+    INVALID_SEQUENCE: 4007,
+    RATE_LIMITED: 4008,
+    INVALID_SESSION: 4009,
+    INVALID_SHARD: 4010,
+    SHARDING_REQUIRED: 4011,
+    INVALID_API_VERSION: 4012,
+    INVALID_INTENT: 4013,
+    DISALLOWED_INTENT: 4014
+  }
 };
 
 function createEnum (keys) {
