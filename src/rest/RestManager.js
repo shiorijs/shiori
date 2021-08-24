@@ -7,7 +7,7 @@ const Collection = require("../utils/Collection");
 /**
   * Manages all requests.
   */
-module.exports = class RestManager {
+class RestManager {
   /**
    * @param {Client} client Hitomi Client
    * @param {Object} [options={}] Options to be used when creating requests.
@@ -64,7 +64,8 @@ module.exports = class RestManager {
 
   /**
    * Build the api route
-   * @returns {buildRoute}
+   * @type {buildRoute}
+   * @readonly
    */
   get api () {
     return buildRoute(this);
@@ -122,7 +123,7 @@ module.exports = class RestManager {
       .replace(/\/reactions\/[^/]+/g, "/reactions/:id")
       .replace(/\/reactions\/:id\/[^/]+/g, "/reactions/:id/:userID");
   }
-};
+}
 
 // Based on discord.js api router method.
 function buildRoute (manager) {
@@ -147,3 +148,5 @@ function buildRoute (manager) {
 
   return new Proxy(emptyFunction, handler);
 }
+
+module.exports = RestManager;
