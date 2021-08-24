@@ -1,3 +1,3 @@
-// declare namespace hitomi {
+// declare namespace shiori {
 //   export const VERSION: string;
 // }

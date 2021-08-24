@@ -276,8 +276,8 @@ module.exports = class Shard extends EventEmitter {
       v: client.options.ws.version,
       properties: {
         os: process.platform,
-        browser: "hitomi",
-        device: "hitomi"
+        browser: "shiori",
+        device: "shiori"
       }
     };
 

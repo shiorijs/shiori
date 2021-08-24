@@ -9,7 +9,7 @@ const Collection = require("../utils/Collection");
   */
 module.exports = class RestManager {
   /**
-   * @param {Client} client Hitomi Client
+   * @param {Client} client Shiori Client
    * @param {Object} [options={}] Options to be used when creating requests.
    * @param {String} [options.version] Discord API version
    * @param {Boolean} [options.fetchAllUsers] Whether to get all users. Guild Members intent required
