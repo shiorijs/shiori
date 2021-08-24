@@ -23,5 +23,3 @@ node_modules/
 
 # Yarn File
 .yarn/*
-
-docs/docs.json
