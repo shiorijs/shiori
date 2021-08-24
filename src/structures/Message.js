@@ -1,3 +1,4 @@
+const Utils = require("../utils/Utils");
 const Base = require("./Base");
 
 /**
@@ -29,7 +30,7 @@ class Message extends Base {
        * The channel in which the message was sent
        * @type {BaseGuildChannel}
        */
-      this.channel = this.client.getChannel(data.channel_id) || { id: data.channel_id };
+      this.channel = new Utils(this.client).getChannel(data.channel_id) || { id: data.channel_id };
     }
 
     if (data.guild_id) {

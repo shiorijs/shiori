@@ -1,4 +1,5 @@
 const Base = require("./Base");
+const Utils = require("../utils/Utils");
 const { InteractionTypes } = require("../utils/Constants");
 
 /**
@@ -94,7 +95,7 @@ class Interaction extends Base {
    * @readonly
    */
   get channel () {
-    return this.client.getChannel(this.channelId) ?? null;
+    return new Utils(this.client).getChannel(this.channelId) ?? null;
   }
 
   /**

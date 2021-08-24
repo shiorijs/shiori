@@ -1,7 +1,8 @@
 const Message = require("../../../structures/Message");
+const Utils = require("../../../utils/Utils");
 
 module.exports = (client, { d: data }) => {
-  const channel = client.getChannel(data.channel_id);
+  const channel = new Utils(client).getChannel(data.channel_id);
   const message = new Message(data, client);
 
   if (channel) channel.messages.add(data.id, message);

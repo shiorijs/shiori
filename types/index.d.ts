@@ -1,5 +1,3 @@
-declare namespace hitomi {
-  export const VERSION: string;
-
-  
-}
+// declare namespace hitomi {
+//   export const VERSION: string;
+// }

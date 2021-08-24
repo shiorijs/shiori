@@ -5,6 +5,7 @@ const RestManager = require("../rest/RestManager");
 const PluginsManager = require("../managers/PluginsManager");
 
 const Constants = require("../utils/Constants");
+const Utils = require("../utils/Utils");
 
 module.exports = class Client extends EventEmitter {
   constructor (token, clientOptions) {
@@ -18,7 +19,8 @@ module.exports = class Client extends EventEmitter {
       blockedEvents: [],
       autoReconnect: true,
       connectionTimeout: 15000,
-      plugins: []
+      plugins: [],
+      utils: false
     }, clientOptions);
 
     if (this.options.shardCount <= 0) throw new Error("shardCount cannot be lower or equal to 0");
@@ -34,6 +36,8 @@ module.exports = class Client extends EventEmitter {
       token: { value: token, writable: false },
       channelMap: { value: { }, writable: true }
     });
+
+    if (this.options.utils) this.utils = new Utils(this);
 
     if (Object.prototype.hasOwnProperty.call(this.options, "intents")) {
       if (Array.isArray(this.options.intents)) {
@@ -77,13 +81,5 @@ module.exports = class Client extends EventEmitter {
   */
   getInformation () {
     return true;
-  }
-
-  getChannel (channelId) {
-    const guildId = this.channelMap[channelId];
-
-    if (!guildId) return null;
-
-    return this.guilds.get(guildId).channels.get(channelId);
   }
 };

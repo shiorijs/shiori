@@ -7,6 +7,8 @@ const client = new Client(process.env.DISCORD_TOKEN, {
   rest: { fetchAllUsers: true }
 });
 
+const write = (content) => process.stdout.write(`${content}\n`);
+
 client.on("messageCreate", async (message) => {
   if (message.content === "react") {
     const emojis = ["🕵", "😎", "😱", "🚀", "✨"];
@@ -30,12 +32,7 @@ client.on("messageCreate", async (message) => {
   }
 });
 
-client.on("ready", () => {
-  write("Pronto!");
-});
-
-const write = (content) => process.stdout.write(`${content}\n`);
-
+client.on("ready", () => write("Pronto!"));
 client.on("shardError", (error, shardID) => write(`Shard Error: ${error} ID: ${shardID}`));
 client.on("warn", (warn) => write(`Aviso ${warn}`));
 client.on("error", (error) => write(`Erro: ${error}`));
