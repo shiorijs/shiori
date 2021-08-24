@@ -6,7 +6,7 @@ const { ChannelTypes } = require("../utils/Constants");
  * Represents a guild channel.
  * @extends {Channel}
  */
-module.exports = class BaseGuildChannel extends Channel {
+class BaseGuildChannel extends Channel {
   constructor (data, client) {
     super(data, client);
 
@@ -69,4 +69,6 @@ module.exports = class BaseGuildChannel extends Channel {
       this.nsfw = data.nsfw;
     }
   }
-};
+}
+
+module.exports = BaseGuildChannel;

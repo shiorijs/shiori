@@ -1,37 +1,19 @@
 const AsyncQueue = require("../utils/AsyncQueue");
+const Utils = require("../utils/Utils");
 const axios = require("axios");
 
-/**
- * Returns the API latency.
- * @params {Date} serverDate The date of the server. (headers.date)
- * @returns {Date}
- */
 function getAPIOffset (serverDate) {
   return new Date(serverDate).getTime() - Date.now();
 }
 
-/**
- * The date in which the ratelimit will reset.
- * @returns {Date}
- */
 function calculateReset (reset, serverDate) {
   return new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverDate);
 }
 
 /**
- * setTimeout but as a promise.
- * @params {Number} ms Timeout in MS
- * @returns {Promise<Boolean>}
- */
-const delay = async (ms) =>
-  await new Promise((resolve) => {
-    setTimeout(() => resolve(true), ms);
-  });
-
-/**
   * Handle request ratelimits.
   */
-module.exports = class Bucket {
+class Bucket {
   /**
    * Queue used to store requests.
    * @type {AsyncQueue}
@@ -58,6 +40,8 @@ module.exports = class Bucket {
 
   /**
    * Whether this bucket is inactive (no pending requests).
+   * @type {Boolean}
+   * @readonly
    */
   get inactive () {
     return this.#asyncQueue.remaining === 0 && !(this.globalLimited || this.localLimited);
@@ -65,7 +49,8 @@ module.exports = class Bucket {
 
   /**
    * Whether we're global blocked or not.
-   * @returns {Boolean}
+   * @type {Boolean}
+   * @readonly
    */
   get globalLimited () {
     return this.globalBlocked && Date.now() < Number(this.globalReset);
@@ -73,7 +58,8 @@ module.exports = class Bucket {
 
   /**
    * Whether we're local limited or not.
-   * @returns {Boolean}
+   * @type {Boolean}
+   * @readonly
    */
   get localLimited () {
     return this.remaining <= 0 && Date.now() < this.reset;
@@ -126,7 +112,7 @@ module.exports = class Bucket {
         Must wait ${timeout}ms before proceeding`);
       }
 
-      await delay(timeout);
+      await Utils.delay(timeout);
     }
 
     const result = await axios({ url, ...options });
@@ -158,11 +144,13 @@ module.exports = class Bucket {
     if (result.status === 204) {
       return result.data;
     } else if (result.status === 429) {
-      if (this.reset) await delay(this.reset);
+      if (this.reset) await Utils.delay(this.reset);
 
       return this.executeRequest(url, options);
     }
 
     return result.data;
   }
-};
+}
+
+module.exports = Bucket;
