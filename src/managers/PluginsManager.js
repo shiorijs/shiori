@@ -1,4 +1,4 @@
-module.exports = class PluginManager {
+class PluginManager {
   #client;
   #plugins;
 
@@ -57,4 +57,6 @@ module.exports = class PluginManager {
   executeClientMethod (methodName, ...args) {
     return this.#client[methodName](...args);
   }
-};
+}
+
+module.exports = PluginManager;

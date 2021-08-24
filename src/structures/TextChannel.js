@@ -5,7 +5,7 @@ const Message = require("./Message");
  * Represents a text channel.
  * @extends {BaseGuildChannel}
  */
-module.exports = class TextChannel extends BaseGuildChannel {
+class TextChannel extends BaseGuildChannel {
   constructor (data, client) {
     super(data, client);
 
@@ -51,4 +51,6 @@ module.exports = class TextChannel extends BaseGuildChannel {
   async delete (reason) {
     await this.client.rest.api.channels(this.id).delete({ data: { reason } });
   }
-};
+}
+
+module.exports = TextChannel;

@@ -5,7 +5,7 @@ const Base = require("./Base");
   * Represents a discord message
   * @extends {Base}
   */
-module.exports = class Message extends Base {
+class Message extends Base {
   /**
    * @param {Client} client Hitomi Client
    * @param {Object} data The message structure data
@@ -157,4 +157,6 @@ module.exports = class Message extends Base {
 
     await this.client.rest.api.channels(this.channel.id).messages(this.id).patch({ data: options });
   }
-};
+}
+
+module.exports = Message;
