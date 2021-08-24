@@ -4,7 +4,8 @@ const { Client } = require("./src/");
 
 const client = new Client(process.env.DISCORD_TOKEN, {
   intents: 13827,
-  rest: { fetchAllUsers: true }
+  rest: { fetchAllUsers: true },
+  utils: true
 });
 
 const write = (content) => process.stdout.write(`${content}\n`);
@@ -14,12 +15,14 @@ client.on("messageCreate", async (message) => {
     const emojis = ["🕵", "😎", "😱", "🚀", "✨"];
 
     for (const emoji of emojis) message.addReaction(emoji);
+
+    return;
   }
 
   if (message.content === "say") {
     const msg = await message.channel.send("Hello");
 
-    setTimeout(() => msg.edit("Dudek gay"), 3000);
+    return setTimeout(() => msg.edit("Dudek gay"), 3000);
   }
 
   if (message.content === "tratelimit") {
@@ -28,7 +31,11 @@ client.on("messageCreate", async (message) => {
     await message.channel.send("Third");
     await message.channel.send("Fourth");
     await message.channel.send("Fifth");
-    await message.channel.send("Six");
+    return message.channel.send("Six");
+  }
+
+  if (message.content === "utils") {
+    return message.channel.send(client.utils?.getChannel(message.channel.id));
   }
 });
 
