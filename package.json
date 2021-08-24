@@ -19,7 +19,6 @@
     "LordLucass"
   ],
   "dependencies": {
-    "@discordjs/docgen": "^0.10.0",
     "axios": "^0.21.1",
     "events": "^3.3.0",
     "lodash.merge": "^4.6.2",
