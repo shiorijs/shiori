@@ -37,7 +37,7 @@ module.exports = class TextChannel extends BaseGuildChannel {
     * @returns {Promise<Message>}
     */
   send (options) {
-    if (typeof (options) === "string") options = { content: options };
+    if (typeof (options) !== "object") options = { content: String(options) };
 
     return this.client.rest.api.channels(this.id).messages.post({ data: options })
       .then((data) => new Message(data, this.client));

@@ -35,7 +35,8 @@ client.on("messageCreate", async (message) => {
   }
 
   if (message.content === "utils") {
-    return message.channel.send(client.utils?.getChannel(message.channel.id));
+    // eslint-disable-next-line no-console
+    return console.log(client.utils?.getChannel("800889654198009899"));
   }
 });
 
