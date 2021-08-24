@@ -7,11 +7,19 @@ const Collection = require("../utils/Collection");
 /**
   * Manages all requests.
   */
-class RestManager {
+module.exports = class RestManager {
   /**
    * @param {Client} client Hitomi Client
+   * @param {Object} [options={}] Options to be used when creating requests.
+   * @param {String} [options.version] Discord API version
+   * @param {Boolean} [options.fetchAllUsers] Whether to get all users. Guild Members intent required
    */
-  constructor (client) {
+  constructor (client, options = {}) {
+    this.options = Object.assign({
+      version: Constants.REST.API_VERSION,
+      fetchAllUsers: false
+    }, options.rest);
+
     /**
      * The base hitomi client.
      * @name RestManager#client
@@ -31,14 +39,13 @@ class RestManager {
      * User Agent to be used on request headers.
      * @type {String}
      */
-    this.userAgent = `Hitomi (https://github.com/IsisDiscord/hitomi, ${require("../../package.json").version})`;
+    this.userAgent = `shiori (https://github.com/shiorijs/shiori, ${require("../../package.json").version})`;
 
-    // TODO: Fazer com que o usuário escolha a versão.
     /**
      * API Url to be used on requests.
      * @type {String}
      */
-    this.apiURL = `${Constants.REST.BASE_URL}/v9`;
+    this.apiURL = `${Constants.REST.BASE_URL}/v${this.options.version}`;
 
     this.#deleteEmptyBuckets();
   }
@@ -76,9 +83,9 @@ class RestManager {
 
     if (!this.handlers.has(route)) this.handlers.add(route, new Bucket(this));
 
-    const { requestOptions, formatedUrl } = this.#resolveRequest(url, method, options);
+    const { requestOptions, formattedUrl } = this.#resolveRequest(url, method, options);
 
-    return this.handlers.get(route).queueRequest(formatedUrl, requestOptions, route);
+    return this.handlers.get(route).queueRequest(formattedUrl, requestOptions, route);
   }
 
   /**
@@ -96,11 +103,11 @@ class RestManager {
       delete options.data.reason;
     }
 
-    const formatedUrl = `${this.apiURL}/${url.replace(/[/]?(\w+)/, "$1")}`;
+    const formattedUrl = `${this.apiURL}/${url.replace(/[/]?(\w+)/, "$1")}`;
 
     const requestOptions = { data: options.data, method: method.toLowerCase(), headers };
 
-    return { formatedUrl, requestOptions };
+    return { formattedUrl, requestOptions };
   }
 
   /**
@@ -115,8 +122,9 @@ class RestManager {
       .replace(/\/reactions\/[^/]+/g, "/reactions/:id")
       .replace(/\/reactions\/:id\/[^/]+/g, "/reactions/:id/:userID");
   }
-}
+};
 
+// Based on discord.js api router method.
 function buildRoute (manager) {
   const route = [];
   const emptyFunction = () => {};
@@ -139,5 +147,3 @@ function buildRoute (manager) {
 
   return new Proxy(emptyFunction, handler);
 }
-
-module.exports = RestManager;

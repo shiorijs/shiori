@@ -2,8 +2,10 @@ const EventEmitter = require("events");
 const Collection = require("../utils/Collection");
 const GatewayManager = require("./gateway/GatewayManager");
 const RestManager = require("../rest/RestManager");
+const PluginsManager = require("../managers/PluginsManager");
 
 const Constants = require("../utils/Constants");
+const Utils = require("../utils/Utils");
 
 module.exports = class Client extends EventEmitter {
   constructor (token, clientOptions) {
@@ -13,29 +15,29 @@ module.exports = class Client extends EventEmitter {
 
     this.options = Object.assign({
       ws: { version: 9 },
-      rest: {
-        version: Constants.REST.API_VERSION,
-        fetchAllUsers: false
-      },
       shardCount: 1,
       blockedEvents: [],
       autoReconnect: true,
-      connectionTimeout: 15000
+      connectionTimeout: 15000,
+      plugins: [],
+      utils: false
     }, clientOptions);
 
     if (this.options.shardCount <= 0) throw new Error("shardCount cannot be lower or equal to 0");
 
     this.ws = new GatewayManager(this);
-    this.rest = new RestManager(this);
+    this.rest = new RestManager(this, clientOptions);
+    this.plugins = this.options.plugins.map(c => c?.name);
 
     Object.defineProperties(this, {
       users: { value: new Collection(), writable: false },
       guilds: { value: new Collection(), writable: false },
-      channels: { value: new Collection(), writable: false },
       shards: { value: new Collection(), writable: false },
       token: { value: token, writable: false },
       channelMap: { value: { }, writable: true }
     });
+
+    if (this.options.utils) this.utils = new Utils(this);
 
     if (Object.prototype.hasOwnProperty.call(this.options, "intents")) {
       if (Array.isArray(this.options.intents)) {
@@ -53,7 +55,7 @@ module.exports = class Client extends EventEmitter {
   /**
    * Create a connection between your bot and discord.
    * @example
-   * const client = new Hitomi.Client("TOKEN", {});
+   * const client = new Shiori.Client("TOKEN", {});
    *
    * client.start();
    */
@@ -64,6 +66,8 @@ module.exports = class Client extends EventEmitter {
 
     try {
       this.ws.createShardConnection();
+
+      if (this.options.plugins.length) new PluginsManager(this, this.options.plugins);
     } catch (error) {
       if (!this.options.autoReconnect) throw error;
 
@@ -77,13 +81,5 @@ module.exports = class Client extends EventEmitter {
   */
   getInformation () {
     return true;
-  }
-
-  getChannel (channelId) {
-    const guildId = this.channelMap[channelId];
-
-    if (!guildId) return null;
-
-    return this.guilds.get(guildId).channels.get(channelId);
   }
 };

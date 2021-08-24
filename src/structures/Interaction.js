@@ -1,11 +1,12 @@
 const Base = require("./Base");
+const Utils = require("../utils/Utils");
 const { InteractionTypes } = require("../utils/Constants");
 
 /**
  * Represents a interaction on Discord.
  * @extends {Base}
  */
-class Interaction extends Base {
+module.exports = class Interaction extends Base {
   constructor (data, client) {
     super(client);
 
@@ -94,7 +95,7 @@ class Interaction extends Base {
    * @readonly
    */
   get channel () {
-    return this.client.getChannel(this.channelId) ?? null;
+    return new Utils(this.client).getChannel(this.channelId) ?? null;
   }
 
   /**
@@ -117,6 +118,4 @@ class Interaction extends Base {
 
     return this.client.rest.api;
   }
-}
-
-module.exports = Interaction;
+};

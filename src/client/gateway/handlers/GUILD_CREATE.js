@@ -10,7 +10,7 @@ module.exports = (client, { d: data }, shard) => {
     }
   }
 
-  if (client.options.rest.fetchAllUsers) {
+  if (client.rest.options.fetchAllUsers) {
     shard.sendWebsocketMessage({ op: 8, d:
       { guild_id: data.id, query: "", limit: 0, nonce: Date.now().toString() + Math.random().toString(36) }
     });

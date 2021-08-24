@@ -1,12 +1,13 @@
+const Utils = require("../utils/Utils");
 const Base = require("./Base");
 
 /**
   * Represents a discord message
   * @extends {Base}
   */
-class Message extends Base {
+module.exports = class Message extends Base {
   /**
-   * @param {Client} client Hitomi Client
+   * @param {Client} client Shiori Client
    * @param {Object} data The message structure data
    */
   constructor (data, client) {
@@ -29,7 +30,7 @@ class Message extends Base {
        * The channel in which the message was sent
        * @type {BaseGuildChannel}
        */
-      this.channel = this.client.getChannel(data.channel_id) || { id: data.channel_id };
+      this.channel = new Utils(this.client).getChannel(data.channel_id) || { id: data.channel_id };
     }
 
     if (data.guild_id) {
@@ -156,6 +157,4 @@ class Message extends Base {
 
     await this.client.rest.api.channels(this.channel.id).messages(this.id).patch({ data: options });
   }
-}
-
-module.exports = Message;
+};

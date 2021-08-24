@@ -31,7 +31,7 @@ const delay = async (ms) =>
 /**
   * Handle request ratelimits.
   */
-class Bucket {
+module.exports = class Bucket {
   /**
    * Queue used to store requests.
    * @type {AsyncQueue}
@@ -57,7 +57,7 @@ class Bucket {
   }
 
   /**
-   * Whether this bucket is inactive. (no pending requests)
+   * Whether this bucket is inactive (no pending requests).
    */
   get inactive () {
     return this.#asyncQueue.remaining === 0 && !(this.globalLimited || this.localLimited);
@@ -111,11 +111,19 @@ class Bucket {
       else timeout = this.reset - Date.now();
 
       if (this.globalLimited) {
-        this.manager.client.emit(
-          "debug", `We are globally rate limited, blocking all requests for ${timeout}ms`
-        );
+        this.manager.client.emit("debug", `
+        [Global Ratelimit]
+
+        Route: ${route}
+        Must wait ${timeout}ms before proceeding
+
+        All requests will be blocked during this time.`);
       } else {
-        this.manager.client.emit("debug", `Waiting ${timeout}ms for rate limit to pass`);
+        this.manager.client.emit("debug", `
+        [Local Ratelimit]
+
+        Route: ${route}
+        Must wait ${timeout}ms before proceeding`);
       }
 
       await delay(timeout);
@@ -157,6 +165,4 @@ class Bucket {
 
     return result.data;
   }
-}
-
-module.exports = Bucket;
+};

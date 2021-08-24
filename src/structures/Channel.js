@@ -5,7 +5,7 @@ const { ChannelTypes } = require("../utils/Constants");
  * Represents any channel on Discord.
  * @extends {Base}
  */
-class Channel extends Base {
+module.exports = class Channel extends Base {
   constructor (data, client) {
     super(client);
 
@@ -25,6 +25,4 @@ class Channel extends Base {
 
     return new Channel(data, client);
   }
-}
-
-module.exports = Channel;
+};

@@ -13,7 +13,7 @@ const BASE_URL = "wss://gateway.discord.gg/";
 /**
  * Websocket Manager
  */
-class GatewayManager {
+module.exports = class GatewayManager {
   constructor (client) {
     /**
      * The websocket URL to use
@@ -23,7 +23,7 @@ class GatewayManager {
     this.websocketURL = `${BASE_URL}?v=${client.options.ws.version}&encoding=${Erlpack ? "etf" : "json"}`;
 
     /**
-      * Hitomi Client
+      * Shiori Client
       * @private
       * @type {Client}
       * @name GatewayManager#client
@@ -71,15 +71,15 @@ class GatewayManager {
       else throw error;
     }
 
-    if (this.queue.size) setTimeout(() => this.connectShard(), 5000);
+    if (this.queue.size) setTimeout(() => this.#connectShard(), 5000);
   }
 
   /**
-  * Handle the received packet and trigger the corresponding event.
-  * @param {Object} packet The packet to handle
-  * @param {Shard} shard The shard which the packet was received
-  * @returns {Boolean}
-  */
+    * Handle the received packet and trigger the corresponding event.
+    * @param {Object} packet The packet to handle
+    * @param {Shard} shard The shard which the packet was received
+    * @returns {Boolean}
+    */
   handlePacket (packet, shard) {
     if (!packet) return false;
 
@@ -87,10 +87,9 @@ class GatewayManager {
       const event = PacketHandlers[packet.t];
 
       if (event) event(this.client, packet, shard);
+      else this.client.emit(packet.t, packet);
     }
 
     return true;
   }
-}
-
-module.exports = GatewayManager;
+};
