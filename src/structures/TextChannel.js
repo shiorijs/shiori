@@ -23,7 +23,7 @@ module.exports = class TextChannel extends BaseGuildChannel {
       this.slowmodeTime = data.rate_limit_per_user;
     }
 
-    if (data.topic) {
+    if ("topic" in data) {
       /**
        * The topic of this channel
        * @type {String}

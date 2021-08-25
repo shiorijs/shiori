@@ -37,7 +37,7 @@ module.exports = class BaseGuildChannel extends Channel {
      */
     this.id = data.id;
 
-    if (data.name) {
+    if ("name" in data) {
       /**
        * The name of this channel
        * @type {String}
@@ -45,7 +45,7 @@ module.exports = class BaseGuildChannel extends Channel {
       this.name = data.name;
     }
 
-    if (data.position) {
+    if ("position" in data) {
       /**
        * The position of this channel
        * @type {Number}
@@ -53,7 +53,7 @@ module.exports = class BaseGuildChannel extends Channel {
       this.position = data.position;
     }
 
-    if (data.parent_id) {
+    if ("parent_id" in data) {
       /**
        * The category id of this channel
        * @type {String}

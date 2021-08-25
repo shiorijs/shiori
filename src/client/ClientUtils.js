@@ -1,4 +1,4 @@
-module.exports = class Utils {
+module.exports = class ClientUtils {
   #client;
 
   constructor (client) {

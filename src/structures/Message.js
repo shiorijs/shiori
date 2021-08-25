@@ -24,7 +24,7 @@ module.exports = class Message extends Base {
      */
     this.id = data.id;
 
-    if (data.channel_id) {
+    if ("channel_id" in data) {
       /**
        * The channel in which the message was sent
        * @type {BaseGuildChannel}
@@ -32,7 +32,7 @@ module.exports = class Message extends Base {
       this.channel = this.client.utils.getChannel(data.channel_id) || { id: data.channel_id };
     }
 
-    if (data.guild_id) {
+    if ("guild_id" in data) {
       /**
        * The guild in which the message was sent
        * @type {Guild}
@@ -48,7 +48,7 @@ module.exports = class Message extends Base {
       this.author = this.client.users.get(data.author.id);
     }
 
-    if (data.content) {
+    if ("content" in data) {
       /**
        * The message content
        * @type {String}
@@ -56,7 +56,7 @@ module.exports = class Message extends Base {
       this.content = data.content;
     }
 
-    if (data.timestamp) {
+    if ("timestamp" in data) {
       /**
        * The time the message was created
        * @type {Data}
@@ -73,7 +73,7 @@ module.exports = class Message extends Base {
      * @property {Array<String>} channels The channels that were mentioned in the message
      */
 
-    if (data.mentions) {
+    if ("mentions" in data) {
       /**
        * Mentions that are included in this message
        * @type {MessageMentions}

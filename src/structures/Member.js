@@ -23,7 +23,7 @@ module.exports = class Member extends Base {
   }
 
   _update (data) {
-    if (data.nick) {
+    if ("nick" in data) {
       /**
        * User ID
        * @type {String}
@@ -31,7 +31,7 @@ module.exports = class Member extends Base {
       this.nickname = data.nick;
     }
 
-    if (data.roles) {
+    if ("roles" in data) {
       /**
        * All of the member roles
        * @type {String}
@@ -39,7 +39,7 @@ module.exports = class Member extends Base {
       this.roles = data.roles;
     }
 
-    if (data.joined_at) {
+    if ("joined_at" in data) {
       /**
        * When this user joined the guild
        * @type {String}
@@ -47,7 +47,7 @@ module.exports = class Member extends Base {
       this.joined_at = new Date(data.joined_at);
     }
 
-    if (data.permissions) {
+    if ("permissions" in data) {
       /**
        * Permissions of this member in this guild
        * @type {String}

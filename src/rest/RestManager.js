@@ -39,7 +39,7 @@ module.exports = class RestManager {
      * User Agent to be used on request headers.
      * @type {String}
      */
-    this.userAgent = `shiori (https://github.com/shiorijs/shiori, ${require("../../package.json").version})`;
+    this.userAgent = `Shiori (https://github.com/shiorijs/shiori, ${require("../../package.json").version})`;
 
     /**
      * API Url to be used on requests.
