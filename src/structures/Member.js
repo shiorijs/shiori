@@ -44,7 +44,7 @@ module.exports = class Member extends Base {
        * When this user joined the guild
        * @type {String}
        */
-      this.joined_at = new Date(data.joined_at);
+      this.joinedAt = new Date(data.joined_at);
     }
 
     if ("permissions" in data) {
