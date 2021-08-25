@@ -1,4 +1,5 @@
 const EventEmitter = require("events");
+const merge = require("lodash.merge");
 const Collection = require("../utils/Collection");
 const GatewayManager = require("./gateway/GatewayManager");
 const RestManager = require("../rest/RestManager");
@@ -7,13 +8,25 @@ const PluginsManager = require("../managers/PluginsManager");
 const Constants = require("../utils/Constants");
 const ClientUtils = require("./ClientUtils");
 
-module.exports = class Client extends EventEmitter {
+class Client extends EventEmitter {
+  /**
+   * @param {String} token The client token
+   * @param {Object} clientOptions The client options
+   */
   constructor (token, clientOptions) {
     super();
 
     if (!token || typeof (token) !== "string") throw new Error("No token was assigned on \"Client\"!");
 
-    this.options = Object.assign({
+    const defaultCacheOptions = {
+      limit: Infinity,
+      allowed: () => true,
+      toRemove: () => true,
+      sweep: 10,
+      sweepTimeout: 60000
+    };
+
+    this.options = merge({
       ws: { version: 9 },
       shardCount: 1,
       blockedEvents: [],
@@ -80,4 +93,6 @@ module.exports = class Client extends EventEmitter {
   getInformation () {
     return true;
   }
-};
+}
+
+module.exports = Client;

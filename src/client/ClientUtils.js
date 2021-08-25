@@ -1,6 +1,9 @@
-module.exports = class ClientUtils {
+class ClientUtils {
   #client;
 
+  /**
+   * @param {Client} client The instantiating client
+   */
   constructor (client) {
     this.#client = client;
   }
@@ -12,4 +15,17 @@ module.exports = class ClientUtils {
 
     return this.#client.guilds.get(guildId).channels.get(channelId);
   }
-};
+
+  /**
+   * setTimeout but as a promise.
+   * @params {Number} ms Timeout in MS
+   * @returns {Promise<Boolean>}
+   */
+  static async delay (ms) {
+    await new Promise((resolve) => {
+      setTimeout(() => resolve(true), ms);
+    });
+  }
+}
+
+module.exports = ClientUtils;

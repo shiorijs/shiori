@@ -1,7 +1,12 @@
 const Base = require("./Base");
 const User = require("./User");
 
-module.exports = class Member extends Base {
+class Member extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the guild member
+   * @param {Guild} guild The guild the member is part of
+   */
   constructor (data, client, guild) {
     super(client);
 
@@ -55,4 +60,6 @@ module.exports = class Member extends Base {
       this.permissions = data.permissions;
     }
   }
-};
+}
+
+module.exports = Member;
