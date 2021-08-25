@@ -5,6 +5,7 @@ const RestManager = require("../rest/RestManager");
 const PluginsManager = require("../managers/PluginsManager");
 
 const Constants = require("../utils/Constants");
+const Option = require("../utils/Option");
 const ClientUtils = require("./ClientUtils");
 
 module.exports = class Client extends EventEmitter {
@@ -13,14 +14,7 @@ module.exports = class Client extends EventEmitter {
 
     if (!token || typeof (token) !== "string") throw new Error("No token was assigned on \"Client\"!");
 
-    this.options = Object.assign({
-      ws: { version: 9 },
-      shardCount: 1,
-      blockedEvents: [],
-      autoReconnect: true,
-      connectionTimeout: 15000,
-      plugins: []
-    }, clientOptions);
+    this.options = Option.updateOptionsWithDefaults(clientOptions);
 
     if (this.options.shardCount <= 0) throw new Error("shardCount cannot be lower or equal to 0");
 
