@@ -4,8 +4,7 @@ const { Client } = require("./src/");
 
 const client = new Client(process.env.DISCORD_TOKEN, {
   intents: 13827,
-  rest: { fetchAllUsers: true },
-  utils: true
+  rest: { fetchAllUsers: true }
 });
 
 const write = (content) => process.stdout.write(`${content}\n`);
@@ -36,7 +35,7 @@ client.on("messageCreate", async (message) => {
 
   if (message.content === "utils") {
     // eslint-disable-next-line no-console
-    return console.log(client.utils?.getChannel("800889654198009899"));
+    return console.log(client.utils.getChannel("800889654198009899"));
   }
 });
 

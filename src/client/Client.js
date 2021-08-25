@@ -5,7 +5,7 @@ const RestManager = require("../rest/RestManager");
 const PluginsManager = require("../managers/PluginsManager");
 
 const Constants = require("../utils/Constants");
-const Utils = require("../utils/Utils");
+const ClientUtils = require("./ClientUtils");
 
 module.exports = class Client extends EventEmitter {
   constructor (token, clientOptions) {
@@ -27,6 +27,7 @@ module.exports = class Client extends EventEmitter {
 
     this.ws = new GatewayManager(this);
     this.rest = new RestManager(this, clientOptions);
+    this.utils = new ClientUtils(this);
     this.plugins = this.options.plugins.map(c => c?.name);
 
     Object.defineProperties(this, {
@@ -36,8 +37,6 @@ module.exports = class Client extends EventEmitter {
       token: { value: token, writable: false },
       channelMap: { value: { }, writable: true }
     });
-
-    if (this.options.utils) this.utils = new Utils(this);
 
     if (Object.prototype.hasOwnProperty.call(this.options, "intents")) {
       if (Array.isArray(this.options.intents)) {
