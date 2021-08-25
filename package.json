@@ -1,7 +1,7 @@
 {
   "name": "shiori",
   "version": "0.0.1",
-  "description": "A lightweight discord library made for NodeJS",
+  "description": "A customizable and fast NodeJS library made for creating discord bots.",
   "types": "./types/index.d.ts",
   "main": "./src/index.js",
   "repository": "git@github.com:shiorijs/shiori.git",
