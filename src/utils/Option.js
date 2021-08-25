@@ -1,13 +1,23 @@
-/* eslint-disable no-console */
-const _ = require("lodash.merge");
-
 const Constants = require("./Constants");
 
 module.exports = class Option {
   static updateOptionsWithDefaults (options) {
-    options = _(this.#defaultOptions, options);
+    options = this.mergeOptions(this.#defaultOptions, options);
 
     return options;
+  }
+
+  static mergeOptions (def, given) {
+    if (!given) return def;
+    for (const key in def) {
+      if (!(given in key) || given[key] === undefined) {
+        given[key] = def[key];
+      } else if (given[key] === Object(given[key])) {
+        given[key] = this.mergeOptions(def[key], given[key]);
+      }
+    }
+
+    return given;
   }
 
   static get #defaultOptions () {
