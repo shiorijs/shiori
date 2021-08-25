@@ -32,7 +32,13 @@ class Client extends EventEmitter {
       blockedEvents: [],
       autoReconnect: true,
       connectionTimeout: 15000,
+<<<<<<< HEAD
       plugins: []
+=======
+      plugins: [],
+      utils: false,
+      cache: { users: defaultCacheOptions, guilds: defaultCacheOptions }
+>>>>>>> feat() cache manager
     }, clientOptions);
 
     if (this.options.shardCount <= 0) throw new Error("shardCount cannot be lower or equal to 0");

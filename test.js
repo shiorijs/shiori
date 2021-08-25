@@ -5,6 +5,10 @@ const { Client } = require("./src/");
 const client = new Client(process.env.DISCORD_TOKEN, {
   intents: 13827,
   rest: { fetchAllUsers: true },
+<<<<<<< HEAD
+=======
+  utils: true,
+>>>>>>> feat() cache manager
   cache: {
     users: { limit: 20 }
   }
