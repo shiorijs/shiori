@@ -38,7 +38,7 @@ module.exports = class Client extends EventEmitter {
       channelMap: { value: { }, writable: true }
     });
 
-    if (Object.prototype.hasOwnProperty.call(this.options, "intents")) {
+    if ("intents" in this.options) {
       if (Array.isArray(this.options.intents)) {
         let bitmask = 0;
 

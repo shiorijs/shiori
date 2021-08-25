@@ -3,7 +3,7 @@ const { Client } = require('shiori');
 // or
 import { Client } from 'shiori';
 
-const client = new Client('your token', { intents: ['guildMessages'] });
+const client = new Client('your token', { intents: ['GUILD_MESSAGES'] });
 
 client.on('ready', () => console.log('Online!'));
   
