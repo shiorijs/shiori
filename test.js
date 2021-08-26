@@ -5,6 +5,10 @@ const Shiori = require("./src/");
 const client = Shiori(process.env.DISCORD_TOKEN, {
   intents: 13827,
   rest: { fetchAllUsers: true },
+<<<<<<< HEAD
+=======
+  utils: true,
+>>>>>>> feat() cache manager
   cache: {
     users: { limit: 20 }
   }
