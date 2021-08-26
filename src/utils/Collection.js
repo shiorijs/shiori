@@ -2,18 +2,18 @@ class Collection extends Map {
   /**
   * Construct a Collection
   */
-  constructor (cache = {}, limit = 100) {
+  constructor (cache = {}) {
     super();
 
     /**
      * The limit of items that this collection supports.
      * @type {Number}
      */
-    this.limit = limit;
+    this.limit = cache.limit ?? 100;
 
     /**
      * The cache of this collection.
-     * @type {String}
+     * @type {Object}
      */
     this.cache = cache;
 
@@ -33,7 +33,7 @@ class Collection extends Map {
       if (this.cache.toRemove(id, item)) (this.delete(id), removedItems++);
     }
 
-    setTimeout(() => this.#sweep(), 10000); // Colocar pra ser o que o cara escolheu
+    setTimeout(() => this.#sweep(), this.cache.sweepTimeout);
   }
 
   /**
@@ -47,6 +47,7 @@ class Collection extends Map {
 
     if (id == undefined) throw new Error("Missing id");
     if (this.has(id)) return this.get(id);
+    if (!this.cache?.toAdd(id, item)) return;
 
     if (this.limit && this.size > this.limit) this.delete([...this.keys()].slice(-1));
 

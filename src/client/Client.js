@@ -28,8 +28,8 @@ class Client extends EventEmitter {
     this.plugins = this.options.plugins.map(c => c?.name);
 
     Object.defineProperties(this, {
-      users: { value: new Collection(), writable: false },
-      guilds: { value: new Collection(), writable: false },
+      users: { value: new Collection(this.options.cache.users), writable: false },
+      guilds: { value: new Collection(this.options.cache.guilds), writable: false },
       shards: { value: new Collection(), writable: false },
       token: { value: token, writable: false },
       channelMap: { value: { }, writable: true }
