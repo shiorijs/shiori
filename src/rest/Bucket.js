@@ -2,19 +2,10 @@ const axios = require("axios");
 const AsyncQueue = require("../utils/AsyncQueue");
 const Util = require("../utils/Util");
 
-/**
- * Returns the API latency.
- * @param {Date} serverDate The date of the server. (headers.date)
- * @returns {Date}
- */
 function getAPIOffset (serverDate) {
   return new Date(serverDate).getTime() - Date.now();
 }
 
-/**
- * The date in which the ratelimit will reset.
- * @returns {Date}
- */
 function calculateReset (reset, serverDate) {
   return new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverDate);
 }
@@ -22,7 +13,7 @@ function calculateReset (reset, serverDate) {
 /**
   * Handle request ratelimits.
   */
-module.exports = class Bucket {
+class Bucket {
   /**
    * Queue used to store requests.
    * @type {AsyncQueue}
@@ -49,6 +40,8 @@ module.exports = class Bucket {
 
   /**
    * Whether this bucket is inactive (no pending requests).
+   * @type {Boolean}
+   * @readonly
    */
   get inactive () {
     return this.#asyncQueue.remaining === 0 && !(this.globalLimited || this.localLimited);
@@ -56,7 +49,8 @@ module.exports = class Bucket {
 
   /**
    * Whether we're global blocked or not.
-   * @returns {Boolean}
+   * @type {Boolean}
+   * @readonly
    */
   get globalLimited () {
     return this.globalBlocked && Date.now() < Number(this.globalReset);
@@ -64,7 +58,8 @@ module.exports = class Bucket {
 
   /**
    * Whether we're local limited or not.
-   * @returns {Boolean}
+   * @type {Boolean}
+   * @readonly
    */
   get localLimited () {
     return this.remaining <= 0 && Date.now() < this.reset;
@@ -156,4 +151,6 @@ module.exports = class Bucket {
 
     return result.data;
   }
-};
+}
+
+module.exports = Bucket;

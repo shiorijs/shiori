@@ -6,7 +6,7 @@ const Collection = require("../utils/Collection");
   * Represents a discord guild
   * @extends {Base}
   */
-module.exports = class Guild extends Base {
+class Guild extends Base {
   /**
    * @param {Client} client Shiori Client
    * @param {Object} data The guild structure data
@@ -58,4 +58,6 @@ module.exports = class Guild extends Base {
       this.name = data.name;
     }
   }
-};
+}
+
+module.exports = Guild;

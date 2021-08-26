@@ -8,7 +8,11 @@ const Constants = require("../utils/Constants");
 const Option = require("../utils/Option");
 const ClientUtils = require("./ClientUtils");
 
-module.exports = class Client extends EventEmitter {
+class Client extends EventEmitter {
+  /**
+   * @param {String} token The client token
+   * @param {Object} clientOptions The client options
+   */
   constructor (token, clientOptions) {
     super();
 
@@ -74,4 +78,6 @@ module.exports = class Client extends EventEmitter {
   getInformation () {
     return true;
   }
-};
+}
+
+module.exports = Client;

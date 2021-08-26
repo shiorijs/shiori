@@ -2,13 +2,17 @@
  * The AsyncQueue class used to sequentialize burst requests.
  * Based of https://github.com/sapphiredev/utilities/blob/main/packages/async-queue
  */
-module.exports = class AsyncQueue {
+class AsyncQueue {
   /**
    * The promises array
+   * @type {Array<Promise>}
    */
   #promises = [];
+
   /**
 	 * The remaining amount of queued promises
+   * @type {Number}
+   * @readonly
 	 */
   get remaining () {
     return this.#promises.length;
@@ -54,4 +58,6 @@ module.exports = class AsyncQueue {
     const deferred = this.#promises.shift();
     if (deferred) deferred.resolve();
   }
-};
+}
+
+module.exports = AsyncQueue;

@@ -4,7 +4,10 @@ const Shiori = require("./src/");
 
 const client = Shiori(process.env.DISCORD_TOKEN, {
   intents: 13827,
-  rest: { fetchAllUsers: true }
+  rest: { fetchAllUsers: true },
+  cache: {
+    users: { limit: 20 }
+  }
 });
 
 const write = (content) => process.stdout.write(`${content}\n`);
