@@ -1,4 +1,5 @@
 const EventEmitter = require("events");
+const merge = require("lodash.merge");
 const Collection = require("../utils/Collection");
 const GatewayManager = require("./gateway/GatewayManager");
 const RestManager = require("../rest/RestManager");
