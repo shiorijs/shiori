@@ -1,8 +1,8 @@
 require("dotenv").config();
 
-const { Client } = require("./src/");
+const Shiori = require("./src/");
 
-const client = new Client(process.env.DISCORD_TOKEN, {
+const client = Shiori(process.env.DISCORD_TOKEN, {
   intents: 13827,
   rest: { fetchAllUsers: true }
 });

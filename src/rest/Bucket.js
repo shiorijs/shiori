@@ -1,9 +1,10 @@
-const AsyncQueue = require("../utils/AsyncQueue");
 const axios = require("axios");
+const AsyncQueue = require("../utils/AsyncQueue");
+const Util = require("../utils/Util");
 
 /**
  * Returns the API latency.
- * @params {Date} serverDate The date of the server. (headers.date)
+ * @param {Date} serverDate The date of the server. (headers.date)
  * @returns {Date}
  */
 function getAPIOffset (serverDate) {
@@ -17,16 +18,6 @@ function getAPIOffset (serverDate) {
 function calculateReset (reset, serverDate) {
   return new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverDate);
 }
-
-/**
- * setTimeout but as a promise.
- * @params {Number} ms Timeout in MS
- * @returns {Promise<Boolean>}
- */
-const delay = async (ms) =>
-  await new Promise((resolve) => {
-    setTimeout(() => resolve(true), ms);
-  });
 
 /**
   * Handle request ratelimits.
@@ -126,7 +117,7 @@ module.exports = class Bucket {
         Must wait ${timeout}ms before proceeding`);
       }
 
-      await delay(timeout);
+      await Util.delay(timeout);
     }
 
     const result = await axios({ url, ...options });
@@ -158,7 +149,7 @@ module.exports = class Bucket {
     if (result.status === 204) {
       return result.data;
     } else if (result.status === 429) {
-      if (this.reset) await delay(this.reset);
+      if (this.reset) await Util.delay(this.reset);
 
       return this.executeRequest(url, options);
     }

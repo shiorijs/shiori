@@ -1,19 +1,24 @@
-module.exports = {
-  // Client
-  Client: require("./client/Client"),
+const Client = require("./client/Client");
 
-  // Structures
-  Guild: require("./structures/Guild"),
-  Member: require("./structures/Member"),
-  User: require("./structures/User"),
-  Message: require("./structures/Message"),
-  Channel: require("./structures/Channel"),
-  GuildChannel: require("./structures/BaseGuildChannel"),
-  TextChannel: require("./structures/TextChannel"),
-  Interaction: require("./structures/Interaction"),
+function Shiori (token, options) {
+  return new Client(token, options);
+}
 
-  // Utilities
-  Collection: require("./utils/Collection"),
-  AsyncQueue: require("./utils/AsyncQueue"),
-  Constants: require("./utils/Constants")
-};
+// Client
+Shiori.Client = Client;
+Shiori.ClientUtils = require("./client/ClientUtils");
+
+// Structures
+Shiori.Guild = require("./structures/Guild");
+Shiori.Member = require("./structures/Member");
+Shiori.User = require("./structures/User");
+Shiori.Message = require("./structures/Message");
+Shiori.Channel = require("./structures/Channel");
+Shiori.GuildChannel = require("./structures/BaseGuildChannel");
+Shiori.TextChannel = require("./structures/TextChannel");
+Shiori.Interaction = require("./structures/Interaction");
+
+// Utilities
+Shiori.Collection = require("./utils/Collection");
+
+module.exports = Shiori;
