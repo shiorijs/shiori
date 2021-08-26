@@ -50,7 +50,7 @@ module.exports = class Collection extends Map {
   /**
   * Remove an object
   * @param {Object} item The object
-  * @param {String} item.id The ID of the object
+  * @param {String} [item.id] The ID of the object
   * @returns {Class?} The removed object, or null if nothing was removed
   */
   remove (item) {
