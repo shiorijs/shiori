@@ -1,7 +1,7 @@
 /**
  * Represents a discord structure.
  */
-module.exports = class Base {
+class Base {
   constructor (client) {
     /**
      * The client that instantiated this
@@ -15,4 +15,6 @@ module.exports = class Base {
   _update (data) {
     return data;
   }
-};
+}
+
+module.exports = Base;

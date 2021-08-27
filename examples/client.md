@@ -9,7 +9,7 @@ import Shiori from 'shiori';
 
 /* Create the Client */
 const client = Shiori('your token', { intents: ['GUILD_MESSAGES'] });
- 
+
 /* Listen the ready event */
 client.on('ready', () => console.log('Online!'));
 ```
@@ -28,9 +28,8 @@ const client = Shiori('your token', { intents: ['GUILD_MESSAGES'] });
 /* Listen the ready event */
 client.on('ready', () => console.log('Online!'));
 
-client.on('messageCreate', async (message) => {
-  /* Checks if the message has the 'guild' property */
-  if (!message.guild) return;
+client.on('messageCreate', (message) => {
+  if (!message.guild || message.author.bot) return;
 
   /* Checks if the message content is 'sendMessage' */
   if (message.content === 'sendMessage') {

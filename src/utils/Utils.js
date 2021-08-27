@@ -1,4 +1,4 @@
-class ClientUtils {
+class Utils {
   #client;
 
   /**
@@ -28,4 +28,4 @@ class ClientUtils {
   }
 }
 
-module.exports = ClientUtils;
+module.exports = Utils;

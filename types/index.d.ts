@@ -3,24 +3,60 @@ import GatewayManager from "../src/client/gateway/GatewayManager";
 import Shard from "../src/client/gateway/Shard";
 import RestManager from "../src/rest/RestManager";
 
+export type Snowflake = `${bigint}`;
+
+export interface WSOptions {
+  version: number;
+}
+
+export interface RestOptions {
+  version: number;
+  fetchAllUsers: boolean
+}
+
+export interface CacheOptions {
+  limit: number,
+  toAdd: function,
+  toRemove: function,
+  sweep: number,
+  sweepTimeout: number
+}
+
+export interface ClientCache {
+  users: CacheOptions;
+  guilds: CacheOptions;
+}
+
+export interface ClientOptions {
+  ws: WSOptions;
+  rest: RestOptions;
+  intents: Array<string> | number;
+  shardCount: number;
+  blockedEvents: Array<string>;
+  autoReconnect: boolean;
+  connectionTimeout: number;
+  plugins: Array<typeof Class>;
+  cache: ClientCache;
+}
+
 export class Client {
-  public constructor(token: string, options: any);
+  public constructor(token: string, options: ClientOptions);
   public ws: GatewayManager;
   public rest: RestManager;
   public ClientUtils: ClientUtils;
   public plugins: Array<Plugin>;
 
-  public users: Collection<string, User>;
-  public channels: Collection<string, Channel>;
-  public shards: Collection<string, Shard>;
+  public users: Collection<Snowflake, User>;
+  public channels: Collection<Snowflake, Channel>;
+  public shards: Collection<Snowflake, Shard>;
   public token: string;
 
   public start(): void;
-  public getInformation(type: string, id: string): any;
+  public getInformation(type: string, id: Snowflake): any;
 }
 
 export interface User {
-  public id: string;
+  public id: Snowflake;
   public username?: string;
   public avatarHash?: string;
   public bot?: boolean;
@@ -29,7 +65,7 @@ export interface User {
 }
 
 export interface Channel {
-  public id: string;
+  public id: Snowflake;
 }
 
 export class Collection extends Map {

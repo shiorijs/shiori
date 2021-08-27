@@ -21,13 +21,13 @@ module.exports = class Option {
   }
 
   static get #defaultOptions () {
-    // const cachesOptions = {
-    //   limit: Infinity,
-    //   allowed: () => true,
-    //   toRemove: () => true,
-    //   sweep: 10,
-    //   sweepTimeout: 60000
-    // };
+    const cachesOptions = {
+      limit: Infinity,
+      toAdd: () => true,
+      toRemove: () => true,
+      sweep: 10,
+      sweepTimeout: 60000
+    };
 
     return {
       ws: {
@@ -42,11 +42,11 @@ module.exports = class Option {
       blockedEvents: [],
       autoReconnect: true,
       connectionTimeout: 15000,
-      plugins: []
-      // cache: {
-      //   users: { ...cachesOptions },
-      //   guilds: { ...cachesOptions }
-      // }
+      plugins: [],
+      cache: {
+        users: { ...cachesOptions },
+        guilds: { ...cachesOptions }
+      }
     };
   }
 };
