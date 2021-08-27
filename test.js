@@ -6,7 +6,19 @@ const client = Shiori(process.env.DISCORD_TOKEN, {
   intents: 13827,
   rest: { fetchAllUsers: true },
   cache: {
-    users: { limit: 20 }
+    users: {
+      limit: Infinity,
+      sweep: 10,
+      sweepTimeout: 10000,
+      toAdde: (userID) => {
+        if (!["664806442406248448", "532294395655880705", "515903666360942594"].includes(userID)) return false;
+        else return true;
+      },
+      toRemovee: (userID) => {
+        if (["664806442406248448", "515903666360942594"].includes(userID)) return true;
+        else return false;
+      }
+    }
   }
 });
 

@@ -2,22 +2,24 @@ class Collection extends Map {
   /**
   * Construct a Collection
   */
-  constructor (cache = {}) {
+  constructor (cache = undefined) {
     super();
 
     /**
-     * The limit of items that this collection supports.
+     * The amount of items that this collection supports.
      * @type {Number}
      */
-    this.limit = cache.limit ?? 100;
+    this.limit = cache?.limit ?? Infinity;
 
     /**
-     * The cache of this collection.
-     * @type {Object}
-     */
-    this.cache = cache;
+      * The cache of this collection.
+      * @private
+      * @type {Object | undefined}
+      * @name Collection#cache
+      */
+    Object.defineProperty(this, "cache", { value: cache, writable: false });
 
-    if (Object.keys(this.cache).length > 0) this.#sweep();
+    if (this.cache !== undefined) this.#sweep();
   }
 
   /**
@@ -25,12 +27,13 @@ class Collection extends Map {
    * @returns {void}
    */
   #sweep () {
-    const itemsToRemove = [
-      ...this.filter(this.cache.toRemove)
-    ].slice(0, -Number(this.cache.sweep));
+    const itemsToRemove = this.filter(this.cache.toRemove);
 
-    for (let i = 0; i < itemsToRemove.length; i++) {
-      this.delete(itemsToRemove[i]);
+    if (itemsToRemove.length) {
+      for (let i = 0; i < this.cache.sweep; i++) {
+        if (!itemsToRemove[i]) break;
+        else this.delete(itemsToRemove[i]);
+      }
     }
 
     setTimeout(() => this.#sweep(), this.cache.sweepTimeout);
@@ -49,7 +52,7 @@ class Collection extends Map {
     if (this.has(id)) return this.get(id);
     if (!this.cache?.toAdd(id, item)) return;
 
-    if (this.limit && this.size > this.limit) this.delete([...this.keys()].slice(-1));
+    if (this.limit && this.size > this.limit) this.delete([...this.keys()].slice(-1)[0]);
 
     return (this.set(id, item), item);
   }
@@ -91,7 +94,6 @@ class Collection extends Map {
   remove (item) {
     if (!this.has(item.id)) return null;
 
-    // This will execute all of the parameters and return the last
     return (this.delete(item.id), this.get(item.id));
   }
 }

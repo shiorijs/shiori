@@ -22,6 +22,12 @@ class User extends Base {
      */
     this.id = data.id;
 
+    /**
+     * Whether this user is a bot or not
+     * @type {Boolean}
+     */
+    this.bot = data.bot ?? true;
+
     if ("username" in data) {
       /**
        * The username of this user
@@ -36,14 +42,6 @@ class User extends Base {
        * @type {String}
        */
       this.avatarHash = data.avatar;
-    }
-
-    if (data.bot !== undefined) {
-      /**
-       * Whether this user is a bot or not
-       * @type {Boolean}
-       */
-      this.bot = data.bot;
     }
 
     if ("premium_type" in data) {
