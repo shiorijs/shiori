@@ -25,12 +25,12 @@ class Collection extends Map {
    * @returns {void}
    */
   #sweep () {
-    let removedItems = 0;
+    const itemsToRemove = [
+      ...this.filter(this.cahe.toRemove).keys()
+    ].slice(0, -Number(this.cache.sweep));
 
-    for (const [id, item] of this.entries()) {
-      if (removedItems >= this.cache.sweep) break;
-
-      if (this.cache.toRemove(id, item)) (this.delete(id), removedItems++);
+    for (let i = 0; i < itemsToRemove.length; i++) {
+      this.delete(itemsToRemove[i]);
     }
 
     setTimeout(() => this.#sweep(), this.cache.sweepTimeout);
@@ -62,8 +62,8 @@ class Collection extends Map {
   filter (func) {
     const array = [];
 
-    for (const item of this.values) {
-      if (func(item)) array.push(item);
+    for (const [id, item] of this.entries()) {
+      if (func(id, item)) array.push(item);
     }
 
     return array;
