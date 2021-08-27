@@ -1,11 +1,13 @@
 require("dotenv").config();
 
-const { Client } = require("./src/");
+const Shiori = require("./src/");
 
-const client = new Client(process.env.DISCORD_TOKEN, {
+const client = Shiori(process.env.DISCORD_TOKEN, {
   intents: 13827,
   rest: { fetchAllUsers: true },
-  utils: true
+  cache: {
+    users: { limit: 20 }
+  }
 });
 
 const write = (content) => process.stdout.write(`${content}\n`);
@@ -35,7 +37,8 @@ client.on("messageCreate", async (message) => {
   }
 
   if (message.content === "utils") {
-    return message.channel.send(client.utils?.getChannel(message.channel.id));
+    // eslint-disable-next-line no-console
+    return console.log(client.utils.getChannel("800889654198009899"));
   }
 });
 

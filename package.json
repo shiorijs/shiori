@@ -1,19 +1,23 @@
 {
   "name": "shiori",
   "version": "0.0.1",
-  "description": "A lightweight discord library made for NodeJS",
-  "types": "./types/index.d.ts",
+  "description": "A customizable and fast NodeJS library made for creating discord bots.",
   "main": "./src/index.js",
-  "repository": "git@github.com:shiorijs/shiori.git",
-  "author": "@Loliticos, @Deivinni, @LordLucas",
-  "license": "Apache",
+  "types": "./types/index.d.ts",
+  "exports": {
+    "require": "./src/index.js",
+    "import": "./src/index.mjs"
+  },
+  "license": "Apache-2.0",
   "scripts": {
     "lint": "eslint src",
     "lint:fix": "eslint --fix ."
   },
-  "engines": {
-    "node": ">=14.0.0"
-  },
+  "authors": [
+    "Loliticos",
+    "deivinni",
+    "LordLucass"
+  ],
   "dependencies": {
     "axios": "^0.21.1",
     "events": "^3.3.0",
@@ -25,5 +29,9 @@
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.23.4"
-  }
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": "git@github.com:shiorijs/shiori.git"
 }

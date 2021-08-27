@@ -6,7 +6,7 @@ const Collection = require("../utils/Collection");
   * Represents a discord guild
   * @extends {Base}
   */
-module.exports = class Guild extends Base {
+class Guild extends Base {
   /**
    * @param {Client} client Shiori Client
    * @param {Object} data The guild structure data
@@ -38,7 +38,7 @@ module.exports = class Guild extends Base {
      */
     this.id = data.id;
 
-    if (data.channels) {
+    if ("channels" in data) {
       for (const _channel of data.channels) {
         _channel.guildId = this.id;
         const channel = Channel.transform(_channel, this.client);
@@ -50,7 +50,7 @@ module.exports = class Guild extends Base {
       }
     }
 
-    if (data.name) {
+    if ("name" in data) {
       /**
        * Guild Name
        * @type {String}
@@ -58,4 +58,6 @@ module.exports = class Guild extends Base {
       this.name = data.name;
     }
   }
-};
+}
+
+module.exports = Guild;

@@ -4,7 +4,7 @@ const Base = require("./Base");
   * Represents a discord user
   * @extends {Base}
   */
-module.exports = class User extends Base {
+class User extends Base {
   /**
    * @param {Client} client Shiori Client
    * @param {Object} data The user structure data
@@ -22,7 +22,7 @@ module.exports = class User extends Base {
      */
     this.id = data.id;
 
-    if (data.username) {
+    if ("username" in data) {
       /**
        * The username of this user
        * @type {String}
@@ -30,7 +30,7 @@ module.exports = class User extends Base {
       this.username = data.username;
     }
 
-    if (data.avatar) {
+    if ("avatar" in data) {
       /**
        * The avatar of this user
        * @type {String}
@@ -46,7 +46,7 @@ module.exports = class User extends Base {
       this.bot = data.bot;
     }
 
-    if (data.premium_type) {
+    if ("premium_type" in data) {
       /**
        * The type of Nitro subscription this user has
        * 0 = No subscription
@@ -57,7 +57,7 @@ module.exports = class User extends Base {
       this.premiumType = data.premium_type ?? 0;
     }
 
-    if (data.flags) {
+    if ("flags" in data) {
       /**
        * This user flags
        * @type {Number}
@@ -65,4 +65,6 @@ module.exports = class User extends Base {
       this.flags = data.flags ?? 0;
     }
   }
-};
+}
+
+module.exports = User;

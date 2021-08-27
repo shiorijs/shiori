@@ -5,41 +5,37 @@ const RestManager = require("../rest/RestManager");
 const PluginsManager = require("../managers/PluginsManager");
 
 const Constants = require("../utils/Constants");
-const Utils = require("../utils/Utils");
+const Option = require("../utils/Option");
+const ClientUtils = require("./ClientUtils");
 
-module.exports = class Client extends EventEmitter {
+class Client extends EventEmitter {
+  /**
+   * @param {String} token The client token
+   * @param {Object} clientOptions The client options
+   */
   constructor (token, clientOptions) {
     super();
 
     if (!token || typeof (token) !== "string") throw new Error("No token was assigned on \"Client\"!");
 
-    this.options = Object.assign({
-      ws: { version: 9 },
-      shardCount: 1,
-      blockedEvents: [],
-      autoReconnect: true,
-      connectionTimeout: 15000,
-      plugins: [],
-      utils: false
-    }, clientOptions);
+    this.options = Option.updateOptionsWithDefaults(clientOptions);
 
     if (this.options.shardCount <= 0) throw new Error("shardCount cannot be lower or equal to 0");
 
     this.ws = new GatewayManager(this);
     this.rest = new RestManager(this, clientOptions);
+    this.utils = new ClientUtils(this);
     this.plugins = this.options.plugins.map(c => c?.name);
 
     Object.defineProperties(this, {
-      users: { value: new Collection(), writable: false },
-      guilds: { value: new Collection(), writable: false },
+      users: { value: new Collection(this.options.cache.users), writable: false },
+      guilds: { value: new Collection(this.options.cache.guilds), writable: false },
       shards: { value: new Collection(), writable: false },
       token: { value: token, writable: false },
       channelMap: { value: { }, writable: true }
     });
 
-    if (this.options.utils) this.utils = new Utils(this);
-
-    if (Object.prototype.hasOwnProperty.call(this.options, "intents")) {
+    if ("intents" in this.options) {
       if (Array.isArray(this.options.intents)) {
         let bitmask = 0;
 
@@ -82,4 +78,6 @@ module.exports = class Client extends EventEmitter {
   getInformation () {
     return true;
   }
-};
+}
+
+module.exports = Client;

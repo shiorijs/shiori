@@ -1,16 +1,13 @@
-# shiori
-A lightweight discord library made for NodeJS.
-
-# Customizable cache
-
 ```js
-const { Client } = require("hitomi.js");
+const { Client } = require('shiori');
+// or
+import { Client } from 'shiori';
 
 // Keep a note that all cache options aren't required
-const client = new Client("MY_SECRET_TOKEN", {
+const client = new Client('your token', {
   cache: {
     users: {
-      // No limit on users
+      // There will be added as many as possible users
       limit: Infinity,
       // If the username starts with A it will be added to the collection, otherwise it wont
       toAdd: (userID, user) => user.username.startsWith("A"),

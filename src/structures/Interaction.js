@@ -1,12 +1,11 @@
 const Base = require("./Base");
-const Utils = require("../utils/Utils");
 const { InteractionTypes } = require("../utils/Constants");
 
 /**
  * Represents a interaction on Discord.
  * @extends {Base}
  */
-module.exports = class Interaction extends Base {
+class Interaction extends Base {
   constructor (data, client) {
     super(client);
 
@@ -40,7 +39,7 @@ module.exports = class Interaction extends Base {
   }
 
   _update (data) {
-    if (data.application_id) {
+    if ("application_id" in data) {
       /**
        * The application's id
        * @type {String}
@@ -48,7 +47,7 @@ module.exports = class Interaction extends Base {
       this.applicationId = data.application_id;
     }
 
-    if (data.channel_id) {
+    if ("channel_id" in data) {
       /**
        * The id of the channel this interaction was sent in
        * @type {String}
@@ -56,7 +55,7 @@ module.exports = class Interaction extends Base {
       this.channelId = data.channel_id;
     }
 
-    if (data.guild_id) {
+    if ("guild_id" in data) {
       /**
        * The id of the guild this interaction was sent in
        * @type {String}
@@ -64,7 +63,7 @@ module.exports = class Interaction extends Base {
       this.guildId = data.guild_id;
     }
 
-    if (data.user) {
+    if ("user" in data) {
       /**
        * The user which sent this interaction
        * @type {User}
@@ -72,7 +71,7 @@ module.exports = class Interaction extends Base {
       this.user = this.client.users.add(data.user.id, data.user);
     }
 
-    if (data.member) {
+    if ("member" in data) {
       /**
        * If this interaction was sent in a guild, the member which sent it
        * @type {Member}
@@ -80,7 +79,7 @@ module.exports = class Interaction extends Base {
       this.member = this.guild?.members.add(data.member) ?? data.member;
     }
 
-    if (data.version) {
+    if ("version" in data) {
       /**
        * The version
        * @type {Number}
@@ -95,7 +94,7 @@ module.exports = class Interaction extends Base {
    * @readonly
    */
   get channel () {
-    return new Utils(this.client).getChannel(this.channelId) ?? null;
+    return this.client.utils.getChannel(this.channelId) ?? null;
   }
 
   /**
@@ -118,4 +117,6 @@ module.exports = class Interaction extends Base {
 
     return this.client.rest.api;
   }
-};
+}
+
+module.exports = Interaction;

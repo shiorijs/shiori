@@ -5,7 +5,7 @@ const Message = require("./Message");
  * Represents a text channel.
  * @extends {BaseGuildChannel}
  */
-module.exports = class TextChannel extends BaseGuildChannel {
+class TextChannel extends BaseGuildChannel {
   constructor (data, client) {
     super(data, client);
 
@@ -23,7 +23,7 @@ module.exports = class TextChannel extends BaseGuildChannel {
       this.slowmodeTime = data.rate_limit_per_user;
     }
 
-    if (data.topic) {
+    if ("topic" in data) {
       /**
        * The topic of this channel
        * @type {String}
@@ -37,7 +37,7 @@ module.exports = class TextChannel extends BaseGuildChannel {
     * @returns {Promise<Message>}
     */
   send (options) {
-    if (typeof (options) === "string") options = { content: options };
+    if (typeof (options) !== "object") options = { content: String(options) };
 
     return this.client.rest.api.channels(this.id).messages.post({ data: options })
       .then((data) => new Message(data, this.client));
@@ -51,4 +51,6 @@ module.exports = class TextChannel extends BaseGuildChannel {
   async delete (reason) {
     await this.client.rest.api.channels(this.id).delete({ data: { reason } });
   }
-};
+}
+
+module.exports = TextChannel;
