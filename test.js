@@ -10,11 +10,11 @@ const client = Shiori(process.env.DISCORD_TOKEN, {
       limit: Infinity,
       sweep: 10,
       sweepTimeout: 10000,
-      toAdde: (userID) => {
+      toAdd: (userID) => {
         if (!["664806442406248448", "532294395655880705", "515903666360942594"].includes(userID)) return false;
         else return true;
       },
-      toRemovee: (userID) => {
+      toRemove: (userID) => {
         if (["664806442406248448", "515903666360942594"].includes(userID)) return true;
         else return false;
       }
