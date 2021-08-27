@@ -26,7 +26,7 @@ class Collection extends Map {
    */
   #sweep () {
     const itemsToRemove = [
-      ...this.filter(this.cache.toRemove).keys()
+      ...this.filter(this.cache.toRemove)
     ].slice(0, -Number(this.cache.sweep));
 
     for (let i = 0; i < itemsToRemove.length; i++) {
@@ -63,7 +63,7 @@ class Collection extends Map {
     const array = [];
 
     for (const [id, item] of this.entries()) {
-      if (func(id, item)) array.push(item);
+      if (func(id, item)) array.push(id);
     }
 
     return array;
