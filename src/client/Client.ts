@@ -1,19 +1,30 @@
-const EventEmitter = require("events");
-const Collection = require("../utils/Collection");
-const GatewayManager = require("./gateway/GatewayManager");
-const RestManager = require("../rest/RestManager");
-const PluginsManager = require("../managers/PluginsManager");
+import {
+  ClientOptions,
+  Snowflake
+} from "../../typings/index";
 
-const Constants = require("../utils/Constants");
-const Option = require("../utils/Option");
-const ClientUtils = require("./ClientUtils");
+//
+
+import EventEmitter from "events";
+import Collection from "../utils/Collection";
+import GatewayManager from "./gateway/GatewayManager";
+import RestManager from "../rest/RestManager";
+import PluginsManager from "../managers/PluginsManager";
+
+import Constants from "../utils/Constants";
+import Option from "../utils/Option";
+import ClientUtils from "./ClientUtils";
 
 class Client extends EventEmitter {
-  /**
-   * @param {String} token The client token
-   * @param {Object} clientOptions The client options
-   */
-  constructor (token, clientOptions) {
+  ws: GatewayManager;
+  rest: RestManager;
+  utils: ClientUtils;
+  options: ClientOptions;
+  plugins: Array<String>;
+  channelMap: Object;
+  guilds: any//Collection;
+
+  constructor (token: string, clientOptions: ClientOptions) {
     super();
 
     if (!token || typeof (token) !== "string") throw new Error("No token was assigned on \"Client\"!");
@@ -48,13 +59,6 @@ class Client extends EventEmitter {
     }
   }
 
-  /**
-   * Create a connection between your bot and discord.
-   * @example
-   * const client = new Shiori.Client("TOKEN", {});
-   *
-   * client.start();
-   */
   start () {
     const shards = Array.from({ length: this.options.shardCount }, (_, i) => i);
 
@@ -71,13 +75,9 @@ class Client extends EventEmitter {
     }
   }
 
-  /**
-  * @param {String} type Type of the structure to fetch, user, role, channel or guild
-  * @param {String} id ID of an user, role, channel or guild to fetch
-  */
-  getInformation () {
-    return true;
+  getInformation (type: string, id: Snowflake) {
+    return type && id;
   }
 }
 
-module.exports = Client;
+export default Client;

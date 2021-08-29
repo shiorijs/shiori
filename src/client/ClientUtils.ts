@@ -1,14 +1,14 @@
-class ClientUtils {
-  #client;
+import { Snowflake } from "../../typings/index";
+import Client from "./Client";
 
-  /**
-   * @param {Client} client The instantiating client
-   */
-  constructor (client) {
+class ClientUtils {
+  #client: Client;
+
+  constructor (client: Client) {
     this.#client = client;
   }
 
-  getChannel (channelId) {
+  public getChannel (channelId: Snowflake) {
     const guildId = this.#client.channelMap[channelId];
 
     if (!guildId) return null;
@@ -16,16 +16,11 @@ class ClientUtils {
     return this.#client.guilds.get(guildId).channels.get(channelId);
   }
 
-  /**
-   * setTimeout but as a promise.
-   * @params {Number} ms Timeout in MS
-   * @returns {Promise<Boolean>}
-   */
-  static async delay (ms) {
+  static async delay (ms: number) {
     await new Promise((resolve) => {
       setTimeout(() => resolve(true), ms);
     });
   }
 }
 
-module.exports = ClientUtils;
+export default ClientUtils;;

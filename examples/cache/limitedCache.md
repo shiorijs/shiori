@@ -10,7 +10,7 @@ const client = new Client('your token', {
       // There will be added as many as possible users
       limit: Infinity,
       // If the username starts with A it will be added to the collection, otherwise it wont
-      toAdd: (userID, user) => user.username.startsWith("A"),
+      toAdd: (user, userID) => user.username.startsWith("A"),
       // If the user isn't a owner then remove it when sweeping!
       toRemove: (user) => !process.env.OWNERS.includes(user.id)),
       // Choose how much users to clear when sweeping

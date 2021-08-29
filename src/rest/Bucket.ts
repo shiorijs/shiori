@@ -1,6 +1,7 @@
-const axios = require("axios");
-const AsyncQueue = require("../utils/AsyncQueue");
-const Util = require("../utils/Util");
+import axios from "axios";
+import AsyncQueue from "../utils/AsyncQueue";
+import Util from "../utils/Util";
+import RestManager from "./RestManager";
 
 function getAPIOffset (serverDate) {
   return new Date(serverDate).getTime() - Date.now();
@@ -16,71 +17,68 @@ function calculateReset (reset, serverDate) {
 class Bucket {
   /**
    * Queue used to store requests.
-   * @type {AsyncQueue}
    */
-  #asyncQueue = new AsyncQueue();
+  private asyncQueue = new AsyncQueue();
   /**
    * Remaining requests that can be made on this bucket.
-   * @type {Number}
    */
   remaining = 1;
   /**
    * Date in which the ratelimit resets.
-   * @type {Date}
    */
-  reset = 0;
+  reset: Date | number = 0;
+  /**
+   * Rest Manager.
+   */
+  manager: RestManager;
+  /**
+   * Whether we're global blocked or not.
+   */
+  globalBlocked: boolean;
+  /**
+   * If we're global blocked, when this global ratelimit resets.
+   */
+  globalReset: Date | number;
 
-  constructor (manager) {
-    /**
-     * Rest Manager.
-     * @type {RestManager}
-     */
+  constructor (manager: RestManager) {
     this.manager = manager;
   }
 
   /**
    * Whether this bucket is inactive (no pending requests).
-   * @type {Boolean}
    * @readonly
    */
-  get inactive () {
-    return this.#asyncQueue.remaining === 0 && !(this.globalLimited || this.localLimited);
+  public get inactive (): boolean {
+    return this.asyncQueue.remaining === 0 && !(this.globalLimited || this.localLimited);
   }
 
   /**
    * Whether we're global blocked or not.
-   * @type {Boolean}
    * @readonly
    */
-  get globalLimited () {
+  public get globalLimited (): boolean {
     return this.globalBlocked && Date.now() < Number(this.globalReset);
   }
 
   /**
    * Whether we're local limited or not.
-   * @type {Boolean}
    * @readonly
    */
-  get localLimited () {
+  public get localLimited (): boolean {
     return this.remaining <= 0 && Date.now() < this.reset;
   }
 
   /**
    * Queue a request into the bucket.
-   * @param {String} url URL to make the request to
-   * @param {Object} [options] The options to use on the request
-   * @param {Object} [options.data] The data to be sent
-   * @param {Boolean} [options.authenticate] Whether to authenticate the request
-   * @param {String} route The cleaned route
    */
-  async queueRequest (url, options, route) {
+  public async queueRequest (url: string, options: RequestOptions, route: string): Promise<void> {
     // Wait for any previous requests to be completed before this one is run
-    await this.#asyncQueue.wait();
+    await this.asyncQueue.wait();
     try {
       return await this.executeRequest(url, options, route);
     } finally {
       // Allow the next request to fire
-      this.#asyncQueue.shift();
+      this.asyncQueue.shift();
     }
   }
 
@@ -89,9 +87,9 @@ class Bucket {
    * TODO: APIResult interface
    * @returns {APIResult}
    */
-  async executeRequest (url, options, route) {
+  async executeRequest (url: string, options: RequestOptions, route: string) {
     while (this.globalLimited || this.localLimited) {
-      let timeout;
+      let timeout: Date | number;
 
       if (this.globalLimited) timeout = Number(this.globalReset) + Date.now();
       else timeout = this.reset - Date.now();
@@ -146,11 +144,18 @@ class Bucket {
     } else if (result.status === 429) {
       if (this.reset) await Util.delay(this.reset);
 
-      return this.executeRequest(url, options);
+      return this.executeRequest(url, options, route);
     }
 
     return result.data;
   }
 }
 
-module.exports = Bucket;
+interface RequestOptions {
+ /* The data to be sent */
+ data: object;
+  /* Whether to authenticate the request */
+ authenticate?: boolean;
+}
+
+export default Bucket;

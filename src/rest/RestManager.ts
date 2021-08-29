@@ -1,20 +1,25 @@
-const METHODS = ["get", "post", "patch", "put", "delete", "head"];
-
-const Bucket = require("./Bucket");
-const Constants = require("../utils/Constants");
-const Collection = require("../utils/Collection");
+import Client from "../client/Client";
+import Bucket from "./Bucket";
+import Constants from "../utils/Constants";
+import Collection from "../utils/Collection";
 
 /**
   * Manages all requests.
   */
 class RestManager {
+  options: any;
+  userAgent: string;
+  apiURL: string;
+  handlers: Collection<string, Bucket>;
+  client: any;
+
   /**
    * @param {Client} client Shiori Client
    * @param {Object} [options={}] Options to be used when creating requests.
    * @param {String} [options.version] Discord API version
    * @param {Boolean} [options.fetchAllUsers] Whether to get all users. Guild Members intent required
    */
-  constructor (client, options = {}) {
+  constructor (client: Client, options = {}) {
     this.options = Object.assign({
       version: Constants.REST.API_VERSION,
       fetchAllUsers: false
@@ -47,19 +52,18 @@ class RestManager {
      */
     this.apiURL = `${Constants.REST.BASE_URL}/v${this.options.version}`;
 
-    this.#deleteEmptyBuckets();
+    this.deleteEmptyBuckets();
   }
 
   /**
    * Deletes all buckets that are labeled as inactive.
-   * @returns {void}
    */
-  #deleteEmptyBuckets () {
+  private deleteEmptyBuckets (): void {
     for (const [route, bucket] of this.handlers.entries()) {
       if (bucket.inactive) this.handlers.delete(route);
     }
 
-    setTimeout(() => this.#deleteEmptyBuckets(), 600000); // 10 Minutes
+    setTimeout(() => this.deleteEmptyBuckets(), 600000); // 10 Minutes
   }
 
   /**
@@ -79,12 +83,12 @@ class RestManager {
    * @param {Object} [options.data] The data to be sent
    * @param {Boolean} [options.authenticate] Whether to authenticate the request
    */
-  request (method, url, options = {}) {
+  public request (method: PossibleMethods, url: string, options = {}) {
     const route = this.routefy(url);
 
     if (!this.handlers.has(route)) this.handlers.add(route, new Bucket(this));
 
-    const { requestOptions, formattedUrl } = this.#resolveRequest(url, method, options);
+    const { requestOptions, formattedUrl } = this.resolveRequest(url, method, options);
 
     return this.handlers.get(route).queueRequest(formattedUrl, requestOptions, route);
   }
@@ -93,7 +97,7 @@ class RestManager {
    * Formats the request data to a usable format for axios
    * @param request The request data
    */
-  #resolveRequest (url, method, options) {
+  private resolveRequest (url: string, method: PossibleMethods, options) {
     const headers = { "User-Agent": this.userAgent, "Content-Type": "application/json" };
 
     if (options.authenticate === undefined) options.authenticate = true;
@@ -113,10 +117,8 @@ class RestManager {
 
   /**
    * Formats the url to be used as a bucket identifier
-   * @param {String} url The request URL
-   * @returns {String}
    */
-  routefy (url) {
+  routefy (url: string): string {
     if (!/channels|guilds|webhooks/.test(url)) url = url.replace(/\d{16,18}/g, ":id");
 
     return url
@@ -124,6 +126,10 @@ class RestManager {
       .replace(/\/reactions\/:id\/[^/]+/g, "/reactions/:id/:userID");
   }
 }
+
+type PossibleMethods = "get" | "post" | "put" | "patch" | "delete" | "head";
+
+const METHODS: PossibleMethods[] = ["get", "post", "patch", "put", "delete", "head"];
 
 // Based on discord.js api router method.
 function buildRoute (manager) {
@@ -149,4 +155,4 @@ function buildRoute (manager) {
   return new Proxy(emptyFunction, handler);
 }
 
-module.exports = RestManager;
+export default RestManager;

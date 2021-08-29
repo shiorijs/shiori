@@ -1,8 +1,8 @@
-const Constants = require("./Constants");
+import { REST } from "./Constants";
 
-module.exports = class Option {
-  static updateOptionsWithDefaults (options) {
-    options = this.mergeOptions(this.#defaultOptions, options);
+export default class Option {
+  static updateOptionsWithDefaults (options: object): object {
+    options = this.mergeOptions(this.defaultOptions, options);
 
     return options;
   }
@@ -20,7 +20,7 @@ module.exports = class Option {
     return given;
   }
 
-  static get #defaultOptions () {
+  private static get defaultOptions () {
     const cachesOptions = {
       limit: Infinity,
       toAdd: () => true,
@@ -34,7 +34,7 @@ module.exports = class Option {
         version: 9
       },
       rest: {
-        version: Constants.REST.API_VERSION,
+        version: REST.API_VERSION,
         fetchAllUsers: false
       },
       intents: 0,

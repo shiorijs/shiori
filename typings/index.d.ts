@@ -16,8 +16,8 @@ export interface RestOptions {
 
 export interface CacheOptions {
   limit: number,
-  toAdd: function,
-  toRemove: function,
+  toAdd: (value: any, key: any) => boolean,
+  toRemove: () => boolean,
   sweep: number,
   sweepTimeout: number
 }
@@ -35,8 +35,9 @@ export interface ClientOptions {
   blockedEvents: Array<string>;
   autoReconnect: boolean;
   connectionTimeout: number;
-  plugins: Array<typeof Class>;
+  plugins: Array<any>;
   cache: ClientCache;
+  shards: Array<Number>;
 }
 
 export class Client {
@@ -55,7 +56,7 @@ export class Client {
   public getInformation(type: string, id: Snowflake): any;
 }
 
-export interface User {
+export class User {
   public id: Snowflake;
   public username?: string;
   public avatarHash?: string;
@@ -64,13 +65,13 @@ export interface User {
   public flags?: number;
 }
 
-export interface Channel {
+export class Channel {
   public id: Snowflake;
 }
 
 export class Collection extends Map {
   public add(id: string, item: object): object;
   public filter(func: Function): Array<Class>;
-  public map(func: Function): Array;
+  public map(func: Function): Array<T>;
   public remove(item: object): Class | undefined;
 }
