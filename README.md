@@ -1,6 +1,9 @@
 # Shiori
 A customizable and fast NodeJS library made for interacting with the discord api.
 
+- Shiori provides plugins, which allows you to choose which features to include in your bot;
+- Customize your cache. Limit your collections and choose which item gets added or removed;
+
 # Setup
 
 ```
@@ -37,14 +40,13 @@ const client = new Client("MY_COOL_TOKEN", { intents: 0, plugins: [InteractionPl
 client.on("ready", () => {
   console.log("Listening for interactions!");
 
-  const commands = [
-    { name: "ping", description: "Pong!" }
-  ];
+  const commands = [{ name: "ping", description: "Pong!" }];
 
-  // That's just a example, don't create slash commands on the ready event.
+  // Don't create appliaction commands on the ready event.
   return client.application.commands.set(commands);
 });
 
+// If you want to create interactions by your own use the "INTERACTION_CREATE" event.
 client.on("interactionCreate", (interaction) => {
   if (!interaction.command) return;
 
