@@ -1,26 +1,57 @@
-# shiori
-A lightweight discord library made for NodeJS.
+# Shiori
+A customizable and fast NodeJS library made for interacting with the discord api.
 
-# Customizable cache
+# Setup
+
+```
+yarn add shiori
+npm install shiori
+```
+
+# Example
 
 ```js
-const { Client } = require("hitomi.js");
+const { Client, Intents } = require("shiori");
 
-// Keep a note that all cache options aren't required
-const client = new Client("MY_SECRET_TOKEN", {
-  cache: {
-    users: {
-      // No limit on users
-      limit: Infinity,
-      // If the username starts with A it will be added to the collection, otherwise it wont
-      toAdd: (userID, user) => user.username.startsWith("A"),
-      // If the user isn't a owner then remove it when sweeping!
-      toRemove: (user) => !process.env.OWNERS.includes(user.id)),
-      // Choose how much users to clear when sweeping
-      sweep: 50,
-      // Interval in MS that the sweep will occur
-      sweepTimeout: 60000
-    }
+const bot = new Client("MY_COOL_TOKEN", { intents: [Intents.GUILD_MESSAGES] });
+
+client.on("messageCreate", (message) => {
+  if (message.content === "!ping") {
+    return message.channel.send("Pong!");
   }
 });
+
+client.start();
+```
+
+# Plugins
+
+Shiori is a customizable library, meaning that you can select everything that you want on your bot.
+
+```js
+const { Client } = require("shiori");
+const { InteractionPlugin } = require("@shiori/interactions");
+
+const client = new Client("MY_COOL_TOKEN", { intents: 0, plugins: [InteractionPlugin] });
+
+client.on("ready", () => {
+  console.log("Listening for interactions!");
+
+  const commands = [
+    { name: "ping", description: "Pong!" }
+  ];
+
+  // That's just a example, don't create slash commands on the ready event.
+  return client.application.commands.set(commands);
+});
+
+client.on("interactionCreate", (interaction) => {
+  if (!interaction.command) return;
+
+  if (interaction.command.name === "ping") {
+    return interaction.reply("Pong!");
+  }
+});
+
+client.start();
 ```
