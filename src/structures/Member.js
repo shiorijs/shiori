@@ -5,25 +5,18 @@ class Member extends Base {
   /**
    * @param {object} data The data for the guild member
    * @param {Client} client The instantiating client
-   * @param {Guild} guild The guild the member is part of
+   * @param {string} guildId The guildId the member is part of
    */
-  constructor (data, client, guild) {
+  constructor (data, client, guildId) {
     super(client);
 
-    // TODO: Mudar isso para um ID e fazer isso um getter.
     /**
-     * Guild this member belongs to
-     * @type {Guild}
+     * guildId this member belongs to
+     * @type {string}
      */
-    this.guild = guild;
+    this.guildId = guildId;
 
-    /*
-    Vale apena colocar a propriedade user na classe membro?
-    Podemos colocar algumas propriedades, como id e username
-
-    Caso seja necessário, podemos fazer isso ser um getter.
-    */
-
+    // Provavelmente mudar isso para um getter
     /**
      * The user object this member belongs to
      * @type {User}
@@ -67,6 +60,15 @@ class Member extends Base {
        */
       this.permissions = data.permissions;
     }
+  }
+
+  /**
+   * The guild this member belongs to
+   * @type {?Guild}
+   * @readonly
+   */
+  get guild () {
+    return this.client.guilds.get(this.guildId) ?? null;
   }
 }
 

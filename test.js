@@ -25,10 +25,6 @@ const client = Shiori(process.env.DISCORD_TOKEN, {
 const write = (content) => process.stdout.write(`${content}\n`);
 
 client.on("messageCreate", async (message) => {
-  console.time("normalProperty");
-  console.log(message.channel);
-  console.timeEnd("normalProperty");
-
   if (message.content === "react") {
     const emojis = ["🕵", "😎", "😱", "🚀", "✨"];
 

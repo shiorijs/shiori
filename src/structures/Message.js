@@ -30,7 +30,6 @@ class Message extends Base {
        * @type {String}
        */
       this.channelId = data.channel_id;
-      this.channel = this.client.utils.getChannel(this.channelId) ?? null;
     }
 
     if ("guild_id" in data) {
@@ -128,18 +127,17 @@ class Message extends Base {
     }
   }
 
-  /*
   /**
-   * The channelId in which the message was sent
+   * The channel in which this message was sent
    * @type {?TextChannel}
    * @readonly
-   *./
+   */
   get channel () {
     return this.client.utils.getChannel(this.channelId) ?? null;
-  }*/
+  }
 
   /**
-   * The Guild in which the message was sent
+   * The guild in which this message was sent
    * @type {?Guild}
    * @readonly
    */

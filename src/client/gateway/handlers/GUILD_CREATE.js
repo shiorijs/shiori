@@ -6,7 +6,7 @@ module.exports = (client, { d: data }, shard) => {
 
   if (data.members.length) {
     for (const member of data.members) {
-      guild.members.add(member.user.id, new Member(member, client, guild));
+      guild.members.add(member.user.id, new Member(member, client, guild.id));
     }
   }
 
