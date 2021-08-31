@@ -62,15 +62,15 @@ client.start();
 
 ## Which library should I use? Discord.js, Eris or Shiori?
 
-It's up to what you feel more confortable with. There are different use cases and only you may decide when using these libraries.
+It's up to what you feel more comfortable with. There are different use cases and only you may decide when using these libraries.
 
 ## When should I use Shiori?
 
-Shiori may help you a lot if you're creating a bot that the marjority of code is not discord api related. If you're creating a economy bot, for example, the marjority of the code will be pure javascript, and the discord api will only be used to create messages, etc.. Don't get us wrong, you can perfectly create a multipurpose bot in Shiori, but Shiori shines the most at bots that only wants the **basic**.
+Shiori may help you a lot if you're creating a bot that the majority of code is not discord api related. If you're creating a economy bot, for example, the majority of the code will be pure javascript, and the discord api will only be used to create messages, etc.. Don't get us wrong, you can perfectly create a multipurpose bot in Shiori, but Shiori shines the most at bots that only wants the **basic**.
 
 ## I decided to switch to Shiori, how I do it?
 
-Shiori syntax is relatively similar to Discord.JS, while Shiori purpose is closer to Eris. That means that you won't have that much of problem when switching from one of these two libaries.
+Shiori syntax is relatively similar to Discord.JS, while Shiori purpose is closer to Eris. That means that you won't have that much of problem when switching from one of these two libraries.
 
 ## Can I create my own plugin?
 

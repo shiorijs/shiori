@@ -18,7 +18,7 @@ class TextChannel extends BaseGuildChannel {
     if (data.rate_limit_per_user !== undefined) {
       /**
        * The time a user must waits before sending another message in this channel
-       * @type {Number}
+       * @type {number}
        */
       this.slowmodeTime = data.rate_limit_per_user;
     }
@@ -26,7 +26,7 @@ class TextChannel extends BaseGuildChannel {
     if ("topic" in data) {
       /**
        * The topic of this channel
-       * @type {String}
+       * @type {string}
        */
       this.topic = data.topic;
     }
@@ -45,7 +45,7 @@ class TextChannel extends BaseGuildChannel {
 
   /**
    * Delete this channel.
-   * @param {String} [reason] Reason for deleting this channel
+   * @param {string} [reason] Reason for deleting this channel
    * @returns {Promise<void>}
    */
   async delete (reason) {

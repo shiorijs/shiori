@@ -10,9 +10,9 @@ const Collection = require("../utils/Collection");
 class RestManager {
   /**
    * @param {Client} client Shiori Client
-   * @param {Object} [options={}] Options to be used when creating requests.
-   * @param {String} [options.version] Discord API version
-   * @param {Boolean} [options.fetchAllUsers] Whether to get all users. Guild Members intent required
+   * @param {object} [options={}] Options to be used when creating requests.
+   * @param {string} [options.version] Discord API version
+   * @param {boolean} [options.fetchAllUsers] Whether to get all users. Guild Members intent required
    */
   constructor (client, options = {}) {
     this.options = Object.assign({
@@ -37,13 +37,13 @@ class RestManager {
 
     /**
      * User Agent to be used on request headers.
-     * @type {String}
+     * @type {string}
      */
     this.userAgent = `Shiori (https://github.com/shiorijs/shiori, ${require("../../package.json").version})`;
 
     /**
      * API Url to be used on requests.
-     * @type {String}
+     * @type {string}
      */
     this.apiURL = `${Constants.REST.BASE_URL}/v${this.options.version}`;
 
@@ -73,11 +73,11 @@ class RestManager {
 
   /**
    * Make an HTTP request to the Discord API
-   * @param {String} method The HTTP method to use
-   * @param {String} url URL to make the request to
-   * @param {Object} [options] The options to use on the request
-   * @param {Object} [options.data] The data to be sent
-   * @param {Boolean} [options.authenticate] Whether to authenticate the request
+   * @param {string} method The HTTP method to use
+   * @param {string} url URL to make the request to
+   * @param {object} [options] The options to use on the request
+   * @param {object} [options.data] The data to be sent
+   * @param {boolean} [options.authenticate] Whether to authenticate the request
    */
   request (method, url, options = {}) {
     const route = this.routefy(url);
@@ -113,8 +113,8 @@ class RestManager {
 
   /**
    * Formats the url to be used as a bucket identifier
-   * @param {String} url The request URL
-   * @returns {String}
+   * @param {string} url The request URL
+   * @returns {string}
    */
   routefy (url) {
     if (!/channels|guilds|webhooks/.test(url)) url = url.replace(/\d{16,18}/g, ":id");

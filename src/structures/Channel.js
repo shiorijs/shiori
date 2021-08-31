@@ -11,7 +11,7 @@ class Channel extends Base {
 
     /**
      * The channel's id
-     * @type {String}
+     * @type {string}
      */
     this.id = data.id;
   }

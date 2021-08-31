@@ -11,19 +11,19 @@ class Interaction extends Base {
 
     /**
      * The interaction's id
-     * @type {String}
+     * @type {string}
      */
     this.id = data.id;
 
     /**
       * The interaction's type
-      * @type {String}
+      * @type {string}
       */
     this.type = InteractionTypes[data.type] ?? "UNKNOWN";
 
     /**
       * Whether this interaction has already been acknowledged.
-      * @type {Boolean}
+      * @type {boolean}
       */
     this.acknowledged = false;
 
@@ -42,7 +42,7 @@ class Interaction extends Base {
     if ("application_id" in data) {
       /**
        * The application's id
-       * @type {String}
+       * @type {string}
        */
       this.applicationId = data.application_id;
     }
@@ -50,7 +50,7 @@ class Interaction extends Base {
     if ("channel_id" in data) {
       /**
        * The id of the channel this interaction was sent in
-       * @type {String}
+       * @type {string}
        */
       this.channelId = data.channel_id;
     }
@@ -58,7 +58,7 @@ class Interaction extends Base {
     if ("guild_id" in data) {
       /**
        * The id of the guild this interaction was sent in
-       * @type {String}
+       * @type {string}
        */
       this.guildId = data.guild_id;
     }
@@ -82,7 +82,7 @@ class Interaction extends Base {
     if ("version" in data) {
       /**
        * The version
-       * @type {Number}
+       * @type {number}
        */
       this.version = data.version;
     }
@@ -109,7 +109,7 @@ class Interaction extends Base {
   /**
     * Acknowledges the interaction with a defer response
     * Note: You can **not** use more than 1 initial interaction response per interaction.
-    * @arg {Number} [flags] 64 for Ephemeral
+    * @arg {number} [flags] 64 for Ephemeral
     * @returns {Promise}
     */
   acknowledge () {

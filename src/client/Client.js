@@ -10,15 +10,15 @@ const ClientUtils = require("./ClientUtils");
 
 class Client extends EventEmitter {
   /**
-   * @param {String} token The client token
-   * @param {Object} clientOptions The client options
+   * @param {string} token The client token
+   * @param {object} clientOptions The client options
    */
   constructor (token, clientOptions) {
     super();
 
     if (!token || typeof (token) !== "string") throw new Error("No token was assigned on \"Client\"!");
 
-    this.options = Option.updateOptionsWithDefaults(clientOptions);
+    this.options = Option.defaultOptions(clientOptions);
 
     if (this.options.shardCount <= 0) throw new Error("shardCount cannot be lower or equal to 0");
 
@@ -72,8 +72,8 @@ class Client extends EventEmitter {
   }
 
   /**
-  * @param {String} type Type of the structure to fetch, user, role, channel or guild
-  * @param {String} id ID of an user, role, channel or guild to fetch
+  * @param {string} type Type of the structure to fetch, user, role, channel or guild
+  * @param {string} id ID of an user, role, channel or guild to fetch
   */
   getInformation () {
     return true;

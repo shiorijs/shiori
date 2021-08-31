@@ -18,13 +18,13 @@ class BaseGuildChannel extends Channel {
 
     /**
       * The type of the channel
-      * @type {String}
+      * @type {string}
       */
     this.type = ChannelTypes[data.type] ?? "UNKNOWN";
 
     /**
      * Messages that belongs to this channel
-     * @type {Collection<String, Message>}
+     * @type {Collection<string, Message>}
      * @name BaseGuildChannel#messages
      */
     Object.defineProperty(this, "messages", { value: new Collection(), writable: true });
@@ -33,14 +33,14 @@ class BaseGuildChannel extends Channel {
   _update (data) {
     /**
      * The id of this channel
-     * @type {String}
+     * @type {string}
      */
     this.id = data.id;
 
     if ("name" in data) {
       /**
        * The name of this channel
-       * @type {String}
+       * @type {string}
        */
       this.name = data.name;
     }
@@ -48,7 +48,7 @@ class BaseGuildChannel extends Channel {
     if ("position" in data) {
       /**
        * The position of this channel
-       * @type {Number}
+       * @type {number}
        */
       this.position = data.position;
     }
@@ -56,7 +56,7 @@ class BaseGuildChannel extends Channel {
     if ("parent_id" in data) {
       /**
        * The category id of this channel
-       * @type {String}
+       * @type {string}
        */
       this.parentId = data.parent_id;
     }
@@ -64,7 +64,7 @@ class BaseGuildChannel extends Channel {
     if (data.nsfw !== undefined) {
       /**
        * Whether this channel is marked as nsfw or not
-       * @type {Boolean}
+       * @type {boolean}
        */
       this.nsfw = Boolean(data.nsfw);
     }

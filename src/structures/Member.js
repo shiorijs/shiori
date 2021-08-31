@@ -3,8 +3,8 @@ const User = require("./User");
 
 class Member extends Base {
   /**
+   * @param {object} data The data for the guild member
    * @param {Client} client The instantiating client
-   * @param {Object} data The data for the guild member
    * @param {Guild} guild The guild the member is part of
    */
   constructor (data, client, guild) {
@@ -39,7 +39,7 @@ class Member extends Base {
     if ("nick" in data) {
       /**
        * Member nickname in a guild
-       * @type {String}
+       * @type {string}
        */
       this.nickname = data.nick;
     }
@@ -47,7 +47,7 @@ class Member extends Base {
     if ("roles" in data) {
       /**
        * All of the member roles in a guild
-       * @type {Array<Snowflake>}
+       * @type {string}
        */
       this.roles = data.roles;
     }
@@ -63,7 +63,7 @@ class Member extends Base {
     if ("permissions" in data) {
       /**
        * Permissions of the member in a guild
-       * @type {String}
+       * @type {string}
        */
       this.permissions = data.permissions;
     }

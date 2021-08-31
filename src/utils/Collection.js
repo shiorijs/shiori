@@ -7,14 +7,14 @@ class Collection extends Map {
 
     /**
      * The amount of items that this collection supports.
-     * @type {Number}
+     * @type {number}
      */
     this.limit = cache?.limit ?? Infinity;
 
     /**
       * The cache of this collection.
       * @private
-      * @type {Object | undefined}
+      * @type {object | undefined}
       * @name Collection#cache
       */
     Object.defineProperty(this, "cache", { value: cache, writable: false });
@@ -41,9 +41,9 @@ class Collection extends Map {
 
   /**
     * Adds a item on the collection
-    * @param {String} id The item id, to be used as the key
-    * @param {Object} item The item to be added
-    * @returns {Object} The created item
+    * @param {string} id The item id, to be used as the key
+    * @param {object} item The item to be added
+    * @returns {object} The created item
     */
   add (id, item) {
     if (this.limit === 0) return item;
@@ -60,7 +60,7 @@ class Collection extends Map {
   /**
     * Return all the objects that make the function evaluate true
     * @param {Function} func A function that takes an object and returns true if it matches
-    * @returns {Array<Class>} An array containing all the objects that matched
+    * @returns {Class[]} An array containing all the objects that matched
     */
   filter (func) {
     const array = [];
@@ -87,8 +87,8 @@ class Collection extends Map {
 
   /**
   * Remove an object
-  * @param {Object} item The object
-  * @param {String} [item.id] The ID of the object
+  * @param {object} item The object
+  * @param {string} [item.id] The ID of the object
   * @returns {Class?} The removed object, or null if nothing was removed
   */
   remove (item) {

@@ -1,6 +1,6 @@
 const axios = require("axios");
 const AsyncQueue = require("../utils/AsyncQueue");
-const Util = require("../utils/Util");
+const Util = require("../client/ClientUtils");
 
 function getAPIOffset (serverDate) {
   return new Date(serverDate).getTime() - Date.now();
@@ -21,7 +21,7 @@ class Bucket {
   #asyncQueue = new AsyncQueue();
   /**
    * Remaining requests that can be made on this bucket.
-   * @type {Number}
+   * @type {number}
    */
   remaining = 1;
   /**
@@ -40,7 +40,7 @@ class Bucket {
 
   /**
    * Whether this bucket is inactive (no pending requests).
-   * @type {Boolean}
+   * @type {boolean}
    * @readonly
    */
   get inactive () {
@@ -49,7 +49,7 @@ class Bucket {
 
   /**
    * Whether we're global blocked or not.
-   * @type {Boolean}
+   * @type {boolean}
    * @readonly
    */
   get globalLimited () {
@@ -58,7 +58,7 @@ class Bucket {
 
   /**
    * Whether we're local limited or not.
-   * @type {Boolean}
+   * @type {boolean}
    * @readonly
    */
   get localLimited () {
@@ -67,11 +67,11 @@ class Bucket {
 
   /**
    * Queue a request into the bucket.
-   * @param {String} url URL to make the request to
-   * @param {Object} [options] The options to use on the request
-   * @param {Object} [options.data] The data to be sent
-   * @param {Boolean} [options.authenticate] Whether to authenticate the request
-   * @param {String} route The cleaned route
+   * @param {string} url URL to make the request to
+   * @param {object} [options] The options to use on the request
+   * @param {object} [options.data] The data to be sent
+   * @param {boolean} [options.authenticate] Whether to authenticate the request
+   * @param {string} route The cleaned route
    */
   async queueRequest (url, options, route) {
     // Wait for any previous requests to be completed before this one is run

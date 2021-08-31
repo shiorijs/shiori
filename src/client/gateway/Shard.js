@@ -1,5 +1,5 @@
 const EventEmitter = require("events");
-const Websocket = require("ws");
+const WebSocket = require("ws");
 
 let Erlpack;
 
@@ -20,22 +20,22 @@ class Shard extends EventEmitter {
 
     /**
       * Id of this shard.
-      * @type {Number}
+      * @type {number}
       */
     this.id = id;
     /**
       * Session ID of the current shard connection
-      * @type {String}
+      * @type {string}
       */
     this.sessionId = null;
     /**
       * Interval in ms for reconnect time
-      * @type {Number}
+      * @type {number}
       */
     this.reconnectInterval = 3000;
     /**
       * Current attempts of reconnecting
-      * @type {Number}
+      * @type {number}
       */
     this.reconnectAttempts = 0;
 
@@ -57,7 +57,7 @@ class Shard extends EventEmitter {
     /**
       * Websocket Connection
       * @private
-      * @type {Websocket}
+      * @type {WebSocket}
       * @name Shard#connection
       */
     Object.defineProperty(this, "connection", { value: null, writable: true });
@@ -83,10 +83,10 @@ class Shard extends EventEmitter {
   connect () {
     /**
       * Status of the shard
-      * @type {String}
+      * @type {string}
       */
     this.status = "CONNECTING";
-    this.connection = new Websocket(this.manager.websocketURL);
+    this.connection = new WebSocket(this.manager.websocketURL);
 
     this.connection.on("message", (message) => this.websocketMessageReceive(message));
     this.connection.on("open", () => this.websocketConnectionOpen());
@@ -94,14 +94,14 @@ class Shard extends EventEmitter {
     this.connection.on("close", (...args) => this.websocketCloseConnection(...args));
 
     this.connectTimeout = setTimeout(() => {
-      if (this.connection.readyState === Websocket.CONNECTING) this.disconnect(true);
+      if (this.connection.readyState === WebSocket.CONNECTING) this.disconnect(true);
     }, this.client.options.connectionTimeout);
   }
 
   /**
     * Fired when websocket closes the connection
-    * @param {Number} code The error code received
-    * @param {String} reason Reason for the disconnect
+    * @param {number} code The error code received
+    * @param {string} reason Reason for the disconnect
     * @returns {void}
     */
   websocketCloseConnection ({ code } = {}) {
@@ -146,14 +146,14 @@ class Shard extends EventEmitter {
       * Fired when an error occurs in a shard
       * @event Client#shardError
       * @prop {Error} error The error that occurred
-      * @prop {Number} id The ID of the shard
+      * @prop {number} id The ID of the shard
       */
     this.client.emit("shardError", error, this.id);
   }
 
   /**
     * Fired when websocket receives a message
-    * @param {Object} data received from the websocket
+    * @param {object} data received from the websocket
     * @returns {void}
     */
   websocketMessageReceive (data) {
@@ -178,7 +178,7 @@ class Shard extends EventEmitter {
     /**
     * Fired when the shard establishes a connection
     * @event Client#connect
-    * @prop {Number} id The ID of the shard
+    * @prop {number} id The ID of the shard
     */
     this.client.emit("connect", this.id);
     this.lastHeartbeatAcked = true;
@@ -186,7 +186,7 @@ class Shard extends EventEmitter {
 
   /**
     * Fired when a packet is received
-    * @param {Object} packet The packet received
+    * @param {object} packet The packet received
     * @returns {Function}
     */
   packetReceive (packet) {
@@ -264,7 +264,7 @@ class Shard extends EventEmitter {
   /**
     * Identify the connection.
     * Required for discord to recognize who is connecting
-    * @returns {Object}
+    * @returns {object}
     */
   identify () {
     const d = {
@@ -311,15 +311,15 @@ class Shard extends EventEmitter {
 
   /**
     * Sends a message to the websocket
-    * @param {Object} data Message to send
-    * @param {Number} data.op Gateway OP code
-    * @param {Object} data.d Data to send
+    * @param {object} data Message to send
+    * @param {number} data.op Gateway OP code
+    * @param {object} data.d Data to send
     * @returns {void}
     */
   sendWebsocketMessage (data) {
     const pack = Erlpack ? Erlpack.pack : JSON.stringify;
 
-    if (this.connection.readyState == Websocket.OPEN)
+    if (this.connection.readyState == WebSocket.OPEN)
       this.connection.send(pack(data), (error) => {
         if (error) this.client.emit("shardError", error, this.id);
       });
@@ -327,12 +327,12 @@ class Shard extends EventEmitter {
 
   /**
     * Disconnect the shard
-    * @param {Boolean} [reconnect] Whether to reconnect after disconnecting
+    * @param {boolean} [reconnect] Whether to reconnect after disconnecting
     * @returns {void}
     */
   disconnect (reconnect = false) {
     if (!this.connection) return;
-    if (this.connection.readyState === Websocket.CLOSED) return;
+    if (this.connection.readyState === WebSocket.CLOSED) return;
 
     if (this.heartbeatInterval) {
       clearInterval(this.heartbeatInterval);
@@ -344,7 +344,7 @@ class Shard extends EventEmitter {
       this.connection.removeEventListener("close", this.websocketCloseConnection);
 
       if (reconnect && this.sessionId) {
-        if (this.connection.readyState === Websocket.OPEN) {
+        if (this.connection.readyState === WebSocket.OPEN) {
           this.connection.close(4901, "Reconnecting...");
         }
       } else this.connection.close(1000, "Normal");
@@ -358,7 +358,7 @@ class Shard extends EventEmitter {
     /**
       * Fired when the shard disconnects
       * @event Shard#disconnect
-      * @prop {String} reason The reason why the shard disconnected
+      * @prop {string} reason The reason why the shard disconnected
       */
     this.client.emit("disconnect", "ASKED");
 
