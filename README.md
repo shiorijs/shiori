@@ -70,7 +70,7 @@ Shiori may help you a lot if you're creating a bot that the marjority of code is
 
 ## I decided to switch to Shiori, how I do it?
 
-Shiori syntax is relatively similar to Discord.JS, while Shiori purpose is closer to Eris. That means that Shiori is relatively close to these two libraries, which means that you won't have that much of problem when switching.
+Shiori syntax is relatively similar to Discord.JS, while Shiori purpose is closer to Eris. That means that you won't have that much of problem when switching from one of these two libaries.
 
 ## Can I create my own plugin?
 
