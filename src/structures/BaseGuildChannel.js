@@ -11,8 +11,8 @@ class BaseGuildChannel extends Channel {
     super(data, client);
 
     /**
-     * Guild this channel belongs to
-     * @type {Guild}
+     * Guild id this channel belongs to
+     * @type {String}
      */
     this.guildId = data.guildId;
 
@@ -58,7 +58,7 @@ class BaseGuildChannel extends Channel {
        * The category id of this channel
        * @type {String}
        */
-      this.parentID = data.parent_id;
+      this.parentId = data.parent_id;
     }
 
     if (data.nsfw !== undefined) {
@@ -66,7 +66,7 @@ class BaseGuildChannel extends Channel {
        * Whether this channel is marked as nsfw or not
        * @type {Boolean}
        */
-      this.nsfw = data.nsfw;
+      this.nsfw = Boolean(data.nsfw);
     }
   }
 }

@@ -21,7 +21,7 @@ module.exports = class Option {
   }
 
   static get #defaultOptions () {
-    const cachesOptions = {
+    const cacheOptions = {
       limit: Infinity,
       toAdd: () => true,
       toRemove: () => true,
@@ -44,8 +44,10 @@ module.exports = class Option {
       connectionTimeout: 15000,
       plugins: [],
       cache: {
-        users: { ...cachesOptions },
-        guilds: { ...cachesOptions }
+        users: { ...cacheOptions },
+        guilds: { ...cacheOptions },
+        channels: { ...cacheOptions },
+        members: { ...cacheOptions }
       }
     };
   }

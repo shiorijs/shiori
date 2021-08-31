@@ -26,18 +26,19 @@ class Message extends Base {
 
     if ("channel_id" in data) {
       /**
-       * The channel in which the message was sent
-       * @type {BaseGuildChannel}
+       * The channelId in which the message was sent
+       * @type {String}
        */
-      this.channel = this.client.utils.getChannel(data.channel_id) || { id: data.channel_id };
+      this.channelId = data.channel_id;
+      this.channel = this.client.utils.getChannel(this.channelId) ?? null;
     }
 
     if ("guild_id" in data) {
       /**
-       * The guild in which the message was sent
-       * @type {Guild}
+       * The guildId in which the message was sent
+       * @type {String}
        */
-      this.guild = this.client.guilds.get(data.guild_id) || { id: data.guild_id };
+      this.guildId = data.guild_id;
     }
 
     if (data.author?.id) {
@@ -125,6 +126,25 @@ class Message extends Base {
        */
       this.components = data.components;
     }
+  }
+
+/*
+  /**
+   * The channelId in which the message was sent
+   * @type {?TextChannel}
+   * @readonly
+   *./
+  get channel () {
+    return this.client.utils.getChannel(this.channelId) ?? null;
+  }*/
+
+  /**
+   * The Guild in which the message was sent
+   * @type {?Guild}
+   * @readonly
+   */
+  get guild () {
+    return this.client.guilds.get(this.guildId) ?? null;
   }
 
   /**

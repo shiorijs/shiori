@@ -38,7 +38,7 @@ class User extends Base {
 
     if ("avatar" in data) {
       /**
-       * The avatar of this user
+       * The avatar hash of this user
        * @type {String}
        */
       this.avatarHash = data.avatar;

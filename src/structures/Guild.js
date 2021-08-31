@@ -14,19 +14,21 @@ class Guild extends Base {
   constructor (data, client) {
     super(client);
 
+    const cache = client.options.cache;
+
     /**
      * Members that belongs to this guild
      * @type {Collection<String, Member>}
      * @name Guild#members
      */
-    Object.defineProperty(this, "members", { value: new Collection(), writable: true });
+    Object.defineProperty(this, "members", { value: new Collection(cache.members), writable: true });
 
     /**
      * Channels that belongs to this guild
      * @type {Collection<String, Channel>}
      * @name Guild#channels
      */
-    Object.defineProperty(this, "channels", { value: new Collection(), writable: true });
+    Object.defineProperty(this, "channels", { value: new Collection(cache.channels), writable: true });
 
     this._update(data);
   }

@@ -10,11 +10,19 @@ class Member extends Base {
   constructor (data, client, guild) {
     super(client);
 
+    // TODO: Mudar isso para um ID e fazer isso um getter.
     /**
      * Guild this member belongs to
      * @type {Guild}
      */
     this.guild = guild;
+
+    /*
+    Vale apena colocar a propriedade user na classe membro?
+    Podemos colocar algumas propriedades, como id e username
+
+    Caso seja necessário, podemos fazer isso ser um getter.
+    */
 
     /**
      * The user object this member belongs to
@@ -30,7 +38,7 @@ class Member extends Base {
   _update (data) {
     if ("nick" in data) {
       /**
-       * User ID
+       * Member nickname in a guild
        * @type {String}
        */
       this.nickname = data.nick;
@@ -38,23 +46,23 @@ class Member extends Base {
 
     if ("roles" in data) {
       /**
-       * All of the member roles
-       * @type {String}
+       * All of the member roles in a guild
+       * @type {Array<Snowflake>}
        */
       this.roles = data.roles;
     }
 
     if ("joined_at" in data) {
       /**
-       * When this user joined the guild
-       * @type {String}
+       * When this member joined a guild
+       * @type {Date}
        */
       this.joinedAt = new Date(data.joined_at);
     }
 
     if ("permissions" in data) {
       /**
-       * Permissions of this member in this guild
+       * Permissions of the member in a guild
        * @type {String}
        */
       this.permissions = data.permissions;

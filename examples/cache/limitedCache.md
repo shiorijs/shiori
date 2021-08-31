@@ -20,4 +20,6 @@ const client = new Client('your token', {
     }
   }
 });
+
+client.start();
 ```
