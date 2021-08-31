@@ -12,7 +12,7 @@ class BaseGuildChannel extends Channel {
 
     /**
      * Guild id this channel belongs to
-     * @type {String}
+     * @type {string}
      */
     this.guildId = data.guildId;
 
