@@ -62,7 +62,7 @@ client.start();
 
 ## Which library should I use? Discord.js, Eris or Shiori?
 
-It's up to you and with what you feel more confortable. There are different use cases and only you may decide when using these libraries.
+It's up to what you feel more confortable with. There are different use cases and only you may decide when using these libraries.
 
 ## When should I use Shiori?
 
