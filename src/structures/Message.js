@@ -27,7 +27,7 @@ class Message extends Base {
     if ("channel_id" in data) {
       /**
        * The channelId in which the message was sent
-       * @type {String}
+       * @type {string}
        */
       this.channelId = data.channel_id;
     }
@@ -35,7 +35,7 @@ class Message extends Base {
     if ("guild_id" in data) {
       /**
        * The guildId in which the message was sent
-       * @type {String}
+       * @type {string}
        */
       this.guildId = data.guild_id;
     }
