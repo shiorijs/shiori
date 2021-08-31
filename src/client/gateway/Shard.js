@@ -267,13 +267,11 @@ class Shard extends EventEmitter {
     * @returns {Object}
     */
   identify () {
-    const { client } = this.manager;
-
     const d = {
-      token: client.token,
-      intents: client.options.intents,
-      shard: [this.id, client.options.shardCount],
-      v: client.options.ws.version,
+      token: this.client.token,
+      intents: this.client.options.intents,
+      shard: [this.id, this.client.options.shardCount],
+      v: this.client.options.ws.version,
       properties: {
         os: process.platform,
         browser: "shiori",
