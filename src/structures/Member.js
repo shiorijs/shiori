@@ -54,7 +54,7 @@ class Member extends Base {
 
     if ("joined_at" in data) {
       /**
-       * When this member joined a guild
+       * When the member joined a guild
        * @type {Date}
        */
       this.joinedAt = new Date(data.joined_at);
