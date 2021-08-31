@@ -3,8 +3,8 @@ const User = require("./User");
 
 class Member extends Base {
   /**
+   * @param {object} data The data for the guild member
    * @param {Client} client The instantiating client
-   * @param {Object} data The data for the guild member
    * @param {Guild} guild The guild the member is part of
    */
   constructor (data, client, guild) {
@@ -31,7 +31,7 @@ class Member extends Base {
     if ("nick" in data) {
       /**
        * User ID
-       * @type {String}
+       * @type {string}
        */
       this.nickname = data.nick;
     }
@@ -39,7 +39,7 @@ class Member extends Base {
     if ("roles" in data) {
       /**
        * All of the member roles
-       * @type {String}
+       * @type {string}
        */
       this.roles = data.roles;
     }
@@ -47,7 +47,7 @@ class Member extends Base {
     if ("joined_at" in data) {
       /**
        * When this user joined the guild
-       * @type {String}
+       * @type {string}
        */
       this.joinedAt = new Date(data.joined_at);
     }
@@ -55,7 +55,7 @@ class Member extends Base {
     if ("permissions" in data) {
       /**
        * Permissions of this member in this guild
-       * @type {String}
+       * @type {string}
        */
       this.permissions = data.permissions;
     }

@@ -5,13 +5,13 @@
 class AsyncQueue {
   /**
    * The promises array
-   * @type {Array<Promise>}
+   * @type {Promise[]}
    */
   #promises = [];
 
   /**
 	 * The remaining amount of queued promises
-   * @type {Number}
+   * @type {number}
    * @readonly
 	 */
   get remaining () {
@@ -51,9 +51,7 @@ class AsyncQueue {
     return next;
   }
 
-  /**
-	 * Frees the queue's lock for the next item to process
-	 */
+  /** Frees the queue's lock for the next item to process */
   shift () {
     const deferred = this.#promises.shift();
     if (deferred) deferred.resolve();

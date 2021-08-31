@@ -8,8 +8,8 @@ const Collection = require("../utils/Collection");
   */
 class Guild extends Base {
   /**
+   * @param {object} data The guild structure data
    * @param {Client} client Shiori Client
-   * @param {Object} data The guild structure data
    */
   constructor (data, client) {
     super(client);
@@ -34,7 +34,7 @@ class Guild extends Base {
   _update (data) {
     /**
      * Guild ID
-     * @type {String}
+     * @type {string}
      */
     this.id = data.id;
 
@@ -53,7 +53,7 @@ class Guild extends Base {
     if ("name" in data) {
       /**
        * Guild Name
-       * @type {String}
+       * @type {string}
        */
       this.name = data.name;
     }

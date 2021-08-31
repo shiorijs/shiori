@@ -7,7 +7,7 @@ const Base = require("./Base");
 class User extends Base {
   /**
    * @param {Client} client Shiori Client
-   * @param {Object} data The user structure data
+   * @param {object} data The user structure data
    */
   constructor (data, client) {
     super(client);
@@ -18,20 +18,20 @@ class User extends Base {
   _update (data) {
     /**
      * User ID
-     * @type {String}
+     * @type {string}
      */
     this.id = data.id;
 
     /**
      * Whether this user is a bot or not
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.bot = data.bot ?? true;
 
     if ("username" in data) {
       /**
        * The username of this user
-       * @type {String}
+       * @type {string}
        */
       this.username = data.username;
     }
@@ -39,7 +39,7 @@ class User extends Base {
     if ("avatar" in data) {
       /**
        * The avatar of this user
-       * @type {String}
+       * @type {string}
        */
       this.avatarHash = data.avatar;
     }
@@ -50,7 +50,7 @@ class User extends Base {
        * 0 = No subscription
        * 1 = Nitro Classic
        * 2 = Nitro
-       * @type {Number}
+       * @type {number}
        */
       this.premiumType = data.premium_type ?? 0;
     }
@@ -58,7 +58,7 @@ class User extends Base {
     if ("flags" in data) {
       /**
        * This user flags
-       * @type {Number}
+       * @type {number}
        */
       this.flags = data.flags ?? 0;
     }

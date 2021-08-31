@@ -7,7 +7,7 @@ const Base = require("./Base");
 class Message extends Base {
   /**
    * @param {Client} client Shiori Client
-   * @param {Object} data The message structure data
+   * @param {object} data The message structure data
    */
   constructor (data, client) {
     super(client);
@@ -20,7 +20,7 @@ class Message extends Base {
 
     /**
      * Message ID
-     * @type {String}
+     * @type {string}
      */
     this.id = data.id;
 
@@ -51,7 +51,7 @@ class Message extends Base {
     if ("content" in data) {
       /**
        * The message content
-       * @type {String}
+       * @type {string}
        */
       this.content = data.content;
     }
@@ -59,18 +59,18 @@ class Message extends Base {
     if ("timestamp" in data) {
       /**
        * The time the message was created
-       * @type {Data}
+       * @type {Date}
        */
       this.timestamp = new Date(data.timestamp);
     }
 
     /**
      * Reference object that contains all the mentions in a message
-     * @typedef {Object} MessageMentions
-     * @property {Boolean} everyone Whether the message mentions everyone
-     * @property {Array<String>} users The users that were mentioned in the message
-     * @property {Array<String>} roles The roles that were mentioned in the message
-     * @property {Array<String>} channels The channels that were mentioned in the message
+     * @typedef {object} MessageMentions
+     * @property {boolean} everyone Whether the message mentions everyone
+     * @property {string[]} users The users that were mentioned in the message
+     * @property {string[]} roles The roles that were mentioned in the message
+     * @property {string[]} channels The channels that were mentioned in the message
      */
 
     if ("mentions" in data) {
@@ -105,7 +105,7 @@ class Message extends Base {
     if (data.type !== undefined) {
       /**
        * The type of the message
-       * @type {Number}
+       * @type {number}
        */
       this.type = data.type;
     }
@@ -113,7 +113,7 @@ class Message extends Base {
     if (data.flags !== undefined) {
       /**
        * The message flags
-       * @type {Number}
+       * @type {number}
        */
       this.flags = data.flags ?? 0;
     }

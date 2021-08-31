@@ -18,8 +18,8 @@ class ClientUtils {
 
   /**
    * setTimeout but as a promise.
-   * @param {Number} ms Timeout in MS
-   * @returns {Promise<Boolean>}
+   * @param {number} ms Timeout in MS
+   * @returns {Promise<boolean>}
    */
    static delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 }
