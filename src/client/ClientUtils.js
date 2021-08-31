@@ -18,14 +18,10 @@ class ClientUtils {
 
   /**
    * setTimeout but as a promise.
-   * @params {Number} ms Timeout in MS
+   * @param {Number} ms Timeout in MS
    * @returns {Promise<Boolean>}
    */
-  static async delay (ms) {
-    await new Promise((resolve) => {
-      setTimeout(() => resolve(true), ms);
-    });
-  }
+   static delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 module.exports = ClientUtils;

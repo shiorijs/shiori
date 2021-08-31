@@ -1,6 +1,6 @@
 const axios = require("axios");
 const AsyncQueue = require("../utils/AsyncQueue");
-const Util = require("../utils/Util");
+const Util = require("../client/ClientUtils");
 
 function getAPIOffset (serverDate) {
   return new Date(serverDate).getTime() - Date.now();

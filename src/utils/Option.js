@@ -10,8 +10,10 @@ module.exports = class Option {
   static mergeOptions (def, given) {
     if (!given) return def;
 
+    const has = (o, p) => Object.prototype.hasOwnProperty.call(o, p);
+
     for (const key in def) {
-      if (!Object.prototype.hasOwnProperty.call(given, key) || given[key] === undefined)
+      if (!has(given, key) || given[key] === undefined)
         given[key] = def[key];
       else if (given[key] === Object(given[key]))
         given[key] = this.mergeOptions(def[key], given[key]);
