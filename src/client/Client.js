@@ -18,7 +18,7 @@ class Client extends EventEmitter {
 
     if (!token || typeof (token) !== "string") throw new Error("No token was assigned on \"Client\"!");
 
-    this.options = Option.updateOptionsWithDefaults(clientOptions);
+    this.options = Option.defaultOptions(clientOptions);
 
     if (this.options.shardCount <= 0) throw new Error("shardCount cannot be lower or equal to 0");
 

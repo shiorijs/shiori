@@ -1,8 +1,8 @@
 const Constants = require("./Constants");
 
 module.exports = class Option {
-  static updateOptionsWithDefaults (options) {
-    options = this.mergeOptions(this.#defaultOptions, options);
+  static defaultOptions (options) {
+    options = this.mergeOptions(this.#defaultClientOptions, options);
 
     return options;
   }
@@ -22,7 +22,7 @@ module.exports = class Option {
     return given;
   }
 
-  static get #defaultOptions () {
+  static get #defaultClientOptions () {
     const cachesOptions = {
       limit: Infinity,
       toAdd: () => true,
