@@ -10,10 +10,22 @@ export type Snowflake = `${bigint}`;
 export type ImageFormats = "webp" | "png" | "jpg" | "jpeg" | "gif";
 export type ImageSizes = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
 export type AllowedMessageMentions = "roles" | "users" | "everyone";
+export type EmbedType = "rich" | "image" | "video" | "gifv" | "article" | "link";
 
 // Enums
-export enum ChannelTypes = {
 
+export enum ChannelTypes = {
+  GUILD_TEXT = 0;
+  DM = 1;
+  GUILD_VOICE = 2;
+  GROUP_DM = 3;
+  GUILD_CATEGORY = 4;
+  GUILD_NEWS = 5;
+  GUILD_STORE = 6;
+  GUILD_NEWS_THREAD = 10;
+  GUILD_PUBLIC_THREAD = 11;
+  GUILD_PRIVATE_THREAD = 12;
+  GUILD_STAGE_VOICE = 13;
 };
 
 // Interfaces
@@ -94,14 +106,72 @@ export interface MessageEditOptions {
 
 }
 
-// TODO
 export interface MessageMentions {
-
+  everyone: boolean;
+  users: Snowflake[];
+  roles: Snowflake[];
+  channels: Snowflake[];
 }
 
-// TODO
-export interface MessageEmbed {
+export interface EmbedFooter {
+  text: string;
+  icon_url?: string;
+  proxy_icon_url?: string;
+}
 
+export interface EmbedImage {
+  url?: string;
+  proxy_url?: string;
+  height?: number;
+  width?: number;
+}
+
+export interface EmbedThumbnail {
+  url?: string;
+  proxy_url?: string;
+  height?: number;
+  width?: number;
+}
+
+export interface EmbedVideo {
+  url?: string;
+  proxy_url?: string;
+  height?: number;
+  width?: number;
+}
+
+export interface EmbedProvider {
+  name?: string;
+  url?: string;
+}
+
+export interface EmbedAuthor {
+  name?: string;
+  url?: string;
+  icon_url?: string;
+  proxy_icon_url?: string;
+}
+
+export interface EmbedField {
+  name: string;
+  value: string;
+  inline?: boolean;
+}
+
+export interface MessageEmbed {
+  title?: string;
+  type?: EmbedType;
+  description?: string;
+  url?: string;
+  timestamp?: Date;
+  color?: number;
+  footer?: EmbedFooter;
+  image?: EmbedImage;
+  thumbnail?: EmbedThumbnail;
+  video?: EmbedVideo;
+  provider?: EmbedProvider;
+  author?: EmbedAuthor;
+  fields?: EmbedField[];
 }
 
 // TODO
