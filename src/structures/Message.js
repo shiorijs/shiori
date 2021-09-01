@@ -146,6 +146,15 @@ class Message extends Base {
   }
 
   /**
+   * The member that sent this message
+   * @type {?Member}
+   * @readonly
+   */
+  get member () {
+    return this.guild.members.get(this.author?.id) ?? null;
+  }
+
+  /**
     * Deletes this message.
     * @returns {Promise<void>}
     */
