@@ -50,7 +50,7 @@ class Collection extends Map {
 
     if (id == undefined) throw new Error("Missing id");
     if (this.has(id)) return this.get(id);
-    if (!this.cache?.toAdd(id, item)) return;
+    if (this.cache && !this.cache.toAdd(id, item)) return;
 
     if (this.limit && this.size > this.limit) this.delete([...this.keys()].slice(-1)[0]);
 
