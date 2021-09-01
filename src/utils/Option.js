@@ -39,6 +39,8 @@ module.exports = class Option {
         version: Constants.REST.API_VERSION,
         fetchAllUsers: false
       },
+      defaultFormat: "png",
+      defaultSize: 2048,
       intents: 0,
       shardCount: 1,
       blockedEvents: [],
