@@ -31,7 +31,7 @@ class RestManager {
     /**
      * Handlers used to store buckets.
      * @name RestManager#handlers
-     * @type {Collection<String, Bucket>}
+     * @type {Collection<string, Bucket>}
      */
     Object.defineProperty(this, "handlers", { value: new Collection() });
 

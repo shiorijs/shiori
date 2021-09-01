@@ -36,6 +36,14 @@ class User extends Base {
       this.username = data.username;
     }
 
+    if ("discriminator" in data) {
+      /**
+       * A discriminator based on username for the user
+       * @type {?string}
+       */
+      this.discriminator = typeof (data.discriminator) === "string" ? data.discriminator : null;
+    }
+
     if ("avatar" in data) {
       /**
        * The avatar hash of this user
@@ -47,9 +55,9 @@ class User extends Base {
     if ("premium_type" in data) {
       /**
        * The type of Nitro subscription this user has
-       * 0 = No subscription
-       * 1 = Nitro Classic
-       * 2 = Nitro
+       *  - `0` = No subscription
+       *  - `1` = Nitro Classic
+       *  - `2` = Nitro
        * @type {number}
        */
       this.premiumType = data.premium_type ?? 0;
