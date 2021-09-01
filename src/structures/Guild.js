@@ -59,13 +59,15 @@ class Guild extends Base {
     }
 
     if ("widget_enabled" in data || "widget_channel_id" in data) {
-      this.widget = { enable: Boolean(data.widget_enabled), channelId: data.widget_channel_id };
+      this.widget = { enabled: Boolean(data.widget_enabled), channelId: data.widget_channel_id };
     }
 
+    // Ver se possui tamanho invés de verificar se existe (.length)
     if ("roles" in data) {
       this.roles = data.roles.map(r => r.id);
     }
 
+    // Ver se possui tamanho invés de verificar se existe (.length)
     if ("emojis" in data) {
       this.emojis = data.emojis.map(e => e.id);
     }
@@ -84,7 +86,6 @@ class Guild extends Base {
 
     if ("description" in data) {
       this.description = data.description;
-
     }
 
     if (data.banner !== null) {

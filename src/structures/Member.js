@@ -25,9 +25,15 @@ class Member extends Base {
   }
 
   _update (data) {
+    /**
+     * When the member joined the guild
+     * @type {Date}
+     */
+    this.joinedAt = new Date(data.joined_at);
+
     if ("nick" in data) {
       /**
-       * Member nickname in a guild
+       * Member nickname in the guild
        * @type {string}
        */
       this.nickname = data.nick;
@@ -35,23 +41,15 @@ class Member extends Base {
 
     if ("roles" in data) {
       /**
-       * All of the member roles in a guild
+       * All of the member roles in the guild
        * @type {string}
        */
       this.roles = data.roles;
     }
 
-    if ("joined_at" in data) {
-      /**
-       * When the member joined a guild
-       * @type {Date}
-       */
-      this.joinedAt = new Date(data.joined_at);
-    }
-
     if ("permissions" in data) {
       /**
-       * Permissions of the member in a guild
+       * Permissions of the member in the guild
        * @type {string}
        */
       this.permissions = data.permissions;
