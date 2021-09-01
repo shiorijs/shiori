@@ -27,6 +27,9 @@ export interface ClientCache {
   guilds: CacheOptions;
 }
 
+export type ImageFormats = "webp" | "png" | "jpg" | "jpeg" | "gif";
+export type ImageSizes = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
+
 export interface ClientOptions {
   ws: WSOptions;
   rest: RestOptions;
@@ -37,6 +40,8 @@ export interface ClientOptions {
   connectionTimeout: number;
   plugins: Array<typeof Class>;
   cache: ClientCache;
+  defaultFormat: ImageFormats;
+  defaultSize: ImageSizes;
 }
 
 export class Client {
