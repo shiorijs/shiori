@@ -3,10 +3,9 @@ import GatewayManager from "../src/client/gateway/GatewayManager";
 import Shard from "../src/client/gateway/Shard";
 import RestManager from "../src/rest/RestManager";
 
-export type Snowflake = `${bigint}`;
-
 // Types
 
+export type Snowflake = `${bigint}`;
 export type ImageFormats = "webp" | "png" | "jpg" | "jpeg" | "gif";
 export type ImageSizes = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
 export type AllowedMessageMentions = "roles" | "users" | "everyone";
@@ -40,10 +39,10 @@ export interface RestOptions {
 }
 
 export interface CacheOptions {
-  limit: number,
-  toAdd: function,
-  toRemove: function,
-  sweep: number,
+  limit: number;
+  toAdd: (value: object, key: Snowflake | unknown) => boolean;
+  toRemove: (value: object, key: Snowflake | unknown) => boolean;
+  sweep: number;
   sweepTimeout: number
 }
 
@@ -196,7 +195,7 @@ export class Client {
   public constructor(token: string, options: ClientOptions);
   public ws: GatewayManager;
   public rest: RestManager;
-  public ClientUtils: ClientUtils;
+  public utils: ClientUtils;
   public plugins: Array<Plugin>;
 
   public users: Collection<Snowflake, User>;
@@ -206,6 +205,12 @@ export class Client {
 
   public start(): void;
   public getInformation(type: string, id: Snowflake): any;
+}
+
+export class ClientUtils {
+  private client: Client;
+  public getChannel(channelId: snowflake): Channel;
+  public image(target: Guild | User): Function // Especificar melhor a callback
 }
 
 export class Base {
@@ -292,9 +297,9 @@ export class Interaction extends Base {
 
 }
 
-export class Collection extends Map {
-  public add(id: string, item: object): object;
-  public filter(func: Function): Array<Class>; // Class não existe, mudar
-  public map(func: Function): Array; // Especificar melhor a callback
-  public remove(item: object): Class | undefined; // Class não existe
+export class Collection<K, V> extends Map<K, V> {
+  public add(id: K, item: V): V;
+  public filter(func: (id: K, item: V) => boolean): Array<V>;
+  public map(func: (item: V) => boolean): Array<V>;
+  public remove(item: K): V | undefined;
 }
