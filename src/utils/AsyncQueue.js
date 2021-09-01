@@ -1,6 +1,6 @@
 /**
  * The AsyncQueue class used to sequentialize burst requests.
- * Based of https://github.com/sapphiredev/utilities/blob/main/packages/async-queue
+ * Based of sapphire/async-queue
  */
 class AsyncQueue {
   /**
