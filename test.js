@@ -11,7 +11,7 @@ const client = Shiori(process.env.DISCORD_TOKEN, {
       sweep: 10,
       sweepTimeout: 10000,
       toAdd: (userID) => {
-        if (!["664806442406248448", "532294395655880705", "515903666360942594"].includes(userID)) return false;
+        if (!["664806442406248448", "532294395655880705", "515903666360942594", "478031386796752896"].includes(userID)) return false;
         else return true;
       },
       toRemove: (userID) => {
@@ -25,6 +25,10 @@ const client = Shiori(process.env.DISCORD_TOKEN, {
 const write = (content) => process.stdout.write(`${content}\n`);
 
 client.on("messageCreate", async (message) => {
+  if (message.content === "avatar") {
+    return message.channel.send(client.utils.image(message.author).avatar());
+  }
+  
   if (message.content === "react") {
     const emojis = ["🕵", "😎", "😱", "🚀", "✨"];
 
