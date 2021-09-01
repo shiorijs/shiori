@@ -1,5 +1,4 @@
 const Base = require("./Base");
-const User = require("./User");
 
 class Member extends Base {
   /**
@@ -16,14 +15,11 @@ class Member extends Base {
      */
     this.guildId = guildId;
 
-    // Provavelmente mudar isso para um getter
     /**
-     * The user object this member belongs to
-     * @type {User}
+     * guildId this member belongs to
+     * @type {string}
      */
-    this.user = this.client.users.get(data.user.id);
-
-    if (!this.user) this.user = new User(data.user, client);
+    this.id = data.user.id;
 
     this._update(data);
   }
@@ -60,6 +56,15 @@ class Member extends Base {
        */
       this.permissions = data.permissions;
     }
+  }
+
+  /**
+   * The user this member belongs to
+   * @type {User}
+   * @readonly
+   */
+  get user () {
+    return this.client.users.get(this.id);
   }
 
   /**

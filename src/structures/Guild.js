@@ -30,15 +30,70 @@ class Guild extends Base {
      */
     Object.defineProperty(this, "channels", { value: new Collection(cache.channels), writable: true });
 
+    /**
+     * The guildId
+     * @type {string}
+     */
+    this.id = data.id;
+
     this._update(data);
   }
 
   _update (data) {
     /**
-     * Guild ID
-     * @type {string}
-     */
-    this.id = data.id;
+      * The owner id from the guild
+      * @type {string}
+      */
+    this.ownerId = data.owner_id;
+
+    /**
+      * The guild name
+      * @type {string}
+      */
+    this.name = data.name;
+
+    this.verificationLevel = data.verification_level;
+
+    if ("afk_channel_id" in data || "afk_timeout" in data) {
+      this.afk = { channelId: data.afk_channel_id, timeout: data.afk_timeout };
+    }
+
+    if ("widget_enabled" in data || "widget_channel_id" in data) {
+      this.widget = { enable: Boolean(data.widget_enabled), channelId: data.widget_channel_id };
+    }
+
+    if ("roles" in data) {
+      this.roles = data.roles.map(r => r.id);
+    }
+
+    if ("emojis" in data) {
+      this.emojis = data.emojis.map(e => e.id);
+    }
+
+    if ("features" in data) {
+      this.features = data.features;
+    }
+
+    if ("icon" in data) {
+      /**
+       * The guild icon hash
+       * @type {string}
+       */
+      this.iconHash = data.icon;
+    }
+
+    if ("description" in data) {
+      this.description = data.description;
+
+    }
+
+    if (data.banner !== null) {
+      this.bannerHash = data.banner;
+    }
+
+    if (data.premium_tier !== undefined || data.premium_subscription_count !== undefined) {
+      this.boost = { level: data.premium_tier, amount: data.premium_subscription_count ?? 0 };
+    }
 
     if ("channels" in data) {
       for (const _channel of data.channels) {
@@ -51,14 +106,15 @@ class Guild extends Base {
         this.client.channelMap[channel.id] = this.id;
       }
     }
+  }
 
-    if ("name" in data) {
-      /**
-       * Guild Name
-       * @type {string}
-       */
-      this.name = data.name;
-    }
+  /**
+   * The owner of a guild
+   * @type {User}
+   * @readonly
+   */
+  get owner () {
+    return this.client.users.get(this.ownerId);
   }
 }
 
