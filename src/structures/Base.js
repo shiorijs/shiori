@@ -15,6 +15,17 @@ class Base {
   _update (data) {
     return data;
   }
+
+  /**
+   * The date in which this object was created.
+   * @type {?Date}
+   * @readonly
+   */
+  get createdAt () {
+    if (!this.id) return null;
+
+    return new Date(Math.floor(this.id / 4194304) + 1420070400000);
+  }
 }
 
 module.exports = Base;
