@@ -12,6 +12,11 @@ class ClientUtils {
     this.#client = client;
   }
 
+  /**
+    * Gets a channel in the cache.
+    * @param {string} channelId The id of the channel to get
+    * @returns {?Channel} The channel.
+    */
   getChannel (channelId) {
     const guildId = this.#client.channelMap[channelId];
 

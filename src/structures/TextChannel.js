@@ -34,6 +34,7 @@ class TextChannel extends BaseGuildChannel {
 
   /**
     * Create a message in this text channel.
+    * @param {MessageCreateOptions} options Options to be used when creating the message
     * @returns {Promise<Message>}
     */
   send (options) {

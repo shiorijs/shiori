@@ -42,7 +42,7 @@ class Member extends Base {
     if ("roles" in data) {
       /**
        * All of the member roles in the guild
-       * @type {string}
+       * @type {string[]}
        */
       this.roles = data.roles;
     }
