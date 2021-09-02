@@ -2,7 +2,7 @@ const Base = require("./Base");
 
 class Member extends Base {
   /**
-   * @param {object} data The data for the guild member
+   * @param {object} data The guild member data
    * @param {Client} client The instantiating client
    * @param {string} guildId The guildId the member is part of
    */

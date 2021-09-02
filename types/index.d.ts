@@ -109,6 +109,13 @@ export interface AFKChannel {
   timeout?: number;
 }
 
+export interface PermissionOverwrite {
+  id: Snowflake;
+  type: number;
+  allow: string;
+  deny: string;
+}
+
 export interface GuildBoost {
   level: number;
   amount: number;
@@ -302,6 +309,8 @@ export class BaseGuildChannel extends Channel {
 export class TextChannel extends BaseGuildChannel {
   public slowmodeTime?: number;
   public topic?: string;
+  public permissionOverwrites?: PermissionOverwrite[];
+  public lastMessage?: Message | { id: Snowflake };
   public send(options: MessageCreateOptions): Message;
 }
 

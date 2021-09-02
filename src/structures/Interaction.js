@@ -6,6 +6,10 @@ const { InteractionTypes } = require("../utils/Constants");
  * @extends {Base}
  */
 class Interaction extends Base {
+  /**
+   * @param {object} data The interaction data
+   * @param {Client} client The instantiating client
+   */
   constructor (data, client) {
     super(client);
 

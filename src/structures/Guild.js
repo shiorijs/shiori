@@ -9,7 +9,7 @@ const Collection = require("../utils/Collection");
 class Guild extends Base {
   /**
    * @param {object} data The guild structure data
-   * @param {Client} client Shiori Client
+   * @param {Client} client The instantiating client
    */
   constructor (data, client) {
     super(client);

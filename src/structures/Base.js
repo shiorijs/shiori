@@ -2,6 +2,9 @@
  * Represents a discord structure.
  */
 class Base {
+  /**
+   * @param {Client} client The instantiating client
+   */
   constructor (client) {
     /**
      * The client that instantiated this

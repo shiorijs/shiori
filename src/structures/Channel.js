@@ -6,6 +6,10 @@ const { ChannelTypes } = require("../utils/Constants");
  * @extends {Base}
  */
 class Channel extends Base {
+  /**
+   * @param {object} data The channel structure data
+   * @param {Client} client The instantiating client
+   */
   constructor (data, client) {
     super(client);
 

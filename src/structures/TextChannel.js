@@ -6,6 +6,10 @@ const Message = require("./Message");
  * @extends {BaseGuildChannel}
  */
 class TextChannel extends BaseGuildChannel {
+  /**
+   * @param {object} data The text channel structure data
+   * @param {Client} client Shiori Client
+   */
   constructor (data, client) {
     super(data, client);
 
@@ -29,6 +33,22 @@ class TextChannel extends BaseGuildChannel {
        * @type {string}
        */
       this.topic = data.topic;
+    }
+
+    if ("permission_overwrites" in data) {
+      /**
+       * The permission overwrites of this channel.
+       * @type {PermissionOverwrite[]}
+       */
+      this.permissionOverwrites = data.permissionOverwrites;
+    }
+
+    if ("last_message_id" in data) {
+      /**
+       * The last message of this channel. If not cached, will return only the id.
+       * @type {Message | object}
+       */
+      this.lastMessage = this.messages.get(data.last_message_id) ?? { id: data.last_message_id };
     }
   }
 

@@ -6,8 +6,8 @@ const Base = require("./Base");
   */
 class User extends Base {
   /**
-   * @param {Client} client Shiori Client
    * @param {object} data The user structure data
+   * @param {Client} client The instantiating client
    */
   constructor (data, client) {
     super(client);
