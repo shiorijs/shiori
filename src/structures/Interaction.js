@@ -78,14 +78,6 @@ class Interaction extends Base {
        */
       this.member = this.guild?.members.add(data.member) ?? data.member;
     }
-
-    if ("version" in data) {
-      /**
-       * The version
-       * @type {number}
-       */
-      this.version = data.version;
-    }
   }
 
   /**
