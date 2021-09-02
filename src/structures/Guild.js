@@ -116,7 +116,7 @@ class Guild extends Base {
   }
 
   /**
-   * The owner of a guild
+   * The owner of the guild
    * @type {?User}
    * @readonly
    */
