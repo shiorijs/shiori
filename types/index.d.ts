@@ -10,10 +10,16 @@ export type ImageFormats = "webp" | "png" | "jpg" | "jpeg" | "gif";
 export type ImageSizes = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
 export type AllowedMessageMentions = "roles" | "users" | "everyone";
 export type EmbedType = "rich" | "image" | "video" | "gifv" | "article" | "link";
+export type GuildFeatures =
+  "ANIMATED_ICON" | "BANNER" | "COMMERCE" | "COMMUNITY" | "DISCOVERABLE" | "FEATURABLE"              |
+  "INVITE_SPLASH" | "MEMBER_VERIFICATION_GATE_ENABLED" | "NEWS" | "PARTNERED" | "PREVIEW_ENABLED"    |
+  "VANITY_URL" | "VERIFIED" | "VIP_REGIONS" | "WELCOME_SCREEN_ENABLED" | "TICKETED_EVENTS_ENABLED"   |
+  "MONETIZATION_ENABLED" | "MORE_STICKERS" | "THREE_DAY_THREAD_ARCHIVE" | "SEVEN_DAY_THREAD_ARCHIVE" |
+  "PRIVATE_THREADS";
 
 // Enums
 
-export enum ChannelTypes = {
+export enum ChannelType = {
   GUILD_TEXT = 0;
   DM = 1;
   GUILD_VOICE = 2;
@@ -26,6 +32,39 @@ export enum ChannelTypes = {
   GUILD_PRIVATE_THREAD = 12;
   GUILD_STAGE_VOICE = 13;
 };
+
+export enum MessageType = {
+  DEFAULT	= 0;
+  RECIPIENT_ADD	= 1;
+  RECIPIENT_REMOVE = 2;
+  CALL =	3;
+  CHANNEL_NAME_CHANGE =	4;
+  CHANNEL_ICON_CHANGE =	5;
+  CHANNEL_PINNED_MESSAGE = 6;
+  GUILD_MEMBER_JOIN = 7;
+  USER_PREMIUM_GUILD_SUBSCRIPTION = 8;
+  USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1 = 9;
+  USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2 = 10;
+  USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3 = 11;
+  CHANNEL_FOLLOW_ADD = 12;
+  GUILD_DISCOVERY_DISQUALIFIED = 14;
+  GUILD_DISCOVERY_REQUALIFIED = 15;
+  GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING = 16;
+  GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING = 17;
+  THREAD_CREATED = 18;
+  REPLY = 19;
+  APPLICATION_COMMAND = 20;
+  THREAD_STARTER_MESSAGE = 21;
+  GUILD_INVITE_REMINDER = 22;
+}
+
+export enum GuildVerificationLevel {
+  NONE = 0;
+  LOW = 1;
+  MEDIUM = 2;
+  HIGH = 3;
+  VERY_HIGH = 4;
+}
 
 // Interfaces
 
@@ -71,7 +110,7 @@ export interface AFKChannel {
 }
 
 export interface GuildBoost {
-  level: number; // Mudar para um enum.
+  level: number;
   amount: number;
 }
 
@@ -234,10 +273,10 @@ export class Message extends Base {
   public author: User;
   public content: string;
   public timestamp: Date;
+  public type: MessageType;
   public mentions?: MessageMentions;
   public attachments?: MessageAttachments[];
   public embeds?: MessageEmbed[];
-  public type?: number; // Mudar para um enum
   public flags?: number;
   public components?: MessageComponents[];
   public async delete(): void;
@@ -256,7 +295,7 @@ export class BaseGuildChannel extends Channel {
   public parentId: Snowflake;
   public nsfw: boolean;
   public guildId: Snowflake;
-  public type: ChannelTypes | "UNKNOWN";
+  public type: ChannelType | "UNKNOWN";
   public messages: Collection<Snowflake, Message>;
 }
 
@@ -278,13 +317,13 @@ export class Member extends Base {
 export class Guild extends Base {
   public ownerId: Snowflake;
   public name: string;
-  public verificationLevel: number; // Mudar para um enum
+  public verificationLevel: GuildVerificationLevel;
   public members: Collection<Snowflake, Member>;
   public afk?: AFKChannel;
   public widget?: GuildWidget;
   public roles?: Snowflake[];
   public emojis?: Snowflake[];
-  public features?: string[]; // Mudar string para um enum;
+  public features?: GuildFeatures[];
   public iconHash?: string;
   public bannerHash: string;
   public description?: string;
@@ -300,6 +339,6 @@ export class Interaction extends Base {
 export class Collection<K, V> extends Map<K, V> {
   public add(id: K, item: V): V;
   public filter(func: (id: K, item: V) => boolean): Array<V>;
-  public map(func: (item: V) => boolean): Array<V>;
+  public map(func: (item: V) => unknown): Array<V>;
   public remove(item: K): V | undefined;
 }
