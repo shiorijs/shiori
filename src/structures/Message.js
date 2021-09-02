@@ -24,6 +24,12 @@ class Message extends Base {
      */
     this.id = data.id;
 
+    /**
+     * The message flags
+     * @type {number}
+     */
+    this.flags = data.flags ?? 0;
+
     if ("channel_id" in data) {
       /**
        * The channelId in which the message was sent
@@ -110,14 +116,6 @@ class Message extends Base {
       this.type = data.type;
     }
 
-    if (data.flags !== undefined) {
-      /**
-       * The message flags
-       * @type {number}
-       */
-      this.flags = data.flags ?? 0;
-    }
-
     if (data.components?.length) {
       /**
        * The message components
@@ -145,8 +143,16 @@ class Message extends Base {
     return this.client.guilds.get(this.guildId) ?? null;
   }
 
+  get deletable () {
+
+  }
+
+  get editable () {
+
+  }
+
   /**
-   * The member that sent this message
+   * The member that sended this message
    * @type {?Member}
    * @readonly
    */
@@ -164,9 +170,10 @@ class Message extends Base {
 
   /**
     * Creates a reaction in this message.
+    * @param {string} reaction The reaction to be added
     * @returns {Promise<void>}
     */
-  async addReaction (reaction) {
+  async react (reaction) {
     await this.client.rest.api
       .channels(this.channel.id)
       .messages(this.id)
@@ -175,13 +182,17 @@ class Message extends Base {
 
   /**
     * Edits a message.
-    * @params {MessageEditOptions} options The options to be used when editing the message
+    * @param {MessageEditOptions} options The options to be used when editing the message
     * @returns {Promise<void>}
     */
   async edit (options) {
     if (typeof (options) === "string") options = { content: options };
 
     await this.client.rest.api.channels(this.channel.id).messages(this.id).patch({ data: options });
+  }
+
+  async pin () {
+    await this.client.rest.api.channels(this.channel.id).pins(this.id).put();
   }
 }
 
