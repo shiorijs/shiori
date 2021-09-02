@@ -62,13 +62,11 @@ class Guild extends Base {
       this.widget = { enabled: Boolean(data.widget_enabled), channelId: data.widget_channel_id };
     }
 
-    // Ver se possui tamanho invés de verificar se existe (.length)
-    if ("roles" in data) {
+    if (data.roles?.length) {
       this.roles = data.roles.map(r => r.id);
     }
 
-    // Ver se possui tamanho invés de verificar se existe (.length)
-    if ("emojis" in data) {
+    if (data.emojis?.length) {
       this.emojis = data.emojis.map(e => e.id);
     }
 
@@ -85,10 +83,18 @@ class Guild extends Base {
     }
 
     if ("description" in data) {
+      /**
+       * The guild community description
+       * @type {string}
+       */
       this.description = data.description;
     }
 
     if (data.banner !== null) {
+      /**
+       * The guild banner hash
+       * @type {string}
+       */
       this.bannerHash = data.banner;
     }
 
@@ -111,11 +117,11 @@ class Guild extends Base {
 
   /**
    * The owner of a guild
-   * @type {User}
+   * @type {?User}
    * @readonly
    */
   get owner () {
-    return this.client.users.get(this.ownerId);
+    return this.client.users.get(this.ownerId) ?? null;
   }
 }
 
