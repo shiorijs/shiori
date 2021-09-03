@@ -71,6 +71,10 @@ class Shard extends EventEmitter {
     this.sequence = -1;
     this.lastHeartbeatAcked = true;
     this.heartbeatInterval = null;
+    /**
+      * Status of the shard
+      * @type {string}
+      */
     this.status = "IDLE";
     this.lastHeartbeatReceived = 0;
     this.lastHeartbeatSent = 0;
@@ -81,11 +85,6 @@ class Shard extends EventEmitter {
     * @returns {void}
     */
   connect () {
-    /**
-      * Status of the shard
-      * @type {string}
-      */
-    this.status = "CONNECTING";
     this.connection = new WebSocket(this.manager.websocketURL);
 
     this.connection.on("message", (message) => this.websocketMessageReceive(message));
@@ -173,8 +172,6 @@ class Shard extends EventEmitter {
     * @returns {void}
     */
   websocketConnectionOpen () {
-    this.status = "HANDSHAKING";
-
     /**
     * Fired when the shard establishes a connection
     * @event Client#connect
@@ -199,8 +196,6 @@ class Shard extends EventEmitter {
 
         const percent = (((this.id + 1) / this.client.options.shardCount) * 100).toFixed(1);
         this.client.emit("debug", `Shard ${this.id} connected! (${percent}%)`);
-
-        this.status = "READY";
 
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat();
@@ -357,7 +352,7 @@ class Shard extends EventEmitter {
 
     /**
       * Fired when the shard disconnects
-      * @event Shard#disconnect
+      * @event Client#disconnect
       * @prop {string} reason The reason why the shard disconnected
       */
     this.client.emit("disconnect", "ASKED");
