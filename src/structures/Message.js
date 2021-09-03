@@ -144,11 +144,11 @@ class Message extends Base {
   }
 
   get deletable () {
-
+    return true;
   }
 
   get editable () {
-
+    return true;
   }
 
   /**

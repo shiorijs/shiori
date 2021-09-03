@@ -22,7 +22,7 @@ class Role extends Base {
   }
 
   _update (data) {
-
+    return data;
   }
 }
 

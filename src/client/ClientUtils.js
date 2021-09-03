@@ -66,7 +66,7 @@ class ClientUtils {
    * @param {number} ms Timeout in MS
    * @returns {Promise<boolean>}
    */
-   static delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function makeImageUrl (root, format, size, dynamic) {

@@ -26,10 +26,10 @@ class Interaction extends Base {
     this.type = InteractionTypes[data.type] ?? "UNKNOWN";
 
     /**
-      * Whether this interaction has already been acknowledged.
+      * Whether this interaction was already responded.
       * @type {boolean}
       */
-    this.acknowledged = false;
+    this.responded = false;
 
     /**
      * The interaction's token

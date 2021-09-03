@@ -18,8 +18,7 @@ Shiori.Channel = require("./structures/Channel");
 Shiori.GuildChannel = require("./structures/BaseGuildChannel");
 Shiori.TextChannel = require("./structures/TextChannel");
 Shiori.Interaction = require("./structures/Interaction");
-Shiori.Intents = Constants.Intents;
-Shiori.Constants = Constants;
+Shiori.Intents = Constants.INTENTS;
 
 // Utilities
 Shiori.Collection = require("./utils/Collection");
