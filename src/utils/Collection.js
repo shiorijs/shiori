@@ -50,7 +50,7 @@ class Collection extends Map {
 
     if (id == undefined) throw new Error("Missing id");
     if (this.has(id)) return this.get(id);
-    if (this.cache && !this.cache.toAdd(id, item)) return;
+    if (this.cache && !this.cache.toAdd(item, id)) return;
 
     if (this.limit && this.size > this.limit) this.delete([...this.keys()].slice(-1)[0]);
 
@@ -66,7 +66,7 @@ class Collection extends Map {
     const array = [];
 
     for (const [id, item] of this.entries()) {
-      if (func(id, item)) array.push(id);
+      if (func(item, id)) array.push(id);
     }
 
     return array;
