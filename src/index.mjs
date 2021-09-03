@@ -18,7 +18,10 @@ export const {
   GuildChannel,
   TextChannel,
   Interaction,
+  Role,
+  VoiceChannel,
 
   // Utilities
-  Collection
+  Collection,
+  Intents
 } = Shiori;

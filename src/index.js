@@ -18,9 +18,11 @@ Shiori.Channel = require("./structures/Channel");
 Shiori.GuildChannel = require("./structures/BaseGuildChannel");
 Shiori.TextChannel = require("./structures/TextChannel");
 Shiori.Interaction = require("./structures/Interaction");
-Shiori.Intents = Constants.INTENTS;
+Shiori.VoiceChannel = require("./structures/VoiceChannel");
+Shiori.Role = require("./structures/Role");
 
 // Utilities
 Shiori.Collection = require("./utils/Collection");
+Shiori.Intents = Constants.INTENTS;
 
 module.exports = Shiori;
