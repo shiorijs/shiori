@@ -1,5 +1,7 @@
-const { CommandTypes } = require("../../utils/Constants");
+const { CommandTypes, InteractionTypes } = require("../../utils/Constants");
 
+const Message = require("../Message");
+const User = require("../User");
 const Interaction = require("./Interaction");
 const ApplicationCommandOptions = require("./ApplicationCommandOptions");
 
@@ -27,6 +29,23 @@ class ApplicationCommandInteraction extends Interaction {
   _update (data) {
     super._update(data);
 
+    if ("resolved" in data.data) {
+      this.resolved = data.data.resolved;
+    }
+
+    if ("target_id" in data.data) {
+      /**
+        * Context Menu targetId
+        * @type {string}
+        */
+      this.targetId = data.data.target_id;
+      /**
+        * Context Menu target type
+        * @type {string}
+        */
+      this.targetType = CommandTypes[data.data.type];
+    }
+
     /**
      * Reference object that contains all command informations
      * @typedef {object} ApplicationCommand
@@ -37,7 +56,11 @@ class ApplicationCommandInteraction extends Interaction {
      * @property {object} resolved The application command resolved options
      */
 
-    if (this.type === "APPLICATION_COMMAND") {
+
+    if (
+      InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND &&
+      this.targetId === undefined
+    ) {
       /**
        * Application Command included in this interaction
        * @type {ApplicationCommand}
@@ -49,6 +72,22 @@ class ApplicationCommandInteraction extends Interaction {
         options: data.data.options ?? [],
         resolved: data.data.resolved ?? {}
       };
+    }
+  }
+
+  resolveTarget () {
+    if (this.targetId === undefined || !this.resolved) return null;
+
+    if (CommandTypes[this.targetType] === CommandTypes.USER) {
+      const [userId, user] = Object.entries(this.resolved.users).flat(Infinity);
+
+      return this.client.users.add(userId, new User(user, this.client));
+    }
+
+    if (CommandTypes[this.targetType] === CommandTypes.MESSAGE) {
+      const [messageId, message] = Object.entries(this.resolved.messages).flat(Infinity);
+
+      return this.channel.messages.add(messageId, new Message(message, this.client));
     }
   }
 }

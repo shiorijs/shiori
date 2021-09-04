@@ -1,4 +1,6 @@
-const { InteractionTypes, InteractionResponseTypes } = require("../../utils/Constants");
+const {
+  InteractionTypes, InteractionResponseTypes, MessageComponentTypes, CommandTypes
+} = require("../../utils/Constants");
 
 const Base = require("../Base");
 const Member = require("../Member");
@@ -99,6 +101,47 @@ class Interaction extends Base {
     }
 
     return new Interaction(data, client);
+  }
+
+  /**
+    * Check if this interaction is a context menu
+    * @returns {boolean}
+    */
+  isContextMenu () {
+    return (
+      InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND &&
+      this.targetId !== undefined
+    );
+  }
+
+  /**
+    * Check if this interaction is a slash command
+    * @returns {boolean}
+    */
+  isCommand () {
+    return CommandTypes[this.command?.type] === CommandTypes.CHAT_INPUT;
+  }
+
+  /**
+    * Check if this interaction is a select menu
+    * @returns {boolean}
+    */
+  isSelectMenu () {
+    return (
+      InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT &&
+      MessageComponentTypes[this.componentType] === MessageComponentTypes.SELECT_MENU
+    );
+  }
+
+  /**
+    * Check if this interaction is a button
+    * @returns {boolean}
+    */
+  isButton () {
+    return (
+      InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT &&
+      MessageComponentTypes[this.componentType] === MessageComponentTypes.BUTTON
+    );
   }
 
   /**
@@ -226,6 +269,11 @@ class Interaction extends Base {
       .webhooks(this.applicationId)(this.token).messages(messageId).patch({ data: options });
   }
 
+  /**
+    * Fetches a message sended by this interaction.
+    * @param {string} messageId The message to be fetched.
+    * @returns {Promise<Message>}
+    */
   async getMessage (messageId = "@original") {
     const messagePayload = await this.client.rest.api
       .webhooks(this.applicationId)(this.token).messages(messageId)

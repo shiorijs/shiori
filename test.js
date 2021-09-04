@@ -32,7 +32,17 @@ const client = Shiori(process.env.DISCORD_TOKEN, {
 const write = (content) => process.stdout.write(`${content}\n`);
 
 client.on("interactionCreate", async (interaction) => {
-  await interaction.reply(interaction.options.user("value") ?? "Nenhum usuário foi colocado.");
+  if (interaction.isContextMenu()) {
+    await interaction.reply(`Você escolheu ${interaction.targetId}`);
+  }
+
+  if (interaction.isCommand()) {
+    await interaction.reply(interaction.options.user("value") ?? "Nenhum usuário foi colocado.");
+  }
+
+  if (interaction.isSelectMenu()) {
+    await interaction.reply(`Você escolheu ${interaction.values[0]}... Tá totalmente certo`);
+  }
 });
 
 client.on("messageCreate", async (message) => {
@@ -46,6 +56,41 @@ client.on("messageCreate", async (message) => {
     for (const emoji of emojis) message.addReaction(emoji);
 
     return;
+  }
+
+  if (message.content === "context-menu") {
+    client.application.setGuildCommands([{
+      name: "Profile",
+      type: 3
+    }], "800130595794583582");
+  }
+
+  if (message.content === "select") {
+    const button = {
+      placeholder: "Quem é mais gay?",
+      custom_id: "select",
+      type: 3,
+      max_values: 2,
+      options: [{
+        label: "Lucas Gay",
+        value: "lucas",
+        description: "Lucas é bem gay ne"
+      }, {
+        label: "Deivin Gay",
+        value: "deivin",
+        description: "Deivinni é bem gay ne"
+      }]
+    };
+    const components = [{ type: 1, components: [button] }];
+
+    message.channel.send({ content: "Clique!", components });
+  }
+
+  if (message.content === "buttons") {
+    const button = { label: "Clique aqui", custom_id: "button", style: 1, type: 2 };
+    const components = [{ type: 1, components: [button] }];
+
+    message.channel.send({ content: "Olá!", components });
   }
 
   if (message.content === "say") {

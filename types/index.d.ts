@@ -67,6 +67,25 @@ export enum GuildVerificationLevel {
   VERY_HIGH = 4
 }
 
+export enum ApplicationCommandOptionType {
+  SUB_COMMAND = 1,
+  SUB_COMMAND_GROUP = 2,
+  STRING = 3,
+  INTEGER = 4,
+  BOOLEAN = 5,
+  USER = 6,
+  CHANNEL = 7,
+  ROLE = 8,
+  MENTIONABLE = 9,
+  NUMBER = 10
+}
+
+export enum ApplicationCommandType {
+  CHAT_INPUT = 1,
+  USER = 2,
+  MESSAGE	= 3
+}
+
 // Interfaces
 
 export interface WSOptions {
@@ -236,6 +255,37 @@ export interface MessageAttachments {
   width?: number;
 }
 
+export interface ApplicationCommandOptionChoice {
+  name: string;
+  value:	string | number;
+}
+
+export interface ApplicationCommandOption {
+  type: ApplicationCommandOptionType;
+  name: string;
+  description: string;
+  required?: boolean;
+  choices?: ApplicationCommandOptionChoice[];
+  options?: ApplicationCommandOption[];
+}
+
+// TUDO DEVE SER ALTERADO PARA PARTIAL
+export interface ApplicationCommandResolve {
+  users?: Map<Snowflake, User>;
+  members?: Map<Snowflake, Member>;
+  roles?: Map<Snowflake, Role>; // TODO: ROLE
+  channels?: Map<Snowflake, Channel>;
+  messages?: Map<Snowflake, Message>;
+}
+
+export interface ApplicationCommand {
+  name: string;
+  id: Snowflake;
+  type: ApplicationCommandType | "UNKNOWN";
+  options: ApplicationCommandOption[];
+  resolved: ApplicationCommandResolve;
+}
+
 // Classes
 
 export class Client {
@@ -361,12 +411,29 @@ export class Interaction extends Base {
   public readonly user: User;
   public readonly guild: Guild;
   public readonly channel: Channel;
+  public isContextMenu(): boolean;
+  public isCommand(): boolean;
+  public isSelectMenu(): boolean;
+  public isButton(): boolean;
   public async reply(options: InteractionMessageCreateOptions): Message;
   public async createFollowup(options: InteractionMessageCreateOptions): Message
   public async defer(ephemeral: boolean): Message;
   public async delete(messageId: string): Promise<void>;
   public async edit(options: MessageEditOptions | string): Promise<void>;
   public async getMessage(messageId: string): Message;
+}
+
+export class ApplicationCommandInteraction extends Interaction {
+  public command: ApplicationCommand;
+  public resolved: ApplicationCommandResolve;
+  public targetId: Snowflake;
+  public targetType: ApplicationCommandType;
+  public options: ApplicationCommandOptions;
+  public resolveTarget(): User | Message | null;
+}
+
+export class ApplicationCommandOptions {
+  
 }
 
 export class Collection<K, V> extends Map<K, V> {
