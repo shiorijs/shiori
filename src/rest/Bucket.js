@@ -115,7 +115,9 @@ class Bucket {
       await Util.delay(timeout);
     }
 
-    const result = await axios({ url, ...options });
+    const result = await axios({ url, ...options }).catch(error => error.response?.data);
+
+    if (!result || !result.headers) return null;
 
     const serverDate = result.headers.date;
     const remaining = result.headers["x-ratelimit-remaining"];
