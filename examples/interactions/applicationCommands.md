@@ -1,4 +1,4 @@
-In order to use interactions you must use the plugin `@shiorijs/interactions`. You can learn more about plugins in it's own section.
+In order to create application commands you must use the plugin `ApplicationCommandPlugin`. You can learn more about plugins in it's own section.
 
 ```js
 const { Client, ApplicationCommandPlugin } = require('shiori');
@@ -15,7 +15,7 @@ client.on("messageCreate", async (message) => {
 
   if (mesage.content === "!deploy") {
     const command = {
-      name: "show-quality",
+      name: "quality",
       description: "Show the quality of someone!",
       options: [
         {
@@ -46,13 +46,16 @@ client.on("messageCreate", async (message) => {
 client.on("interactionCreate", (interaction) => {
   if (!interaction.isSlashCommand()) return;
 
-  if (interaction.command.name === "ping") {
+  if (interaction.command.name === "quality") {
+    const option = interaction.options.string("user");
 
-  }
-
-  switch (interaction.command.name) {
-    case "ping": {
-      return interaction.reply({ content: "Pong!" });
+    switch (option) {
+      case "daniel": {
+        return await interaction.reply("Daniel is amazing!");
+      }
+      case "alice": {
+        return await interaction.reply("Alice is incredible!");
+      }
     }
   }
 })
