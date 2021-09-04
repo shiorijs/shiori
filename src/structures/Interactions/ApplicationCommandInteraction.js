@@ -61,10 +61,7 @@ class ApplicationCommandInteraction extends Interaction {
      */
 
 
-    if (
-      InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND &&
-      this.targetId === undefined
-    ) {
+    if (this.isCommand())
       /**
        * Application Command included in this interaction
        * @type {ApplicationCommand}
