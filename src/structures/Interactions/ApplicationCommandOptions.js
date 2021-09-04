@@ -47,18 +47,39 @@ class ApplicationCommandOptions {
     return option.value;
   }
 
+  /**
+   * Returns an option with type string
+   * @param {string} optionName Option to get the value of
+   * @returns {string}
+   */
   string (optionName) {
     return this.#resolveOption(optionName, CommandOptionTypes.STRING);
   }
 
+  /**
+   * Returns an option with type integer
+   * @param {string} optionName Option to get the value of
+   * @returns {number}
+   */
   integer (optionName) {
     return this.#resolveOption(optionName, CommandOptionTypes.INTEGER);
   }
 
+  /**
+   * Returns an option with type boolean
+   * @param {string} optionName Option to get the value of
+   * @returns {boolean}
+   */
   boolean (optionName) {
     return this.#resolveOption(optionName, CommandOptionTypes.BOOLEAN);
   }
 
+  /**
+   * Returns an option with type user
+   * @param {string} optionName Option to get the value of
+   * @param {boolean} resolve Whether to return the resolved user
+   * @returns {User | string}
+   */
   user (optionName, resolve = false) {
     const userId = this.#resolveOption(optionName, CommandOptionTypes.USER);
 
@@ -68,6 +89,12 @@ class ApplicationCommandOptions {
     return this.#client.users.get(userId) ?? userId;
   }
 
+  /**
+   * Returns an option with type channel
+   * @param {string} optionName Option to get the value of
+   * @param {boolean} resolve Whether to return the resolved channel
+   * @returns {Channel | string}
+   */
   channel (optionName, resolve = false) {
     const channelId = this.#resolveOption(optionName, CommandOptionTypes.CHANNEL);
 
@@ -77,10 +104,20 @@ class ApplicationCommandOptions {
     return this.#client.utils.getChannel(channelId);
   }
 
+  /**
+   * Returns an option with type role
+   * @param {string} optionName Option to get the value of
+   * @returns {string}
+   */
   role (optionName) {
     return this.#resolveOption(optionName, CommandOptionTypes.ROLE);
   }
 
+  /**
+   * Returns an option with type number
+   * @param {string} optionName Option to get the value of
+   * @returns {string}
+   */
   number (optionName) {
     return this.#resolveOption(optionName, CommandOptionTypes.NUMBER);
   }

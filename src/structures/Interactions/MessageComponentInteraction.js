@@ -24,10 +24,18 @@ class MessageComponentInteraction extends Interaction {
 
   _update (data) {
     if ("custom_id" in data) {
+      /**
+        * The customId of this component
+        * @type {string}
+        */
       this.customId = data.custom_id;
     }
 
     if ("values" in data) {
+      /**
+        * Values that the user picked. Available only to select menus.
+        * @type {string[]}
+        */
       this.values = data.values;
     }
   }
