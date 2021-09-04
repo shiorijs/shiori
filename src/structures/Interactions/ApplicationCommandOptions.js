@@ -81,7 +81,7 @@ class ApplicationCommandOptions {
     return this.#resolveOption(optionName, CommandOptionTypes.ROLE);
   }
 
-  numer (optionName) {
+  number (optionName) {
     return this.#resolveOption(optionName, CommandOptionTypes.NUMBER);
   }
 }
