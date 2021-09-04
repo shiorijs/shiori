@@ -435,7 +435,7 @@ export class ApplicationCommandInteraction extends Interaction {
 export class MessageComponentInteraction extends Interaction {
   public componentType: MessageComponentTypes | "UNKNOWN";
   public customId: string;
-  public values: string[];
+  public values?: string[];
 }
 
 export class ApplicationCommandOptions {
