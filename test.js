@@ -32,6 +32,10 @@ const write = (content) => process.stdout.write(`${content}\n`);
 
 client.on("interactionCreate", async (interaction) => {
   await interaction.createReply("Olá!!!!");
+
+  setTimeout(() => {
+    interaction.createFollowup("Olá 2");
+  }, 3000);
 });
 
 client.on("messageCreate", async (message) => {
