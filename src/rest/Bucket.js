@@ -1,6 +1,4 @@
-const axios = require("axios");
 const AsyncQueue = require("../utils/AsyncQueue");
-const Util = require("../client/ClientUtils");
 
 function getAPIOffset (serverDate) {
   return new Date(serverDate).getTime() - Date.now();
@@ -112,10 +110,14 @@ class Bucket {
         Must wait ${timeout}ms before proceeding`);
       }
 
-      await Util.delay(timeout);
+      await this.manager.client.utils.delay(timeout);
     }
 
-    const result = await axios({ url, ...options });
+    const result = await this.manager.client.utils.request({
+      hostname: "discord.com",
+      path: url,
+      ...options
+    });
 
     const serverDate = result.headers.date;
     const remaining = result.headers["x-ratelimit-remaining"];
@@ -141,10 +143,15 @@ class Bucket {
       }
     }
 
-    if (result.status === 204) {
-      return result.data;
-    } else if (result.status === 429) {
-      if (this.reset) await Util.delay(this.reset);
+    if (result.status === 429) {
+      this.manager.client.emit("debug", `
+      [Unexpected Ratelimit - 429]
+      
+      A ratelimit happened on the route ${route}
+      This happened because this request was not previously stored on the bucket. Probally caused by the bot restarting.
+      `);
+
+      if (this.reset) await this.manager.client.utils.delay(this.reset);
 
       return this.executeRequest(url, options);
     }

@@ -45,7 +45,7 @@ class RestManager {
      * API Url to be used on requests.
      * @type {string}
      */
-    this.apiURL = `${Constants.REST.BASE_URL}/v${this.options.version}`;
+    this.apiURL = `/api/v${this.options.version}`;
 
     this.#deleteEmptyBuckets();
   }
