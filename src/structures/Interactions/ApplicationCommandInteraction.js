@@ -1,4 +1,4 @@
-const { CommandTypes, InteractionTypes } = require("../../utils/Constants");
+const { CommandTypes } = require("../../utils/Constants");
 
 const Message = require("../Message");
 const User = require("../User");
@@ -61,7 +61,7 @@ class ApplicationCommandInteraction extends Interaction {
      */
 
 
-    if (this.isCommand())
+    if (this.isSlashCommand()) {
       /**
        * Application Command included in this interaction
        * @type {ApplicationCommand}

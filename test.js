@@ -36,7 +36,7 @@ client.on("interactionCreate", async (interaction) => {
     await interaction.reply(`Você escolheu ${interaction.targetId}`);
   }
 
-  if (interaction.isCommand()) {
+  if (interaction.isSlashCommand()) {
     await interaction.reply(interaction.options.user("value") ?? "Nenhum usuário foi colocado.");
   }
 
