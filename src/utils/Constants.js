@@ -107,6 +107,12 @@ module.exports = {
     DEFERRED_UPDATE_MESSAGE: 6,
     UPDATE_MESSAGE: 7
   },
+  CommandTypes: createEnum([
+    null,
+    "CHAT_INPUT",
+    "USER",
+    "MESSAGE"
+  ]),
   GatewayErrors: {
     UNKNOWN: 4000,
     UNKNOWN_OPCODE: 4001,
