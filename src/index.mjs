@@ -26,5 +26,6 @@ export const {
 
   // Utilities
   Collection,
-  Intents
+  Intents,
+  Constants
 } = Shiori;
