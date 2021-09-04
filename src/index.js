@@ -21,6 +21,9 @@ Shiori.Interaction = require("./structures/Interaction");
 Shiori.VoiceChannel = require("./structures/VoiceChannel");
 Shiori.Role = require("./structures/Role");
 
+// Plugins
+Shiori.ApplicationCommandPlugin = require("./plugins/ApplicationCommandPlugin");
+
 // Utilities
 Shiori.Collection = require("./utils/Collection");
 Shiori.Intents = Constants.INTENTS;

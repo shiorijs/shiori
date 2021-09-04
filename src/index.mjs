@@ -21,6 +21,9 @@ export const {
   Role,
   VoiceChannel,
 
+  // Plugins
+  ApplicationCommandPlugin,
+
   // Utilities
   Collection,
   Intents
