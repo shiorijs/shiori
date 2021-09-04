@@ -179,8 +179,10 @@ class Interaction extends Base {
       delete options.ephemeral;
     }
 
-    return await this.client.rest.api
+    const response = await this.client.rest.api
       .webhooks(this.client.user.id)(this.token).post({ data: options });
+
+    return new Message(response, this.client);
   }
 
   /**
