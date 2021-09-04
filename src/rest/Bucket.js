@@ -115,8 +115,8 @@ class Bucket {
       await Util.delay(timeout);
     }
 
-    const result = await axios({ url, ...options }).catch(error => error.response?.data)
-      .catch(error => error);
+    const result = await axios({ url, ...options })
+      .catch(error => error.response?.data);
 
     if (!result || !result.headers) return null;
 

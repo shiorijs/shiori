@@ -12,13 +12,14 @@ class MessageComponentInteraction extends Interaction {
    */
   constructor (data, client) {
     super(data, client);
+
     /**
       * The interaction component type
       * @type {string}
       */
-    this.componentType = MessageComponentTypes[data.component_type] ?? "UNKNOWN";
+    this.componentType = MessageComponentTypes[data.data.component_type] ?? "UNKNOWN";
 
-    this._update(data);
+    this._update(data.data);
   }
 
   _update (data) {

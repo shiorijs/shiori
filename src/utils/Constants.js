@@ -99,7 +99,7 @@ module.exports = {
     "GUILD_PRIVATE_THREAD", // A temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission
     "GUILD_STAGE_VOICE" // A voice channel for hosting events with an audience
   ]),
-  MessageComponentTypes: createEnum(["ACTION_ROW", "BUTTON", "SELECT_MENU"]),
+  MessageComponentTypes: createEnum([null, "ACTION_ROW", "BUTTON", "SELECT_MENU"]),
   InteractionTypes: createEnum([null, "PING", "APPLICATION_COMMAND", "MESSAGE_COMPONENT"]),
   InteractionResponseTypes: {
     PONG: 1,
