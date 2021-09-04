@@ -39,7 +39,7 @@ client.on("interactionCreate", async (interaction) => {
   }, 3000);
 });
 
-client.on("messageCreate", async (message) => {  
+client.on("messageCreate", async (message) => {
   if (message.content === "avatar") {
     return message.channel.send(client.utils.image(message.author).avatar());
   }
