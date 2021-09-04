@@ -1,4 +1,4 @@
-const { CommandTypes } = require("../../utils/Constants");
+const { CommandTypes, InteractionTypes } = require("../../utils/Constants");
 
 const Message = require("../Message");
 const User = require("../User");
@@ -60,8 +60,10 @@ class ApplicationCommandInteraction extends Interaction {
      * @property {object} resolved The application command resolved options
      */
 
-
-    if (this.isSlashCommand()) {
+    if (
+      InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND &&
+      this.targetId === undefined
+    ) {
       /**
        * Application Command included in this interaction
        * @type {ApplicationCommand}
