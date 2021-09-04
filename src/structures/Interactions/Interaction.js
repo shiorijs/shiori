@@ -179,7 +179,7 @@ class Interaction extends Base {
     * @returns {Promise}
     */
   async reply (options) {
-    if (this.responded) return await this.createFollowup(options, options.ephemeral);
+    if (this.responded) return await this.createFollowup(options);
 
     if (typeof (options) === "string") options = { content: String(options) };
 

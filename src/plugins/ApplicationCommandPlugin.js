@@ -16,12 +16,12 @@ class ApplicationCommandPlugin {
       .commands.put({ data: commands });
   }
 
-  setGuildCommands (commands, guildId) {
+  async setGuildCommands (commands, guildId) {
     if (!Array.isArray(commands)) {
       throw new Error(`Commands must be an array. Received a ${typeof commands} instead.`);
     }
 
-    return this.client.rest.api.applications(this.client.user.id)
+    return await this.client.rest.api.applications(this.client.user.id)
       .guilds(guildId).commands.put({ data: commands });
   }
 
@@ -75,7 +75,7 @@ class ApplicationCommandPlugin {
     if (command.type === CommandTypes.CHAT_INPUT) {
       command.name = command.name.toLowerCase();
 
-      if (!/^[w-]{1,32}$/.test(command.name)) {
+      if (!/^[\w-]{1,32}$/.test(command.name)) {
         return new Error(`The command name "${command.name}" does not match the expression "^[w-]{1,32}$", make sure your command name is between 1-32 and has no space.`);
       }
     }
