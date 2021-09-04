@@ -23,7 +23,7 @@ class PluginManager {
       if (_plugin._manager !== undefined && typeof _plugin.name === "string")
         this.#client[_plugin.name] = _plugin._manager;
 
-      this.#plugins.add(_plugin);
+      this.#plugins.push(_plugin);
     }
   }
 
