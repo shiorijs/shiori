@@ -5,6 +5,7 @@ const Shiori = require("./src/");
 const client = Shiori(process.env.DISCORD_TOKEN, {
   intents: 13827,
   rest: { fetchAllUsers: true },
+  plugins: [Shiori.ApplicationCommandPlugin],
   cache: {
     users: {
       limit: Infinity,
@@ -31,14 +32,14 @@ const client = Shiori(process.env.DISCORD_TOKEN, {
 const write = (content) => process.stdout.write(`${content}\n`);
 
 client.on("interactionCreate", async (interaction) => {
-  await interaction.createReply("Olá!!!!");
+  await interaction.reply("Olá!!!!");
 
   setTimeout(() => {
     interaction.createFollowup("Olá 2");
   }, 3000);
 });
 
-client.on("messageCreate", async (message) => {
+client.on("messageCreate", async (message) => {  
   if (message.content === "avatar") {
     return message.channel.send(client.utils.image(message.author).avatar());
   }
