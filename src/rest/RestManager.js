@@ -90,7 +90,7 @@ class RestManager {
   }
 
   /**
-   * Formats the request data to a usable format for axios
+   * Formats the request data to a usable format for https
    * @param request The request data
    */
   #resolveRequest (url, method, options) {
@@ -106,7 +106,12 @@ class RestManager {
 
     const formattedUrl = `${this.apiURL}/${url.replace(/[/]?(\w+)/, "$1")}`;
 
-    const requestOptions = { data: options.data, method: method.toLowerCase(), headers };
+    const requestOptions = {
+      hostname: "discord.com",
+      data: options.data,
+      method,
+      headers
+    };
 
     return { formattedUrl, requestOptions };
   }
