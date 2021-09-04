@@ -2,7 +2,7 @@ const { InteractionTypes, InteractionResponseTypes } = require("../utils/Constan
 
 const Base = require("./Base");
 const Member = require("./Member");
-const Message = require("./Message")
+const Message = require("./Message");
 
 /**
  * Represents a interaction on Discord.
@@ -75,7 +75,7 @@ class Interaction extends Base {
        * The userId which sent this interaction
        * @type {string}
        */
-      this.userId = data.user.id;//this.client.users.add(data.user.id, data.user);
+      this.userId = data.user.id;// this.client.users.add(data.user.id, data.user);
     }
 
     if ("member" in data) {
@@ -83,7 +83,7 @@ class Interaction extends Base {
        * If this interaction was sent in a guild, the member which sent it
        * @type {Member}
        */
-      this.member = this.guild?.members.add(data.member.user.id, data.member);
+      this.member = this.guild?.members.add(data.member.user.id, new Member(data.member));
     }
   }
 
@@ -117,15 +117,15 @@ class Interaction extends Base {
   }
 
   /**
-    * Creates a reply message for this interaction. 
+    * Creates a reply message for this interaction.
     * @param {InteractionMessageCreateOptions} options The options to be used when creating the response
     * @returns {Promise}
     */
-   async createReply (options) {
-    if (this.responded) return await this.createFollowup(options, ephemeral);
+  async createReply (options) {
+    if (this.responded) return await this.createFollowup(options, options.ephemeral);
 
     if (typeof (options) === "string") options = { content: String(options) };
-  
+
     if (options.ephemeral) {
       options.flags |= 64;
 
@@ -133,7 +133,7 @@ class Interaction extends Base {
     }
 
     await this.client.rest.api
-      .interactions(this.id)(this.token).callback.post({ 
+      .interactions(this.id)(this.token).callback.post({
         data: {
           type: InteractionResponseTypes.CHANNEL_MESSAGE_WITH_SOURCE,
           data: options
@@ -152,10 +152,10 @@ class Interaction extends Base {
     if (this.responded) throw new Error("Interaction already acknowledged. Cannot acknowledge more than once");
 
     await this.client.rest.api
-      .interactions(this.id)(this.token).callback.post({ 
-        data: { 
+      .interactions(this.id)(this.token).callback.post({
+        data: {
           type: InteractionResponseTypes.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
-          data: { flags: ephemeral ? 64 : 0 } 
+          data: { flags: ephemeral ? 64 : 0 }
         }
       });
 
@@ -163,14 +163,14 @@ class Interaction extends Base {
   }
 
   /**
-    * Creates a followup message for this interaction. 
+    * Creates a followup message for this interaction.
     * This interaction must have been responded in order to create a followup.
     * @param {InteractionMessageCreateOptions} options The options to be used when creating the response
     * @returns {Promise}
     */
   async createFollowup (options) {
     if (!this.responded) throw new Error("This interaction has not been responded yet. You must respond it before creating a followup message.");
-  
+
     if (typeof (options) === "string") options = { content: String(options) };
 
     if (options.ephemeral) {
@@ -178,7 +178,7 @@ class Interaction extends Base {
 
       delete options.ephemeral;
     }
-    
+
     return await this.client.rest.api
       .webhooks(this.client.user.id)(this.token).post({ data: options });
   }
