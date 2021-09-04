@@ -11,7 +11,13 @@ const client = Shiori(process.env.DISCORD_TOKEN, {
       sweep: 10,
       sweepTimeout: 10000,
       toAdd: (_, userID) => {
-        if (!["664806442406248448", "532294395655880705", "515903666360942594", "478031386796752896"].includes(userID)) return false;
+        if (![
+          "664806442406248448", 
+          "532294395655880705", 
+          "515903666360942594", 
+          "478031386796752896",
+          "817505090977923093"
+        ].includes(userID)) return false;
         else return true;
       },
       toRemove: (_, userID) => {
@@ -23,6 +29,10 @@ const client = Shiori(process.env.DISCORD_TOKEN, {
 });
 
 const write = (content) => process.stdout.write(`${content}\n`);
+
+client.on("interactionCreate", async (interaction) => {
+  await interaction.createReply("Olá!!!!");;
+})
 
 client.on("messageCreate", async (message) => {
   if (message.content === "avatar") {
