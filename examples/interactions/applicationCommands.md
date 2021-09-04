@@ -1,12 +1,11 @@
 In order to use interactions you must use the plugin `@shiorijs/interactions`. You can learn more about plugins in it's own section.
 
 ```js
-const { Client } = require('shiori');
-const { InteractionPlugin } = require('@shiorijs/interactions');
+const { Client, ApplicationCommandPlugin } = require('shiori');
 
 const client = new Client('your token', {
   intents: 13827,
-  plugins: [InteractionPlugin]
+  plugins: [ApplicationCommandPlugin]
 });
 
 client.on("ready", () => console.log("Listening for interactions!"));
@@ -16,8 +15,26 @@ client.on("messageCreate", async (message) => {
 
   if (mesage.content === "!deploy") {
     const command = {
-      name: "ping",
-      description: "Pong!"
+      name: "show-quality",
+      description: "Show the quality of someone!",
+      options: [
+        {
+          type: 3,
+          name: "user",
+          description: "The user to show the quality of",
+          required: true,
+          choices: [
+            {
+              name: "Alice",
+              value: "Swimmer"
+            },
+            {
+              name: "Daniel",
+              value: "Inteligent"
+            }
+          ]
+        }
+      ]
     }
 
     client.application.createCommand(command)
@@ -27,7 +44,11 @@ client.on("messageCreate", async (message) => {
 });
 
 client.on("interactionCreate", (interaction) => {
-  if (interaction.type !== 1) return;
+  if (!interaction.isSlashCommand()) return;
+
+  if (interaction.command.name === "ping") {
+
+  }
 
   switch (interaction.command.name) {
     case "ping": {

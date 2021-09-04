@@ -24,16 +24,14 @@ class ApplicationCommandOptions {
 
     this.#options = options;
 
-    if (
-      this.#options[0]?.type === CommandOptionTypes.SUB_COMMAND ||
-      this.#options[0]?.type === CommandOptionTypes.SUB_COMMAND_GROUP
-    ) {
-      const name = this.#options[0].type === CommandOptionTypes.SUB_COMMAND
-        ? "subcommand"
-        : "subcommandGroup";
+    if (this.#options[0]?.type === CommandOptionTypes.SUB_COMMAND_GROUP) {
+      this.subcommandGroup = this.#options[0].name;
+      this.#options = this.#options[0].options ?? [];
+    }
 
-      this.#options = this.#options.options ?? [];
-      this[name] = this.#options[0].name;
+    if (this.#options[0]?.type === CommandOptionTypes.SUB_COMMAND) {
+      this.subcommand = this.#options[0].name;
+      this.#options = this.#options[0].options ?? [];
     }
   }
 

@@ -37,7 +37,26 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   if (interaction.isSlashCommand()) {
-    await interaction.reply(interaction.options.user("value") ?? "Nenhum usuário foi colocado.");
+    if (interaction.command.name === "quality") {
+      const option = interaction.options.string("user");
+
+      switch (option) {
+        case "daniel": {
+          return await interaction.reply("Daniel é burro");
+        }
+        case "alice": {
+          return await interaction.reply("Alice é gostosa");
+        }
+      }
+    }
+
+    if (interaction.command.name === "permissions") {
+      if (interaction.options.subcommandGroup === "set") {
+        if (interaction.options.subcommand === "user") {
+          return interaction.reply(`Ui lucas-kun me come. ${interaction.options.user("user")}`);
+        }
+      }
+    }
   }
 
   if (interaction.isSelectMenu()) {
@@ -114,15 +133,72 @@ client.on("messageCreate", async (message) => {
   }
 
   if (message.content === "slash") {
-    client.application.setGuildCommands([{
-      name: "batalha",
-      description: "olá",
-      options: [{
-        type: 6,
-        name: "value",
-        description: "OLá!!!!"
-      }]
-    }], "800130595794583582");
+    const commands = [{
+      name: "quality",
+      description: "Show the quality of someone!",
+      options: [
+        {
+          type: 3,
+          name: "user",
+          description: "The user to show the quality of",
+          required: true,
+          choices: [
+            {
+              name: "Alice",
+              value: "alice"
+            },
+            {
+              name: "Daniel",
+              value: "daniel"
+            }
+          ]
+        }
+      ]
+    }, {
+      "name": "permissions",
+      "description": "Permission Manager",
+      "options": [
+        {
+          "type": 2,
+          "name": "set",
+          "description": "Set the permissions for something",
+          "options": [
+            {
+              "type": 1,
+              "name": "user",
+              "description": "Set the permissions for an user",
+              "options": [
+                {
+                  "type": 6,
+                  "name": "user",
+                  "description": "The user to set the permission to",
+                  "required": true
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "name": "channel",
+              "description": "Set the permissions for a channel",
+              "options": [
+                {
+                  "type": 7,
+                  "name": "channel",
+                  "description": "The channel to set the permission to",
+                  "required": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }];
+
+    client.application.setGuildCommands(commands, "800130595794583582")
+      .then(() => message.react("✅"))
+      .catch(() => {
+        message.react("❌");
+      });
   }
 });
 
