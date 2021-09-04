@@ -69,8 +69,7 @@ class ApplicationCommandInteraction extends Interaction {
         name: data.data.name,
         id: data.data.id,
         type: CommandTypes[data.data.type] ?? "UNKNOWN",
-        options: data.data.options ?? [],
-        resolved: data.data.resolved ?? {}
+        options: data.data.options ?? []
       };
     }
   }

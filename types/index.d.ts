@@ -80,6 +80,12 @@ export enum ApplicationCommandOptionType {
   NUMBER = 10
 }
 
+export enum MessageComponentTypes {
+  ACTION_ROW = 1,
+  BUTTON = 2,
+  SELECT_MENU = 3
+}
+
 export enum ApplicationCommandType {
   CHAT_INPUT = 1,
   USER = 2,
@@ -257,7 +263,7 @@ export interface MessageAttachments {
 
 export interface ApplicationCommandOptionChoice {
   name: string;
-  value:	string | number;
+  value: string | number;
 }
 
 export interface ApplicationCommandOption {
@@ -283,7 +289,6 @@ export interface ApplicationCommand {
   id: Snowflake;
   type: ApplicationCommandType | "UNKNOWN";
   options: ApplicationCommandOption[];
-  resolved: ApplicationCommandResolve;
 }
 
 // Classes
@@ -415,6 +420,8 @@ export class Interaction extends Base {
   public isCommand(): boolean;
   public isSelectMenu(): boolean;
   public isButton(): boolean;
+  public transform(data: object, client: Client): 
+    ApplicationCommandInteraction | MessageComponentInteraction | Interaction;
   public async reply(options: InteractionMessageCreateOptions): Message;
   public async createFollowup(options: InteractionMessageCreateOptions): Message
   public async defer(ephemeral: boolean): Message;
@@ -432,8 +439,22 @@ export class ApplicationCommandInteraction extends Interaction {
   public resolveTarget(): User | Message | null;
 }
 
+export class MessageComponentInteraction extends Interaction {
+  public componentType: MessageComponentTypes | "UNKNOWN";
+  public customId: string;
+  public values: string[];
+}
+
 export class ApplicationCommandOptions {
-  
+  public subcommand: string | null;
+  public subcommandGroup: string | null;
+  public string(optionName: string): boolean;
+  public integer(optionName: string): boolean;
+  public boolean(optionName: string): boolean;
+  public user(optionName: string, resolve: boolean): boolean;
+  public channel(optionName: string, resolve: boolean): boolean;
+  public role(optionName: string): boolean;
+  public number(optionName: string): boolean;
 }
 
 export class Collection<K, V> extends Map<K, V> {
