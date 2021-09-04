@@ -30,6 +30,10 @@ class ApplicationCommandInteraction extends Interaction {
     super._update(data);
 
     if ("resolved" in data.data) {
+      /**
+        * Object that contains a map of user, messages, channels or roles
+        * @type {object}
+        */
       this.resolved = data.data.resolved;
     }
 
@@ -74,6 +78,10 @@ class ApplicationCommandInteraction extends Interaction {
     }
   }
 
+  /**
+    * If this interaction is a context menu, resolve the target.
+    * @returns {User | Message | null} 
+    */
   resolveTarget () {
     if (this.targetId === undefined || !this.resolved) return null;
 
