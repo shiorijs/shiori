@@ -71,11 +71,13 @@ client.on("messageCreate", async (message) => {
     // eslint-disable-next-line no-console
     return console.log(client.utils.getChannel("800889654198009899"));
   }
+
+  if (message.content === "slash") {
+    client.application.setCommands([{ name: "batalha", description: "olá" }]);
+  }
 });
 
-client.on("ready", () => {
-  client.application.setCommands({ });
-});
+client.on("ready", () => write("Ready!"));
 client.on("shardError", (error, shardID) => write(`Shard Error: ${error} ID: ${shardID}`));
 client.on("warn", (warn) => write(`Aviso ${warn}`));
 client.on("error", (error) => write(`Erro: ${error}`));
