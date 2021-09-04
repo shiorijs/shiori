@@ -80,7 +80,7 @@ class ApplicationCommandInteraction extends Interaction {
 
   /**
     * If this interaction is a context menu, resolve the target.
-    * @returns {User | Message | null} 
+    * @returns {User | Message | null}
     */
   resolveTarget () {
     if (this.targetId === undefined || !this.resolved) return null;
