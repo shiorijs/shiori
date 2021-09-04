@@ -99,6 +99,14 @@ module.exports = {
     "GUILD_PRIVATE_THREAD", // A temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission
     "GUILD_STAGE_VOICE" // A voice channel for hosting events with an audience
   ]),
+  InteractionTypes: createEnum([null, "PING", "APPLICATION_COMMAND", "MESSAGE_COMPONENT"]),
+  InteractionResponseTypes: {
+    PONG: 1,
+    CHANNEL_MESSAGE_WITH_SOURCE: 4,
+    DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE: 5,
+    DEFERRED_UPDATE_MESSAGE: 6,
+    UPDATE_MESSAGE: 7
+  },
   GatewayErrors: {
     UNKNOWN: 4000,
     UNKNOWN_OPCODE: 4001,
