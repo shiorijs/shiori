@@ -109,7 +109,7 @@ module.exports = {
     UPDATE_MESSAGE: 7
   },
   CommandOptionTypes: {
-    SUB_COMMAND:1,
+    SUB_COMMAND: 1,
     SUB_COMMAND_GROUP:2,
     STRING:	3,
     INTEGER: 4,
