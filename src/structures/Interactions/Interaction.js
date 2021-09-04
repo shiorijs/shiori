@@ -118,7 +118,7 @@ class Interaction extends Base {
     * Check if this interaction is a slash command
     * @returns {boolean}
     */
-  isCommand () {
+  isSlashCommand () {
     return CommandTypes[this.command?.type] === CommandTypes.CHAT_INPUT;
   }
 
