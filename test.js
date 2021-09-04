@@ -73,11 +73,17 @@ client.on("messageCreate", async (message) => {
   }
 });
 
-client.on("ready", () => write("Pronto!"));
+client.on("ready", () => {
+  client.application.setCommands({ });
+});
 client.on("shardError", (error, shardID) => write(`Shard Error: ${error} ID: ${shardID}`));
 client.on("warn", (warn) => write(`Aviso ${warn}`));
 client.on("error", (error) => write(`Erro: ${error}`));
 client.on("disconnect", (message) => write(`Desconectado: ${message}`));
 client.on("debug", (message) => write(message));
+
+process
+  .once("unhandledRejection", (error) => write(error.stack))
+  .once("uncaughtException", (error) => write(error.stack));
 
 client.start();
