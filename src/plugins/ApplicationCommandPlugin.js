@@ -6,24 +6,24 @@ class ApplicationCommandPlugin {
     this._manager = this;
   }
 
-  async setCommands (commands) {
-    return true;
+  setCommands (commands) {
+    return (commands);
   }
 
-  async setGuildCommands (commands, guildId) {
-    return true;
+  setGuildCommands (commands, guildId) {
+    return (commands, guildId);
   }
 
-  async createCommand (command) {
-    return true;
+  createCommand (command) {
+    return (command);
   }
 
-  async createGuildCommand (command, guildId) {
-    return true;
+  createGuildCommand (command, guildId) {
+    return (command, guildId);
   }
 
-  async setCommandPermissions (commandId, permissions) {
-    return true;
+  setCommandPermissions (commandId, permissions) {
+    return (commandId, permissions);
   }
 }
 
