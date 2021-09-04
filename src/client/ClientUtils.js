@@ -22,7 +22,7 @@ class ClientUtils {
 
     if (!guildId) return null;
 
-    return this.#client.guilds.get(guildId).channels.get(channelId);
+    return this.#client.guilds.get(guildId)?.channels.get(channelId);
   }
 
   /**

@@ -17,9 +17,13 @@ export const {
   Channel,
   GuildChannel,
   TextChannel,
-  Interaction,
   Role,
   VoiceChannel,
+
+  // Interactions
+  Interaction,
+  ApplicationCommandInteraction,
+  MessageComponentInteraction,
 
   // Plugins
   ApplicationCommandPlugin,

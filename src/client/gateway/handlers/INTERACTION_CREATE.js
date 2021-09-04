@@ -1,7 +1,7 @@
-const Interaction = require("../../../structures/Interaction");
+const Interaction = require("../../../structures/Interactions/Interaction");
 
 module.exports = (client, { d: data }) => {
-  const interaction = new Interaction(data, client);
+  const interaction = Interaction.transform(data, client);
 
   /**
     * Fired when a interaction is created.

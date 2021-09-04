@@ -17,9 +17,13 @@ Shiori.Message = require("./structures/Message");
 Shiori.Channel = require("./structures/Channel");
 Shiori.GuildChannel = require("./structures/BaseGuildChannel");
 Shiori.TextChannel = require("./structures/TextChannel");
-Shiori.Interaction = require("./structures/Interaction");
 Shiori.VoiceChannel = require("./structures/VoiceChannel");
 Shiori.Role = require("./structures/Role");
+
+// Interactions
+Shiori.Interaction = require("./structures/Interactions/Interaction");
+Shiori.ApplicationCommandInteraction = require("./structures/Interactions/ApplicationCommandInteraction");
+Shiori.MessageComponentInteraction = require("./structures/Interactions/MessageComponentInteraction");
 
 // Plugins
 Shiori.ApplicationCommandPlugin = require("./plugins/ApplicationCommandPlugin");
