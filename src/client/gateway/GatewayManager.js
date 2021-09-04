@@ -29,6 +29,7 @@ class GatewayManager {
       * @name GatewayManager#client
       */
     Object.defineProperty(this, "client", { value: client, writable: false });
+
     /**
       * Shards queue
       * @private
