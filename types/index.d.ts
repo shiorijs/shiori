@@ -286,6 +286,10 @@ export class Message extends Base {
   public embeds?: MessageEmbed[];
   public flags?: number;
   public components?: MessageComponents[];
+  public readonly deletable: boolean;
+  public readonly editable: boolean;
+  public readonly channel: Channel | null;
+  public readonly guild: Guild | null;  
   public async delete(): void;
   public async addReaction(reaction: string): void;
   public async edit(options: MessageEditOptions): void;
@@ -321,6 +325,8 @@ export class Member extends Base {
   public nick?: string;
   public roles?: Snowflake[];
   public permissions?: string[];
+  public readonly user: User;
+  public readonly guild: Guild | null;  
 }
 
 export class Guild extends Base {
@@ -338,6 +344,7 @@ export class Guild extends Base {
   public description?: string;
   public boost?: GuildBoost;
   public channels?: Collection<Snowflake, Channel>;
+  public readonly owner: User | null;
 }
 
 // TODO
