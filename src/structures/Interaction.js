@@ -1,5 +1,8 @@
+const { InteractionTypes, InteractionResponseTypes } = require("../utils/Constants");
+
 const Base = require("./Base");
-const { InteractionTypes } = require("../utils/Constants");
+const Member = require("./Member");
+const Message = require("./Message")
 
 /**
  * Represents a interaction on Discord.
@@ -26,7 +29,7 @@ class Interaction extends Base {
     this.type = InteractionTypes[data.type] ?? "UNKNOWN";
 
     /**
-      * Whether this interaction was already responded.
+      * Whether this interaction has benn responded.
       * @type {boolean}
       */
     this.responded = false;
@@ -69,10 +72,10 @@ class Interaction extends Base {
 
     if ("user" in data) {
       /**
-       * The user which sent this interaction
-       * @type {User}
+       * The userId which sent this interaction
+       * @type {string}
        */
-      this.user = this.client.users.add(data.user.id, data.user);
+      this.userId = data.user.id;//this.client.users.add(data.user.id, data.user);
     }
 
     if ("member" in data) {
@@ -80,7 +83,7 @@ class Interaction extends Base {
        * If this interaction was sent in a guild, the member which sent it
        * @type {Member}
        */
-      this.member = this.guild?.members.add(data.member) ?? data.member;
+      this.member = this.guild?.members.add(data.member.user.id, data.member);
     }
   }
 
@@ -103,15 +106,116 @@ class Interaction extends Base {
   }
 
   /**
-    * Acknowledges the interaction with a defer response
-    * Note: You can **not** use more than 1 initial interaction response per interaction.
-    * @arg {number} [flags] 64 for Ephemeral
+   * The user that send this interaction
+   * @type {?User}
+   * @readonly
+   */
+  get user () {
+    return this.userId
+      ? this.client.users.get(this.userId) ?? null
+      : this.member.user;
+  }
+
+  /**
+    * Creates a reply message for this interaction. 
+    * @param {InteractionMessageCreateOptions} options The options to be used when creating the response
     * @returns {Promise}
     */
-  acknowledge () {
-    if (this.acknowledged) throw new Error("Interaction already acknowledged. Cannot acknowledge more than once");
+   async createReply (options) {
+    if (this.responded) return await this.createFollowup(options, ephemeral);
 
-    return this.client.rest.api;
+    if (typeof (options) === "string") options = { content: String(options) };
+  
+    if (options.ephemeral) {
+      options.flags |= 64;
+
+      delete options.ephemeral;
+    }
+
+    await this.client.rest.api
+      .interactions(this.id)(this.token).callback.post({ 
+        data: {
+          type: InteractionResponseTypes.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: options
+        }
+      });
+
+    return (this.responded = true, await this.getMessage());
+  }
+
+  /**
+    * Responds to the interaction with a defer response
+    * @param {boolean} [ephemeral=false] If the response will be ehpemeral
+    * @returns {Promise}
+    */
+  async defer (ephemeral = false) {
+    if (this.responded) throw new Error("Interaction already acknowledged. Cannot acknowledge more than once");
+
+    await this.client.rest.api
+      .interactions(this.id)(this.token).callback.post({ 
+        data: { 
+          type: InteractionResponseTypes.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
+          data: { flags: ephemeral ? 64 : 0 } 
+        }
+      });
+
+    return (this.responded = true, await this.getMessage());
+  }
+
+  /**
+    * Creates a followup message for this interaction. 
+    * This interaction must have been responded in order to create a followup.
+    * @param {InteractionMessageCreateOptions} options The options to be used when creating the response
+    * @returns {Promise}
+    */
+  async createFollowup (options) {
+    if (!this.responded) throw new Error("This interaction has not been responded yet. You must respond it before creating a followup message.");
+  
+    if (typeof (options) === "string") options = { content: String(options) };
+
+    if (options.ephemeral) {
+      options.flags |= 64;
+
+      delete options.ephemeral;
+    }
+    
+    return await this.client.rest.api
+      .webhooks(this.client.user.id)(this.token).post({ data: options });
+  }
+
+  /**
+    * Deletes this interaction response
+    * @param {string} messageId The message to be deleted.
+    * @returns {Promise}
+    */
+  async delete (messageId = "@original") {
+    if (!this.responded) throw new Error("This interaction has not been responded yet. You must respond it before deleting the response.");
+
+    return await this.client.rest.api
+      .webhooks(this.client.user.id)(this.token).messages(messageId).delete();
+  }
+
+  /**
+    * Edits the interaction response
+    * @param {MessageEditOptions | string} options The options to be used when editing the response.
+    * @param {string} messageId The message to be edited.
+    * @returns {Promise}
+    */
+  async editReply (options, messageId = "@original") {
+    if (!this.responded) throw new Error("This interaction has not been responded yet. You must respond it before editing the response.");
+
+    if (typeof (options) === "string") options = { content: String(options) };
+
+    return await this.client.rest.api
+      .webhooks(this.client.user.id)(this.token).messages(messageId).patch({ data: options });
+  }
+
+  async getMessage (messageId = "@original") {
+    const messagePayload = await this.client.rest.api
+      .webhooks(this.client.user.id)(this.token).messages(messageId)
+      .get();
+
+    return new Message(messagePayload, this.client);
   }
 }
 
