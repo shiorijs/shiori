@@ -1,8 +1,8 @@
-const { InteractionTypes, InteractionResponseTypes } = require("../utils/Constants");
+const { InteractionTypes, InteractionResponseTypes } = require("../../utils/Constants");
 
-const Base = require("./Base");
-const Member = require("./Member");
-const Message = require("./Message");
+const Base = require("../Base");
+const Member = require("../Member");
+const Message = require("../Message");
 
 /**
  * Represents a interaction on Discord.
@@ -41,8 +41,6 @@ class Interaction extends Base {
      * @readonly
      */
     Object.defineProperty(this, "token", { value: data.token });
-
-    this._update(data);
   }
 
   _update (data) {
@@ -85,6 +83,22 @@ class Interaction extends Base {
        */
       this.member = this.guild?.members.add(data.member.user.id, new Member(data.member));
     }
+  }
+
+  static transform (data, client) {
+    const ApplicationCommandInteraction = require("./ApplicationCommandInteraction");
+    const MessageComponentInteraction = require("./MessageComponentInteraction");
+
+    switch (data.type) {
+      case InteractionTypes.APPLICATION_COMMAND: {
+        return new ApplicationCommandInteraction(data, client);
+      }
+      case InteractionTypes.MESSAGE_COMPONENT: {
+        return new MessageComponentInteraction(data, client);
+      }
+    }
+
+    return new Interaction(data, client);
   }
 
   /**

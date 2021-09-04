@@ -32,11 +32,7 @@ const client = Shiori(process.env.DISCORD_TOKEN, {
 const write = (content) => process.stdout.write(`${content}\n`);
 
 client.on("interactionCreate", async (interaction) => {
-  await interaction.reply("Olá!!!!");
-
-  setTimeout(() => {
-    interaction.createFollowup("Olá 2");
-  }, 3000);
+  await interaction.reply(interaction.options.user("value") ?? "Nenhum usuário foi colocado.");
 });
 
 client.on("messageCreate", async (message) => {
@@ -73,7 +69,15 @@ client.on("messageCreate", async (message) => {
   }
 
   if (message.content === "slash") {
-    client.application.setCommands([{ name: "batalha", description: "olá" }]);
+    client.application.setGuildCommands([{
+      name: "batalha",
+      description: "olá",
+      options: [{
+        type: 6,
+        name: "value",
+        description: "OLá!!!!"
+      }]
+    }], "800130595794583582");
   }
 });
 
