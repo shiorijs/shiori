@@ -29,7 +29,7 @@ class Interaction extends Base {
     this.type = InteractionTypes[data.type] ?? "UNKNOWN";
 
     /**
-      * Whether this interaction has benn responded.
+      * Whether this interaction has been responded.
       * @type {boolean}
       */
     this.responded = false;
@@ -75,7 +75,7 @@ class Interaction extends Base {
        * The userId which sent this interaction
        * @type {string}
        */
-      this.userId = data.user.id;// this.client.users.add(data.user.id, data.user);
+      this.userId = data.user.id;
     }
 
     if ("member" in data) {
