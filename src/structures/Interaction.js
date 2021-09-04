@@ -121,7 +121,7 @@ class Interaction extends Base {
     * @param {InteractionMessageCreateOptions} options The options to be used when creating the response
     * @returns {Promise}
     */
-  async createReply (options) {
+  async reply (options) {
     if (this.responded) return await this.createFollowup(options, options.ephemeral);
 
     if (typeof (options) === "string") options = { content: String(options) };
@@ -149,7 +149,7 @@ class Interaction extends Base {
     * @returns {Promise}
     */
   async defer (ephemeral = false) {
-    if (this.responded) throw new Error("Interaction already acknowledged. Cannot acknowledge more than once");
+    if (this.responded) throw new Error("Interaction already acknowledged. Cannot acknowledge more than once.");
 
     await this.client.rest.api
       .interactions(this.id)(this.token).callback.post({
@@ -180,7 +180,7 @@ class Interaction extends Base {
     }
 
     const response = await this.client.rest.api
-      .webhooks(this.client.user.id)(this.token).post({ data: options });
+      .webhooks(this.applicationId)(this.token).post({ data: options });
 
     return new Message(response, this.client);
   }
@@ -194,7 +194,7 @@ class Interaction extends Base {
     if (!this.responded) throw new Error("This interaction has not been responded yet. You must respond it before deleting the response.");
 
     return await this.client.rest.api
-      .webhooks(this.client.user.id)(this.token).messages(messageId).delete();
+      .webhooks(this.applicationId)(this.token).messages(messageId).delete();
   }
 
   /**
@@ -209,12 +209,12 @@ class Interaction extends Base {
     if (typeof (options) === "string") options = { content: String(options) };
 
     return await this.client.rest.api
-      .webhooks(this.client.user.id)(this.token).messages(messageId).patch({ data: options });
+      .webhooks(this.applicationId)(this.token).messages(messageId).patch({ data: options });
   }
 
   async getMessage (messageId = "@original") {
     const messagePayload = await this.client.rest.api
-      .webhooks(this.client.user.id)(this.token).messages(messageId)
+      .webhooks(this.applicationId)(this.token).messages(messageId)
       .get();
 
     return new Message(messagePayload, this.client);

@@ -5,6 +5,7 @@ import RestManager from "../src/rest/RestManager";
 
 // Types
 
+export type InteractionMessageCreateOptions = Omit<MessageCreateOptions, "file">;
 export type Snowflake = `${bigint}`;
 export type ImageFormats = "webp" | "png" | "jpg" | "jpeg" | "gif";
 export type ImageSizes = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
@@ -130,7 +131,7 @@ export interface GuildWidget {
 export interface MessageCreateOptions {
   content: string;
   tts: boolean;
-  file: any; // 😭 discord só fala que é um arquivo :(
+  file: any;
   embeds: MessageEmbed[];
   payload_json: string;
   allowed_mentions: AllowedMessageMentions;
@@ -340,9 +341,25 @@ export class Guild extends Base {
   public channels?: Collection<Snowflake, Channel>;
 }
 
-// TODO
 export class Interaction extends Base {
-
+  public id: Snowflake;
+  public responded: boolean;
+  public type: InteractionTypes;
+  public applicationId: Snowflake;
+  public channelId: Snowflake;
+  public guildId: Snowflake;
+  public userId?: Snowflake;
+  public member?: Member;
+  private token: string;
+  public readonly user: User;
+  public readonly guild: Guild;
+  public readonly channel: Channel;
+  public async reply(options: InteractionMessageCreateOptions): Message;
+  public async createFollowup(options: InteractionMessageCreateOptions): Message
+  public async defer(ephemeral: boolean): Message;
+  public async delete(messageId: string): Promise<void>;
+  public async edit(options: MessageEditOptions | string): Promise<void>;
+  public async getMessage(messageId: string): Message;
 }
 
 export class Collection<K, V> extends Map<K, V> {
