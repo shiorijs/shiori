@@ -7,7 +7,7 @@ const Member = require("../Member");
 const Message = require("../Message");
 
 /**
- * Represents a interaction on Discord.
+ * Represents an interaction on Discord.
  * @extends {Base}
  */
 class Interaction extends Base {
