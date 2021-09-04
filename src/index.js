@@ -27,5 +27,6 @@ Shiori.ApplicationCommandPlugin = require("./plugins/ApplicationCommandPlugin");
 // Utilities
 Shiori.Collection = require("./utils/Collection");
 Shiori.Intents = Constants.INTENTS;
+Shiori.Constants = Constants;
 
 module.exports = Shiori;
