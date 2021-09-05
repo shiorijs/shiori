@@ -86,7 +86,7 @@ export enum MessageComponentTypes {
   SELECT_MENU = 3
 }
 
-export enum ApplicationCommandType {
+export enum ApplicationCommandTypes {
   CHAT_INPUT = 1,
   USER = 2,
   MESSAGE = 3
@@ -287,7 +287,7 @@ export interface ApplicationCommandResolve {
 export interface ApplicationCommand {
   name: string;
   id: Snowflake;
-  type: ApplicationCommandType | "UNKNOWN";
+  type: ApplicationCommandTypes | "UNKNOWN";
   options?: ApplicationCommandOption[];
   default_permission?: boolean;
 }
@@ -428,7 +428,7 @@ export class ApplicationCommandInteraction extends Interaction {
   public command: ApplicationCommand;
   public resolved: ApplicationCommandResolve;
   public targetId: Snowflake;
-  public targetType: ApplicationCommandType;
+  public targetType: ApplicationCommandTypes;
   public options: ApplicationCommandOptions;
   public resolveTarget(): User | Message | null;
 }
