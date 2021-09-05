@@ -81,7 +81,7 @@ class ApplicationCommandInteraction extends Interaction {
   }
 
   /**
-    * If this interaction is a context menu, resolve the target.
+    * Resolve a target of this interaction.
     * @param {user | message | member | role | channel} targetType The target to be resolved.
     * @returns {User[] | Message[] | Member[] | Role[] | Channel[] | null}
     */
@@ -92,35 +92,39 @@ class ApplicationCommandInteraction extends Interaction {
 
     if (targetType === "user" && this.resolved.users) {
       const users = Object.entries(this.resolved.users)
-        .map(([_, user]) => new User(user, this.client));
+        .map(([userId, user]) => this.client.users.add(userId, new User(user, this.client)));
 
       return users;
     }
 
     if (targetType === "message" && this.resolved.messages) {
       const messages = Object.entries(this.resolved.messages)
-        .map(([_, message]) => new Message(message, this.client));
+        .map(([messageId, message]) => this.channel.messages?.add(messageId, new Message(message, this.client)));
 
       return messages;
     }
 
     if (targetType === "member" && this.resolved.members) {
       const members = Object.entries(this.resolved.members)
-        .map(([_, member]) => new Member(member, this.client, this.guildId));
+        .map(([memberId, member]) => this.guild.members.add(memberId, new Member(member, this.client, this.guildId)));
 
       return members;
     }
 
     if (targetType === "role" && this.resolved.roles) {
       const roles = Object.entries(this.resolved.roles)
-        .map(([_, role]) => new Role(role, this.client));
+        .map(([roleId, role]) => this.guild.roles.add(roleId, new Role(role, this.client)));
 
       return roles;
     }
 
     if (targetType === "channel" && this.resolved.channels) {
       const channels = Object.entries(this.resolved.channels)
-        .map(([_, channel]) => Channel.transform(channel, this.client));
+        .map(([_, channel]) => {
+          channel.guildId = this.guildId;
+          
+          return Channel.transform(channel, this.client);
+        });
 
       return channels;
     }
