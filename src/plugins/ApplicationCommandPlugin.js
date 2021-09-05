@@ -7,15 +7,26 @@ class ApplicationCommandPlugin {
     this.name = "application";
   }
 
-  setCommands (commands) {
+  /**
+    * Overwrites all global application commands with the provided commands
+    * @param {ApplicationCommand[]} commands The commands to be edited
+    * @returns {Promise}
+    */
+  async setCommands (commands) {
     if (!Array.isArray(commands)) {
       throw new Error(`Commands must be an array. Received a ${typeof commands} instead.`);
     }
 
-    return this.client.rest.api.applications(this.client.user.id)
+    return await this.client.rest.api.applications(this.client.user.id)
       .commands.put({ data: commands });
   }
 
+  /**
+    * Overwrites all guild application commands with the provided commands
+    * @param {ApplicationCommand[]} commands The commands to be edited
+    * @param {string} guildId The guild id where the commands will be edited
+    * @returns {Promise}
+    */
   async setGuildCommands (commands, guildId) {
     if (!Array.isArray(commands)) {
       throw new Error(`Commands must be an array. Received a ${typeof commands} instead.`);
@@ -25,6 +36,11 @@ class ApplicationCommandPlugin {
       .guilds(guildId).commands.put({ data: commands });
   }
 
+  /**
+    * Creates a global application command
+    * @param {ApplicationCommand} command The command to be created
+    * @returns {Promise}
+    */
   async createCommand (command) {
     const error = this.#validateCommand(command);
 
@@ -34,6 +50,12 @@ class ApplicationCommandPlugin {
       .commands.post({ data: command });
   }
 
+  /**
+    * Creates a guild application command
+    * @param {ApplicationCommand} command The command to be created
+    * @param {string} guildId The guild id where the command will be created
+    * @returns {Promise}
+    */
   async createGuildCommand (command, guildId) {
     const error = this.#validateCommand(command);
 
@@ -43,6 +65,12 @@ class ApplicationCommandPlugin {
       .guilds(guildId).commands.post({ data: command });
   }
 
+  /**
+    * Overwrites all existing permissions for all commands
+    * @param {object[]} permissions The permissions array
+    * @param {string} guildId The guild id where the permissions will be created
+    * @returns {Promise}
+    */
   async setCommandPermissions (permissions, guildId) {
     if (!Array.isArray(permissions)) {
       throw new Error(`Permissions must be an array. Received a ${typeof permissions} instead.`);
@@ -52,6 +80,13 @@ class ApplicationCommandPlugin {
       .guilds(guildId).commands.permissions({ data: permissions });
   }
 
+  /**
+      * Edit a specific command permission
+      * @param {object[]} permissions The permissions array
+      * @param {string} commandId The command id that the permissions will be edited to
+      * @param {string} guildId The guild id where the permissions will be edited
+      * @returns {Promise}
+      */
   async editCommandPermissions (permissions, commandId, guildId) {
     if (!Array.isArray(permissions)) {
       throw new Error(`Permissions must be an array. Received a ${typeof permissions} instead.`);
@@ -59,6 +94,97 @@ class ApplicationCommandPlugin {
 
     return await this.client.rest.api.applications(this.client.user.id)
       .guilds(guildId).commands(commandId).permissions.put({ data: permissions });
+  }
+
+  /**
+    * Deletes a global application command
+    * @param {string} commandId The command to be deleted
+    * @returns {Promise}
+    */
+  async deleteCommand (commandId) {
+    return await this.client.rest.api.applications(this.client.user.id)
+      .commands(commandId).delete();
+  }
+
+  /**
+    * Deletes a guild application command
+    * @param {string} commandId The command to be deleted
+    * @returns {Promise}
+    */
+  async deleteGuildCommand (commandId, guildId) {
+    return await this.client.rest.api.applications(this.client.user.id)
+      .guilds(guildId).commands(commandId).delete();
+  }
+
+  /**
+    * Returns all global application commands
+    * @returns {Promise<ApplicationCommand[]>}
+    */
+  async getCommands () {
+    return await this.client.rest.api.applications(this.client.user.id)
+      .commands.get();
+  }
+
+  /**
+    * Returns all applications commands from a guild
+    * @param {string} guildId The guild id to get the commands of
+    * @returns {Promise<ApplicationCommand[]>}
+    */
+  async getGuildCommands (guildId) {
+    return await this.client.rest.api.applications(this.client.user.id)
+      .guilds(guildId).commands.get();
+  }
+
+  /**
+    * Returns informations about a global application command
+    * @param {string} commandId The commandId to get it's informations
+    * @returns {Promise<ApplicationCommand>}
+    */
+  async getCommand (commandId) {
+    return await this.client.rest.api.applications(this.client.user.id)
+      .commands(commandId).get();
+  }
+
+  /**
+    * Returns informations about a guild application command
+    * @param {string} commandId The commandId to get it's informations
+    * @param {string} guildId The guildId where this command belongs
+    * @returns {Promise<ApplicationCommand>}
+    */
+  async getGuildCommand (commandId, guildId) {
+    return await this.client.rest.api.applications(this.client.user.id)
+      .guilds(guildId).commands(commandId).get();
+  }
+
+  /**
+    * Edits a global application command
+    * @param {ApplicationCommand} command The new command structure
+    * @param {string} commandId The commandId to be edited
+    * @returns {Promise}
+    */
+  async editCommand (command, commandId) {
+    const error = this.#validateCommand(command);
+
+    if (error) throw error;
+
+    return await this.client.rest.api.applications(this.client.user.id)
+      .commands(commandId).patch({ data: command });
+  }
+
+  /**
+    * Edits a guild application command
+    * @param {ApplicationCommand} command The commandId to get it's informations
+    * @param {string} commandId The commandId to be edited
+    * @param {string} guildId The guildId where this command belongs
+    * @returns {Promise<ApplicationCommand>}
+    */
+  async editGuildCommand (command, commandId, guildId) {
+    const error = this.#validateCommand(command);
+
+    if (error) throw error;
+    
+    return await this.client.rest.api.applications(this.client.user.id)
+      .guilds(guildId).commands(commandId).patch({ data: command });
   }
 
   #validateCommand (command) {

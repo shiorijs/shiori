@@ -288,7 +288,8 @@ export interface ApplicationCommand {
   name: string;
   id: Snowflake;
   type: ApplicationCommandType | "UNKNOWN";
-  options: ApplicationCommandOption[];
+  options?: ApplicationCommandOption[];
+  default_permission?: boolean;
 }
 
 // Classes

@@ -26,9 +26,9 @@ class Interaction extends Base {
 
     /**
       * The interaction's type
-      * @type {string}
+      * @type {number}
       */
-    this.type = InteractionTypes[data.type] ?? "UNKNOWN";
+    this.type = data.type;
 
     /**
       * Whether this interaction has been responded.
@@ -109,7 +109,7 @@ class Interaction extends Base {
     */
   isContextMenu () {
     return (
-      InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND &&
+      this.type === InteractionTypes.APPLICATION_COMMAND &&
       this.targetId !== undefined
     );
   }
@@ -119,7 +119,7 @@ class Interaction extends Base {
     * @returns {boolean}
     */
   isSlashCommand () {
-    return CommandTypes[this.command?.type] === CommandTypes.CHAT_INPUT;
+    return this.command?.type === CommandTypes.CHAT_INPUT;
   }
 
   /**
@@ -128,8 +128,8 @@ class Interaction extends Base {
     */
   isSelectMenu () {
     return (
-      InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT &&
-      MessageComponentTypes[this.componentType] === MessageComponentTypes.SELECT_MENU
+      this.type === InteractionTypes.MESSAGE_COMPONENT &&
+      this.componentType === MessageComponentTypes.SELECT_MENU
     );
   }
 
@@ -139,8 +139,8 @@ class Interaction extends Base {
     */
   isButton () {
     return (
-      InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT &&
-      MessageComponentTypes[this.componentType] === MessageComponentTypes.BUTTON
+      this.type === InteractionTypes.MESSAGE_COMPONENT &&
+      this.componentType === MessageComponentTypes.BUTTON
     );
   }
 

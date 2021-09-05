@@ -45,9 +45,9 @@ class ApplicationCommandInteraction extends Interaction {
       this.targetId = data.data.target_id;
       /**
         * Context Menu target type
-        * @type {string}
+        * @type {number}
         */
-      this.targetType = CommandTypes[data.data.type];
+      this.targetType = data.data.type;
     }
 
     /**
@@ -55,13 +55,13 @@ class ApplicationCommandInteraction extends Interaction {
      * @typedef {object} ApplicationCommand
      * @property {string} name The application command name
      * @property {string} id The application command id
-     * @property {string} type The application command type
+     * @property {number} type The application command type
      * @property {object} options The application command options
      * @property {object} resolved The application command resolved options
      */
 
     if (
-      InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND &&
+      this.type === InteractionTypes.APPLICATION_COMMAND &&
       this.targetId === undefined
     ) {
       /**
@@ -71,7 +71,7 @@ class ApplicationCommandInteraction extends Interaction {
       this.command = {
         name: data.data.name,
         id: data.data.id,
-        type: CommandTypes[data.data.type] ?? "UNKNOWN",
+        type: data.data.type,
         options: data.data.options ?? []
       };
     }
@@ -84,13 +84,13 @@ class ApplicationCommandInteraction extends Interaction {
   resolveTarget () {
     if (this.targetId === undefined || !this.resolved) return null;
 
-    if (CommandTypes[this.targetType] === CommandTypes.USER) {
+    if (this.targetType === CommandTypes.USER) {
       const [userId, user] = Object.entries(this.resolved.users).flat(Infinity);
 
       return this.client.users.add(userId, new User(user, this.client));
     }
 
-    if (CommandTypes[this.targetType] === CommandTypes.MESSAGE) {
+    if (this.targetType === CommandTypes.MESSAGE) {
       const [messageId, message] = Object.entries(this.resolved.messages).flat(Infinity);
 
       return this.channel.messages.add(messageId, new Message(message, this.client));
