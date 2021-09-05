@@ -430,7 +430,8 @@ export class ApplicationCommandInteraction extends Interaction {
   public targetId: Snowflake;
   public targetType: ApplicationCommandTypes;
   public options: ApplicationCommandOptions;
-  public resolveTarget(): User | Message | null;
+  public resolveTarget(targetType: "user" | "message" | "member" | "role"): 
+    User[] | Message[] | Member[] | Role[] | Channel[] | null;
 }
 
 export class MessageComponentInteraction extends Interaction {
