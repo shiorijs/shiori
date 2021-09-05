@@ -78,6 +78,17 @@ class ClientUtils {
       });
 
       if (options.data) request.end(JSON.stringify(options.data));
+
+      const timeout = this.#client.rest.options.timeout;
+
+      request.setTimeout(timeout, () => {
+        request.destroy(new Error(`
+          Request timed out. More than ${timeout}ms has been passed since the start of the request. 
+          
+          Method: ${options.method}
+          Route: ${options.path}
+        `));
+      });
     });
   }
 

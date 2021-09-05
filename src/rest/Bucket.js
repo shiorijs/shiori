@@ -113,7 +113,8 @@ class Bucket {
       await this.manager.client.utils.delay(timeout);
     }
 
-    const result = await this.manager.client.utils.request({ path, ...options });
+    const result = await this.manager.client.utils.request({ path, ...options })
+      .catch(error => error);
 
     const serverDate = result.headers.date;
     const remaining = result.headers["x-ratelimit-remaining"];

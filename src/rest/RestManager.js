@@ -17,7 +17,8 @@ class RestManager {
   constructor (client, options = {}) {
     this.options = Object.assign({
       version: Constants.REST.API_VERSION,
-      fetchAllUsers: false
+      fetchAllUsers: false,
+      timeout: 15000
     }, options.rest);
 
     /**
