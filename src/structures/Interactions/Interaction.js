@@ -146,7 +146,7 @@ class Interaction extends Base {
 
   /**
    * The channel this interaction was sent in
-   * @type {?TextChannel}
+   * @type {?Channel}
    * @readonly
    */
   get channel () {
