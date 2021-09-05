@@ -33,7 +33,7 @@ const write = (content) => process.stdout.write(`${content}\n`);
 
 client.on("interactionCreate", async (interaction) => {
   if (interaction.isContextMenu()) {
-    await interaction.reply(`Você escolheu ${interaction.targetId}`);
+    await interaction.reply(`Conteúdo ${interaction.resolveTarget("message")[0].content}`);
   }
 });
 
