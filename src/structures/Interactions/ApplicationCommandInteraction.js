@@ -88,45 +88,19 @@ class ApplicationCommandInteraction extends Interaction {
   resolveTarget (targetType) {
     if (this.targetId === undefined || !this.resolved) return null;
 
-    /* eslint-disable no-unused-vars */
+    const resolve = {
+      user: (id, user) => this.client.users.add(id, new User(user, this.client)),
+      message: (id, message) => this.channel.messages?.add(id, new Message(message, this.client)),
+      member: (id, member) => this.guild.members.add(id, new Member(member, this.client, this.guildId)),
+      role: (id, role) => this.guild.roles.add(id, new Role(role, this.client)),
+      /* eslint-disable no-unused-vars */
+      channel: (_, channel) => Channel.transform({ guildId: this.guildId, ...channel }, this.client)
+    };
 
-    if (targetType === "user" && this.resolved.users) {
-      const users = Object.entries(this.resolved.users)
-        .map(([userId, user]) => this.client.users.add(userId, new User(user, this.client)));
-
-      return users;
-    }
-
-    if (targetType === "message" && this.resolved.messages) {
-      const messages = Object.entries(this.resolved.messages)
-        .map(([messageId, message]) => this.channel.messages?.add(messageId, new Message(message, this.client)));
-
-      return messages;
-    }
-
-    if (targetType === "member" && this.resolved.members) {
-      const members = Object.entries(this.resolved.members)
-        .map(([memberId, member]) => this.guild.members.add(memberId, new Member(member, this.client, this.guildId)));
-
-      return members;
-    }
-
-    if (targetType === "role" && this.resolved.roles) {
-      const roles = Object.entries(this.resolved.roles)
-        .map(([roleId, role]) => this.guild.roles.add(roleId, new Role(role, this.client)));
-
-      return roles;
-    }
-
-    if (targetType === "channel" && this.resolved.channels) {
-      const channels = Object.entries(this.resolved.channels)
-        .map(([_, channel]) => {
-          channel.guildId = this.guildId;
-          
-          return Channel.transform(channel, this.client);
-        });
-
-      return channels;
+    if (this.resolved[`${targetType}s`]) {
+      return Object
+        .entries(this.resolved[`${targetType}s`])
+        .map(([id, param]) => resolve[targetType](id, param));
     }
   }
 }
