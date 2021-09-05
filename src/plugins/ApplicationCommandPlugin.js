@@ -182,7 +182,7 @@ class ApplicationCommandPlugin {
     const error = this.#validateCommand(command);
 
     if (error) throw error;
-    
+
     return await this.client.rest.api.applications(this.client.user.id)
       .guilds(guildId).commands(commandId).patch({ data: command });
   }
