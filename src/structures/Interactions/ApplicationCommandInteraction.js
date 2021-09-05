@@ -83,7 +83,7 @@ class ApplicationCommandInteraction extends Interaction {
   /**
     * If this interaction is a context menu, resolve the target.
     * @param {user | message | member | role | channel} targetType The target to be resolved.
-    * @returns {User[] | Message[] | null}
+    * @returns {User[] | Message[] | Member[] | Role[] | Channel[] | null}
     */
   resolveTarget (targetType) {
     if (this.targetId === undefined || !this.resolved) return null;
