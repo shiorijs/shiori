@@ -32,7 +32,7 @@ class MessageComponentInteraction extends Interaction {
 
     if ("values" in data) {
       /**
-        * Values that the user picked. Available only to select menus.
+        * Values that the user selected. Available only to select menus.
         * @type {string[]}
         */
       this.values = data.values;
