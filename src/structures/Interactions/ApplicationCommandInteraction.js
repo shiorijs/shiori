@@ -1,9 +1,12 @@
-const { CommandTypes, InteractionTypes } = require("../../utils/Constants");
+const { InteractionTypes } = require("../../utils/Constants");
+const Interaction = require("./Interaction");
+const ApplicationCommandOptions = require("./ApplicationCommandOptions");
 
 const Message = require("../Message");
 const User = require("../User");
-const Interaction = require("./Interaction");
-const ApplicationCommandOptions = require("./ApplicationCommandOptions");
+const Member = require("../Member");
+const Role = require("../Role");
+const Channel = require("../Channel");
 
 /**
  * Represents an application commmand interaction on Discord.
@@ -79,21 +82,47 @@ class ApplicationCommandInteraction extends Interaction {
 
   /**
     * If this interaction is a context menu, resolve the target.
-    * @returns {User | Message | null}
+    * @param {user | message | member | role | channel} targetType The target to be resolved.
+    * @returns {User[] | Message[] | null}
     */
-  resolveTarget () {
+  resolveTarget (targetType) {
     if (this.targetId === undefined || !this.resolved) return null;
 
-    if (this.targetType === CommandTypes.USER) {
-      const [userId, user] = Object.entries(this.resolved.users).flat(Infinity);
+    /* eslint-disable no-unused-vars */
 
-      return this.client.users.add(userId, new User(user, this.client));
+    if (targetType === "user" && this.resolved.users) {
+      const users = Object.entries(this.resolved.users)
+        .map(([_, user]) => new User(user, this.client));
+
+      return users;
     }
 
-    if (this.targetType === CommandTypes.MESSAGE) {
-      const [messageId, message] = Object.entries(this.resolved.messages).flat(Infinity);
+    if (targetType === "message" && this.resolved.messages) {
+      const messages = Object.entries(this.resolved.messages)
+        .map(([_, message]) => new Message(message, this.client));
 
-      return this.channel.messages.add(messageId, new Message(message, this.client));
+      return messages;
+    }
+
+    if (targetType === "member" && this.resolved.members) {
+      const members = Object.entries(this.resolved.members)
+        .map(([_, member]) => new Member(member, this.client, this.guildId));
+
+      return members;
+    }
+
+    if (targetType === "role" && this.resolved.roles) {
+      const roles = Object.entries(this.resolved.roles)
+        .map(([_, role]) => new Role(role, this.client));
+
+      return roles;
+    }
+
+    if (targetType === "channel" && this.resolved.channels) {
+      const channels = Object.entries(this.resolved.channels)
+        .map(([_, channel]) => Channel.transform(channel, this.client));
+
+      return channels;
     }
   }
 }
