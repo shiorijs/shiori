@@ -67,7 +67,7 @@ export enum GuildVerificationLevel {
   VERY_HIGH = 4
 }
 
-export enum ApplicationCommandOptionType {
+export enum ApplicationCommandOptionTypes {
   SUB_COMMAND = 1,
   SUB_COMMAND_GROUP = 2,
   STRING = 3,
@@ -267,7 +267,7 @@ export interface ApplicationCommandOptionChoice {
 }
 
 export interface ApplicationCommandOption {
-  type: ApplicationCommandOptionType;
+  type: ApplicationCommandOptionTypes;
   name: string;
   description: string;
   required?: boolean;
