@@ -8,8 +8,8 @@ class ApplicationCommandPlugin {
   }
 
   /**
-    * Overwrites all global application commands with the provided commands
-    * @param {ApplicationCommand[]} commands The commands to be edited
+    * Overwrites all global application commands
+    * @param {ApplicationCommand[]} commands Array of application commands
     * @returns {Promise}
     */
   async setCommands (commands) {
@@ -22,9 +22,9 @@ class ApplicationCommandPlugin {
   }
 
   /**
-    * Overwrites all guild application commands with the provided commands
-    * @param {ApplicationCommand[]} commands The commands to be edited
-    * @param {string} guildId The guild id where the commands will be edited
+    * Overwrites all guild application commands
+    * @param {ApplicationCommand[]} commands Array of application commands
+    * @param {string} guildId The guild id where these commands belongs to
     * @returns {Promise}
     */
   async setGuildCommands (commands, guildId) {
@@ -38,7 +38,7 @@ class ApplicationCommandPlugin {
 
   /**
     * Creates a global application command
-    * @param {ApplicationCommand} command The command to be created
+    * @param {ApplicationCommand} command The application command to be created
     * @returns {Promise}
     */
   async createCommand (command) {
@@ -66,9 +66,9 @@ class ApplicationCommandPlugin {
   }
 
   /**
-    * Overwrites all existing permissions for all commands
-    * @param {object[]} permissions The permissions array
-    * @param {string} guildId The guild id where the permissions will be created
+    * Overwrites all existing permissions for all application commands
+    * @param {object[]} permissions The permissions structure array
+    * @param {string} guildId The guild id where the permissions will be overwrited
     * @returns {Promise}
     */
   async setCommandPermissions (permissions, guildId) {
@@ -81,12 +81,12 @@ class ApplicationCommandPlugin {
   }
 
   /**
-      * Edit a specific command permission
-      * @param {object[]} permissions The permissions array
-      * @param {string} commandId The command id that the permissions will be edited to
-      * @param {string} guildId The guild id where the permissions will be edited
-      * @returns {Promise}
-      */
+    * Edits a specific application command permission
+    * @param {object[]} permissions The permissions structure array
+    * @param {string} commandId The command id you want to have the permissions
+    * @param {string} guildId The guild id where the permissions will take place
+    * @returns {Promise}
+    */
   async editCommandPermissions (permissions, commandId, guildId) {
     if (!Array.isArray(permissions)) {
       throw new Error(`Permissions must be an array. Received a ${typeof permissions} instead.`);
@@ -98,7 +98,7 @@ class ApplicationCommandPlugin {
 
   /**
     * Deletes a global application command
-    * @param {string} commandId The command to be deleted
+    * @param {string} commandId The command id to be deleted
     * @returns {Promise}
     */
   async deleteCommand (commandId) {
@@ -108,7 +108,7 @@ class ApplicationCommandPlugin {
 
   /**
     * Deletes a guild application command
-    * @param {string} commandId The command to be deleted
+    * @param {string} commandId The command id to be deleted
     * @returns {Promise}
     */
   async deleteGuildCommand (commandId, guildId) {
@@ -127,7 +127,7 @@ class ApplicationCommandPlugin {
 
   /**
     * Returns all applications commands from a guild
-    * @param {string} guildId The guild id to get the commands of
+    * @param {string} guildId The guild id to get the commands
     * @returns {Promise<ApplicationCommand[]>}
     */
   async getGuildCommands (guildId) {
@@ -137,7 +137,7 @@ class ApplicationCommandPlugin {
 
   /**
     * Returns informations about a global application command
-    * @param {string} commandId The commandId to get it's informations
+    * @param {string} commandId The command id
     * @returns {Promise<ApplicationCommand>}
     */
   async getCommand (commandId) {
@@ -147,8 +147,8 @@ class ApplicationCommandPlugin {
 
   /**
     * Returns informations about a guild application command
-    * @param {string} commandId The commandId to get it's informations
-    * @param {string} guildId The guildId where this command belongs
+    * @param {string} commandId The command id
+    * @param {string} guildId The guild id where this command belongs
     * @returns {Promise<ApplicationCommand>}
     */
   async getGuildCommand (commandId, guildId) {
@@ -158,8 +158,8 @@ class ApplicationCommandPlugin {
 
   /**
     * Edits a global application command
-    * @param {ApplicationCommand} command The new command structure
-    * @param {string} commandId The commandId to be edited
+    * @param {ApplicationCommand} command The new application command structure
+    * @param {string} commandId The command id to be edited
     * @returns {Promise}
     */
   async editCommand (command, commandId) {
@@ -173,9 +173,9 @@ class ApplicationCommandPlugin {
 
   /**
     * Edits a guild application command
-    * @param {ApplicationCommand} command The commandId to get it's informations
-    * @param {string} commandId The commandId to be edited
-    * @param {string} guildId The guildId where this command belongs
+    * @param {ApplicationCommand} command The new application command structure
+    * @param {string} commandId The command id to be edited
+    * @param {string} guildId The guild id where this command belongs
     * @returns {Promise<ApplicationCommand>}
     */
   async editGuildCommand (command, commandId, guildId) {
