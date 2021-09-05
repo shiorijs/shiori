@@ -1,4 +1,3 @@
-const { MessageComponentTypes} = require("../../utils/Constants");
 const Interaction = require("./Interaction");
 
 /**
@@ -15,9 +14,9 @@ class MessageComponentInteraction extends Interaction {
 
     /**
       * The interaction component type
-      * @type {string}
+      * @type {number}
       */
-    this.componentType = MessageComponentTypes[data.data.component_type] ?? "UNKNOWN";
+    this.componentType = data.data.component_type;
 
     this._update(data.data);
   }
