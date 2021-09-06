@@ -68,7 +68,7 @@ class ApplicationCommandInteraction extends Interaction {
       this.targetId === undefined
     ) {
       /**
-       * Application Command included in this interaction
+       * Application Command structure included in this interaction
        * @type {ApplicationCommand}
        */
       this.command = {
@@ -81,7 +81,7 @@ class ApplicationCommandInteraction extends Interaction {
   }
 
   /**
-    * Resolve a target of this interaction.
+    * Resolves a target of this interaction.
     * @param {user | message | member | role | channel} targetType The target to be resolved.
     * @returns {User[] | Message[] | Member[] | Role[] | Channel[] | null}
     */
