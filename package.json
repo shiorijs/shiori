@@ -21,6 +21,10 @@
   ],
   "dependencies": {
     "axios": "^0.21.2",
+<<<<<<< HEAD
+=======
+    "events": "^3.3.0",
+>>>>>>> 39b50133ee42b28ac33f964747ea0687672b2ead
     "ws": "^8.0.0"
   },
   "devDependencies": {
