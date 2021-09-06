@@ -72,7 +72,7 @@ class Interaction extends Base {
 
     if ("user" in data) {
       /**
-       *  If this interaction was executed in a DM, the user id of who executed it 
+       *  If this interaction was executed in a DM, the user id of who executed it
        * @type {string}
        */
       this.userId = data.user.id;
