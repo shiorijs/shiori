@@ -12,13 +12,13 @@ class ApplicationCommandOptions {
     this.#client = client;
     /**
      * The subcommand name, if any.
-     * @returns {?string} Name of the subcommand
+     * @returns {?string}
      */
     this.subcommand = null;
 
     /**
      * The subcommand group name, if any.
-     * @returns {?string} Name of the subcommand group
+     * @returns {?string}
      */
     this.subcommandGroup = null;
 
@@ -75,7 +75,7 @@ class ApplicationCommandOptions {
   /**
    * Returns an option with type user
    * @param {string} optionName Option to get the value of
-   * @param {boolean} resolve Whether to return the resolved user
+   * @param {boolean} resolve Whether to return the user class
    * @returns {User | string}
    */
   user (optionName, resolve = false) {
@@ -90,7 +90,7 @@ class ApplicationCommandOptions {
   /**
    * Returns an option with type channel
    * @param {string} optionName Option to get the value of
-   * @param {boolean} resolve Whether to return the resolved channel
+   * @param {boolean} resolve Whether to return the channel class
    * @returns {Channel | string}
    */
   channel (optionName, resolve = false) {

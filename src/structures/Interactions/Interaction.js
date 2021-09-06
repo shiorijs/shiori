@@ -19,13 +19,13 @@ class Interaction extends Base {
     super(client);
 
     /**
-     * The interaction's id
+     * The interaction id
      * @type {string}
      */
     this.id = data.id;
 
     /**
-      * The interaction's type
+      * The interaction type
       * @type {number}
       */
     this.type = data.type;
@@ -37,7 +37,7 @@ class Interaction extends Base {
     this.responded = false;
 
     /**
-     * The interaction's token
+     * The interaction token
      * @type {string}
      * @name Interaction#token
      * @readonly
@@ -72,7 +72,7 @@ class Interaction extends Base {
 
     if ("user" in data) {
       /**
-       * The userId which sent this interaction
+       *  If this interaction was executed in a DM, the user id of who executed it 
        * @type {string}
        */
       this.userId = data.user.id;
@@ -80,7 +80,7 @@ class Interaction extends Base {
 
     if ("member" in data) {
       /**
-       * If this interaction was sent in a guild, the member which sent it
+       * If this interaction was executed in a guild, the member who executed it
        * @type {Member}
        */
       this.member = this.guild?.members.add(data.member.user.id, new Member(data.member));
@@ -163,7 +163,7 @@ class Interaction extends Base {
   }
 
   /**
-   * The user that send this interaction
+   * The user that executed this interaction
    * @type {?User}
    * @readonly
    */
@@ -201,7 +201,7 @@ class Interaction extends Base {
   }
 
   /**
-    * Responds to the interaction with a defer response
+    * Creates a defer response for this interaction.
     * @param {boolean} [ephemeral=false] If the response will be ehpemeral
     * @returns {Promise}
     */
@@ -220,7 +220,7 @@ class Interaction extends Base {
   }
 
   /**
-    * Creates a followup message for this interaction.
+    * Creates a followup response for this interaction.
     * This interaction must have been responded in order to create a followup.
     * @param {InteractionMessageCreateOptions} options The options to be used when creating the response
     * @returns {Promise}
@@ -243,7 +243,7 @@ class Interaction extends Base {
   }
 
   /**
-    * Deletes this interaction response
+    * Deletes one of the responses sent by this interaction
     * @param {string} messageId The message to be deleted.
     * @returns {Promise}
     */
@@ -255,7 +255,7 @@ class Interaction extends Base {
   }
 
   /**
-    * Edits the interaction response
+    * Edits one of the responses sent by this interaction
     * @param {MessageEditOptions | string} options The options to be used when editing the response.
     * @param {string} messageId The message to be edited.
     * @returns {Promise}
@@ -270,7 +270,7 @@ class Interaction extends Base {
   }
 
   /**
-    * Fetches a message sended by this interaction.
+    * Fetch a message that was sent by this interaction.
     * @param {string} messageId The message to be fetched.
     * @returns {Promise<Message>}
     */
