@@ -62,7 +62,7 @@ class Member extends Base {
    * @readonly
    */
   get user () {
-    return this.client.users.get(this.id);
+    return this.client.users.get(this.id); // Provavelmente adicionar inves de pegar? Assim caso nao exista, adicionar
   }
 
   /**

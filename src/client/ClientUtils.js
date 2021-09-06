@@ -1,3 +1,5 @@
+const https = require("https");
+
 const Constants = require("../utils/Constants");
 const Guild = require("../structures/Guild");
 const User = require("../structures/User");
@@ -59,6 +61,35 @@ class ClientUtils {
     }
 
     throw new Error("Invalid target");
+  }
+
+  request (options) {
+    let data = "";
+
+    return new Promise((resolve, reject) => {
+      const request = https.request(options);
+
+      request.on("response", (resp) => {
+        resp.on("data", (str) => data += str);
+        resp.on("error", reject);
+        resp.on("end", () => {
+          return resolve({ data: JSON.parse(data), headers: resp.headers, code: resp.statusCode });
+        });
+      });
+
+      if (options.data) request.end(JSON.stringify(options.data));
+
+      const timeout = this.#client.rest.options.timeout;
+
+      request.setTimeout(timeout, () => {
+        request.destroy(new Error(`
+          Request timed out. More than ${timeout}ms has been passed since the start of the request. 
+          
+          Method: ${options.method}
+          Route: ${options.path}
+        `));
+      });
+    });
   }
 
   /**

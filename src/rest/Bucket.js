@@ -1,6 +1,4 @@
-const axios = require("axios");
 const AsyncQueue = require("../utils/AsyncQueue");
-const Util = require("../client/ClientUtils");
 
 function getAPIOffset (serverDate) {
   return new Date(serverDate).getTime() - Date.now();
@@ -67,17 +65,17 @@ class Bucket {
 
   /**
    * Queue a request into the bucket.
-   * @param {string} url URL to make the request to
+   * @param {string} path URL to make the request to
    * @param {object} [options] The options to use on the request
    * @param {object} [options.data] The data to be sent
    * @param {boolean} [options.authenticate] Whether to authenticate the request
    * @param {string} route The cleaned route
    */
-  async queueRequest (url, options, route) {
+  async queueRequest (path, options, route) {
     // Wait for any previous requests to be completed before this one is run
     await this.#asyncQueue.wait();
     try {
-      return await this.executeRequest(url, options, route);
+      return await this.executeRequest(path, options, route);
     } finally {
       // Allow the next request to fire
       this.#asyncQueue.shift();
@@ -89,7 +87,7 @@ class Bucket {
    * TODO: APIResult interface
    * @returns {APIResult}
    */
-  async executeRequest (url, options, route) {
+  async executeRequest (path, options, route) {
     while (this.globalLimited || this.localLimited) {
       let timeout;
 
@@ -112,13 +110,11 @@ class Bucket {
         Must wait ${timeout}ms before proceeding`);
       }
 
-      await Util.delay(timeout);
+      await this.manager.client.utils.delay(timeout);
     }
 
-    const result = await axios({ url, ...options })
-      .catch(error => error.response?.data);
-
-    if (!result || !result.headers) return null;
+    const result = await this.manager.client.utils.request({ path, ...options })
+      .catch(error => error);
 
     const serverDate = result.headers.date;
     const remaining = result.headers["x-ratelimit-remaining"];
@@ -144,12 +140,17 @@ class Bucket {
       }
     }
 
-    if (result.status === 204) {
-      return result.data;
-    } else if (result.status === 429) {
-      if (this.reset) await Util.delay(this.reset);
+    if (result.status === 429) {
+      this.manager.client.emit("debug", `
+      [Unexpected Ratelimit - 429]
+      
+      A ratelimit happened on the route ${route}
+      This happened because this request was not previously stored on the bucket. Probally caused by the bot restarting.
+      `);
 
-      return this.executeRequest(url, options);
+      if (this.reset) await this.manager.client.utils.delay(this.reset);
+
+      return this.executeRequest(path, options);
     }
 
     return result.data;

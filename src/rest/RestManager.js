@@ -17,7 +17,8 @@ class RestManager {
   constructor (client, options = {}) {
     this.options = Object.assign({
       version: Constants.REST.API_VERSION,
-      fetchAllUsers: false
+      fetchAllUsers: false,
+      timeout: 15000
     }, options.rest);
 
     /**
@@ -45,7 +46,7 @@ class RestManager {
      * API Url to be used on requests.
      * @type {string}
      */
-    this.apiURL = `${Constants.REST.BASE_URL}/v${this.options.version}`;
+    this.apiURL = `/api/v${this.options.version}`;
 
     this.#deleteEmptyBuckets();
   }
@@ -90,7 +91,7 @@ class RestManager {
   }
 
   /**
-   * Formats the request data to a usable format for axios
+   * Formats the request data to a usable format for https
    * @param request The request data
    */
   #resolveRequest (url, method, options) {
@@ -106,7 +107,12 @@ class RestManager {
 
     const formattedUrl = `${this.apiURL}/${url.replace(/[/]?(\w+)/, "$1")}`;
 
-    const requestOptions = { data: options.data, method: method.toLowerCase(), headers };
+    const requestOptions = {
+      hostname: "discord.com",
+      data: options.data,
+      method,
+      headers
+    };
 
     return { formattedUrl, requestOptions };
   }

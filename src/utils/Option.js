@@ -37,7 +37,8 @@ module.exports = class Option {
       },
       rest: {
         version: Constants.REST.API_VERSION,
-        fetchAllUsers: false
+        fetchAllUsers: false,
+        timeout: 15000
       },
       defaultFormat: "png",
       defaultSize: 2048,
