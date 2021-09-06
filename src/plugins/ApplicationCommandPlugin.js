@@ -52,7 +52,7 @@ class ApplicationCommandPlugin {
 
   /**
     * Creates a guild application command
-    * @param {ApplicationCommand} command The command to be created
+    * @param {ApplicationCommand} command The application command structure to be created
     * @param {string} guildId The guild id where the command will be created
     * @returns {Promise}
     */
