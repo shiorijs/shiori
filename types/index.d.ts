@@ -92,6 +92,11 @@ export enum ApplicationCommandTypes {
   MESSAGE = 3
 }
 
+export enum ApplicationCommandPermissionTypes {
+  ROLE = 1,
+  USER = 2
+}
+
 // Interfaces
 
 export interface WSOptions {
@@ -264,6 +269,12 @@ export interface MessageAttachments {
 export interface ApplicationCommandOptionChoice {
   name: string;
   value: string | number;
+}
+
+export interface ApplicationCommandPermission {
+ id: Snowflake;
+ type: ApplicationCommandPermissionTypes;
+ permission: boolean;
 }
 
 export interface ApplicationCommandOption {
