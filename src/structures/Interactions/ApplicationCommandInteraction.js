@@ -9,7 +9,7 @@ const Role = require("../Role");
 const Channel = require("../Channel");
 
 /**
- * Represents an application commmand interaction on Discord.
+ * Represents an application command interaction on Discord.
  * @extends {Interaction}
  */
 class ApplicationCommandInteraction extends Interaction {
@@ -54,7 +54,7 @@ class ApplicationCommandInteraction extends Interaction {
     }
 
     /**
-     * Reference object that contains all command informations
+     * Reference object that contains all command information
      * @typedef {object} ApplicationCommand
      * @property {string} name The application command name
      * @property {string} id The application command id
@@ -93,7 +93,7 @@ class ApplicationCommandInteraction extends Interaction {
       message: (id, message) => this.channel.messages?.add(id, new Message(message, this.client)),
       member: (id, member) => this.guild.members.add(id, new Member(member, this.client, this.guildId)),
       role: (id, role) => this.guild.roles.add(id, new Role(role, this.client)),
-      /* eslint-disable no-unused-vars */
+      // eslint-disable-next-line no-unused-vars
       channel: (_, channel) => Channel.transform({ guildId: this.guildId, ...channel }, this.client)
     };
 

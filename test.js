@@ -35,6 +35,10 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.isContextMenu()) {
     await interaction.reply(`Conteúdo ${interaction.resolveTarget("message")[0].content}`);
   }
+
+  if (interaction.isSlashCommand()) {
+    await interaction.reply({ content: "AAAAAAAAAAAAAAAAAAA" });
+  }
 });
 
 client.on("messageCreate", async (message) => {

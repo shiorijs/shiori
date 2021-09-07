@@ -202,7 +202,7 @@ class Interaction extends Base {
 
   /**
     * Creates a defer response for this interaction.
-    * @param {boolean} [ephemeral=false] If the response will be ehpemeral
+    * @param {boolean} [ephemeral=false] If the response will be ephemeral
     * @returns {Promise}
     */
   async defer (ephemeral = false) {
