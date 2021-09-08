@@ -43,7 +43,7 @@ client.on("ready", () => {
   const commands = [{ name: "ping", description: "Pong!" }];
 
   // Don't create application commands on the ready event.
-  return client.application.commands.setCommands(commands);
+  return client.application.setCommands(commands);
 });
 
 client.on("interactionCreate", (interaction) => {
