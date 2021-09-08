@@ -99,6 +99,40 @@ module.exports = {
     "GUILD_PRIVATE_THREAD", // A temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission
     "GUILD_STAGE_VOICE" // A voice channel for hosting events with an audience
   ]),
+  MessageComponentTypes: {
+    ACTION_ROW: 1,
+    BUTTON: 2,
+    SELECT_MENU: 3
+  },
+  InteractionTypes: {
+    PING: 1,
+    APPLICATION_COMMAND: 2,
+    MESSAGE_COMPONENT: 3
+  },
+  InteractionResponseTypes: {
+    PONG: 1,
+    CHANNEL_MESSAGE_WITH_SOURCE: 4,
+    DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE: 5,
+    DEFERRED_UPDATE_MESSAGE: 6,
+    UPDATE_MESSAGE: 7
+  },
+  CommandTypes: {
+    CHAT_INPUT: 1,
+    USER: 2,
+    MESSAGE: 3
+  },
+  CommandOptionTypes: {
+    SUB_COMMAND: 1,
+    SUB_COMMAND_GROUP: 2,
+    STRING:	3,
+    INTEGER: 4,
+    BOOLEAN: 5,
+    USER:	6,
+    CHANNEL:7,
+    ROLE:	8,
+    MENTIONABLE:9,
+    NUMBER:	10
+  },
   GatewayErrors: {
     UNKNOWN: 4000,
     UNKNOWN_OPCODE: 4001,

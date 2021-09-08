@@ -17,11 +17,19 @@ export const {
   Channel,
   GuildChannel,
   TextChannel,
-  Interaction,
   Role,
   VoiceChannel,
 
+  // Interactions
+  Interaction,
+  ApplicationCommandInteraction,
+  MessageComponentInteraction,
+
+  // Plugins
+  ApplicationCommandPlugin,
+
   // Utilities
   Collection,
-  Intents
+  Intents,
+  Constants
 } = Shiori;

@@ -5,13 +5,20 @@ const Shiori = require("./src/");
 const client = Shiori(process.env.DISCORD_TOKEN, {
   intents: 13827,
   rest: { fetchAllUsers: true },
+  plugins: [Shiori.ApplicationCommandPlugin],
   cache: {
     users: {
       limit: Infinity,
       sweep: 10,
       sweepTimeout: 10000,
       toAdd: (_, userID) => {
-        if (!["664806442406248448", "532294395655880705", "515903666360942594", "478031386796752896"].includes(userID)) return false;
+        if (![
+          "664806442406248448",
+          "532294395655880705",
+          "515903666360942594",
+          "478031386796752896",
+          "817505090977923093"
+        ].includes(userID)) return false;
         else return true;
       },
       toRemove: (_, userID) => {
@@ -24,25 +31,17 @@ const client = Shiori(process.env.DISCORD_TOKEN, {
 
 const write = (content) => process.stdout.write(`${content}\n`);
 
+client.on("interactionCreate", async (interaction) => {
+  if (interaction.isContextMenu()) {
+    await interaction.reply(`Conteúdo ${interaction.resolveTarget("message")[0].content}`);
+  }
+
+  if (interaction.isSlashCommand()) {
+    await interaction.reply({ content: "AAAAAAAAAAAAAAAAAAA" });
+  }
+});
+
 client.on("messageCreate", async (message) => {
-  if (message.content === "avatar") {
-    return message.channel.send(client.utils.image(message.author).avatar());
-  }
-
-  if (message.content === "react") {
-    const emojis = ["🕵", "😎", "😱", "🚀", "✨"];
-
-    for (const emoji of emojis) message.addReaction(emoji);
-
-    return;
-  }
-
-  if (message.content === "say") {
-    const msg = await message.channel.send("Hello");
-
-    return setTimeout(() => msg.edit("Dudek gay"), 3000);
-  }
-
   if (message.content === "tratelimit") {
     await message.channel.send("First");
     await message.channel.send("Second");
@@ -51,18 +50,17 @@ client.on("messageCreate", async (message) => {
     await message.channel.send("Fifth");
     return message.channel.send("Six");
   }
-
-  if (message.content === "utils") {
-    // eslint-disable-next-line no-console
-    return console.log(client.utils.getChannel("800889654198009899"));
-  }
 });
 
-client.on("ready", () => write("Pronto!"));
+client.on("ready", () => write("Ready!"));
 client.on("shardError", (error, shardID) => write(`Shard Error: ${error} ID: ${shardID}`));
 client.on("warn", (warn) => write(`Aviso ${warn}`));
 client.on("error", (error) => write(`Erro: ${error}`));
 client.on("disconnect", (message) => write(`Desconectado: ${message}`));
 client.on("debug", (message) => write(message));
+
+process
+  .once("unhandledRejection", (error) => write(error.stack))
+  .once("uncaughtException", (error) => write(error.stack));
 
 client.start();

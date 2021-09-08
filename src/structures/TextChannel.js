@@ -57,10 +57,10 @@ class TextChannel extends BaseGuildChannel {
     * @param {MessageCreateOptions} options Options to be used when creating the message
     * @returns {Promise<Message>}
     */
-  send (options) {
+  async send (options) {
     if (typeof (options) !== "object") options = { content: String(options) };
 
-    return this.client.rest.api.channels(this.id).messages.post({ data: options })
+    return await this.client.rest.api.channels(this.id).messages.post({ data: options })
       .then((data) => new Message(data, this.client));
   }
 

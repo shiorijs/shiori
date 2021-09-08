@@ -145,7 +145,7 @@ class Bucket {
       [Unexpected Ratelimit - 429]
       
       A ratelimit happened on the route ${route}
-      This happened because this request was not previously stored on the bucket. Probally caused by the bot restarting.
+      This happened because this request was not previously stored on the bucket. Probably caused by the bot restarting.
       `);
 
       if (this.reset) await this.manager.client.utils.delay(this.reset);

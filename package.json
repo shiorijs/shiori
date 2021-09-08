@@ -20,7 +20,6 @@
     "LordLucass"
   ],
   "dependencies": {
-    "events": "^3.3.0",
     "ws": "^8.0.0"
   },
   "devDependencies": {

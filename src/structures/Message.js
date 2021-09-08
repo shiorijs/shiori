@@ -1,4 +1,5 @@
 const Base = require("./Base");
+const User = require("./User");
 
 /**
   * Represents a discord message
@@ -51,7 +52,7 @@ class Message extends Base {
        * The user that created the message
        * @type {User}
        */
-      this.author = this.client.users.get(data.author.id);
+      this.author = this.client.users.add(data.author.id, new User(data.author));
     }
 
     if ("content" in data) {
