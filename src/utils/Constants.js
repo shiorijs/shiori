@@ -85,20 +85,19 @@ module.exports = {
     "STAGE_INSTANCE_UPDATE",
     "STAGE_INSTANCE_DELETE"
   ],
-  ChannelTypes: createEnum([
-    "GUILD_TEXT", // A text channel within a server
-    "DM", // A direct message between users
-    "GUILD_VOICE", // A voice channel within a server
-    "GROUP_DM", // A direct message between multiple users
-    "GUILD_CATEGORY", // An organizational category that contains up to 50 channels
-    "GUILD_NEWS", // A channel that users can follow and crosspost into their own server
-    "GUILD_STORE", // A channel in which game developers can sell their game on Discord
-    ...Array(3).fill(null),
-    "GUILD_NEWS_THREAD", // A temporary sub-channel within a GUILD_NEWS channel
-    "GUILD_PUBLIC_THREAD", // A temporary sub-channel within a GUILD_TEXT channel
-    "GUILD_PRIVATE_THREAD", // A temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission
-    "GUILD_STAGE_VOICE" // A voice channel for hosting events with an audience
-  ]),
+  ChannelTypes: {
+    GUILD_TEXT: 0, // A text channel within a server
+    DM: 1, // A direct message between users
+    GUILD_VOICE: 2, // A voice channel within a server
+    GROUP_DM: 3, // A direct message between multiple users
+    GUILD_CATEGORY: 4, // An organizational category that contains up to 50 channels
+    GUILD_NEWS: 5, // A channel that users can follow and crosspost into their own server
+    GUILD_STORE: 6, // A channel in which game developers can sell their game on Discord
+    GUILD_NEWS_THREAD: 10, // A temporary sub-channel within a GUILD_NEWS channel
+    GUILD_PUBLIC_THREAD: 11, // A temporary sub-channel within a GUILD_TEXT channel
+    GUILD_PRIVATE_THREAD: 12, // A temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission
+    GUILD_STAGE_VOICE: 13 // A voice channel for hosting events with an audience
+  },
   MessageComponentTypes: {
     ACTION_ROW: 1,
     BUTTON: 2,
@@ -152,15 +151,3 @@ module.exports = {
   ImageFormats: ["webp", "png", "jpg", "jpeg", "gif"],
   ImageSizes: [16, 32, 64, 128, 256, 512, 1024, 2048, 4096]
 };
-
-function createEnum (keys) {
-  const obj = {};
-
-  for (const [index, key] of keys.entries()) {
-    if (key === null) continue;
-
-    obj[key] = index; obj[index] = key;
-  }
-
-  return obj;
-}
