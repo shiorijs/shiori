@@ -1,6 +1,5 @@
 const Channel = require("./Channel");
 const Collection = require("../utils/Collection");
-const { ChannelTypes } = require("../utils/Constants");
 
 /**
  * Represents a guild channel.
