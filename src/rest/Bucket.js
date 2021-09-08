@@ -150,7 +150,7 @@ class Bucket {
 
       if (this.reset) await this.manager.client.utils.delay(this.reset);
 
-      return this.executeRequest(path, options);
+      return this.executeRequest(path, options, route);
     }
 
     return result.data;
