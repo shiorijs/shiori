@@ -1,3 +1,4 @@
+import EventEmitter from "events";
 import ClientUtils from "../src/client/ClientUtils";
 import GatewayManager from "../src/client/gateway/GatewayManager";
 import Shard from "../src/client/gateway/Shard";
@@ -98,6 +99,12 @@ export enum ApplicationCommandPermissionTypes {
 }
 
 // Interfaces
+
+export interface ClientEvents {
+  ready: [];
+  messageCreate: [message: Message];
+  interactionCreate: [interaction: Interaction];
+}
 
 export interface WSOptions {
   version: number;
@@ -305,7 +312,7 @@ export interface ApplicationCommand {
 
 // Classes
 
-export class Client {
+export class Client extends EventEmitter {
   public constructor(token: string, options: ClientOptions);
   public ws: GatewayManager;
   public rest: RestManager;
@@ -319,6 +326,14 @@ export class Client {
 
   public start(): void;
   public getInformation(type: string, id: Snowflake): any;
+  emit<K extends keyof ClientEvents>(event: K, ...args: ClientEvents[K]): boolean;
+  emit(event: string, ...args: any[]): boolean;
+  on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+  on(event: string, listener: (...args: any[]) => void): this;
+  once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+  once(event: string, listener: (...args: any[]) => void): this;
+  off<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+  off(event: string, listener: (...args: any[]) => void): this;
 }
 
 export class ClientUtils {
