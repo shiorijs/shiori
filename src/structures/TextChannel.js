@@ -50,6 +50,14 @@ class TextChannel extends BaseGuildChannel {
        */
       this.lastMessage = this.messages.get(data.last_message_id) ?? { id: data.last_message_id };
     }
+
+    if (data.nsfw !== undefined) {
+      /**
+       * Whether this channel is marked as nsfw or not
+       * @type {boolean}
+       */
+      this.nsfw = Boolean(data.nsfw);
+    }
   }
 
   /**
