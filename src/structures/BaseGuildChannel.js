@@ -1,6 +1,5 @@
 const Channel = require("./Channel");
 const Collection = require("../utils/Collection");
-const { ChannelTypes } = require("../utils/Constants");
 
 /**
  * Represents a guild channel.
@@ -22,9 +21,9 @@ class BaseGuildChannel extends Channel {
 
     /**
       * The type of the channel
-      * @type {string}
+      * @type {number}
       */
-    this.type = ChannelTypes[data.type] ?? "UNKNOWN";
+    this.type = data.type;
 
     /**
      * Messages that belongs to this channel
@@ -63,14 +62,6 @@ class BaseGuildChannel extends Channel {
        * @type {string}
        */
       this.parentId = data.parent_id;
-    }
-
-    if (data.nsfw !== undefined) {
-      /**
-       * Whether this channel is marked as nsfw or not
-       * @type {boolean}
-       */
-      this.nsfw = Boolean(data.nsfw);
     }
   }
 }
