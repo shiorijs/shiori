@@ -5,7 +5,7 @@ module.exports = (client, { d: data }) => {
   const message = new Message(data, client);
 
   if (channel) channel.messages.add(data.id, data, client);
-  else client.emit("warn", `Channel for message "${message.id}" not found, message was not cached.`);
+  else client.emit("warn", `Channel for message "${data.id}" not found, message was not cached.`);
 
   /**
     * Fired when a message is created.

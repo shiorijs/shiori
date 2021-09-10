@@ -7,9 +7,6 @@ const client = Shiori(process.env.DISCORD_TOKEN, {
   rest: { fetchAllUsers: true },
   plugins: [Shiori.ApplicationCommandPlugin],
   cache: {
-    members: {
-      limit: 1
-    },
     users: {
       limit: Infinity,
       sweep: 10,

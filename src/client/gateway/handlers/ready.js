@@ -5,6 +5,5 @@ module.exports = (client, { d: data }, shard) => {
     client.user = client.users.add(data.user.id, data.user, client);
   }
 
-  client.emit("shardReady");
   shard.isReady();
 };

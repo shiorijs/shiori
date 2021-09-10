@@ -304,57 +304,6 @@ export interface Constants {
     DIRECT_MESSAGE_REACTIONS: 8192;
     DIRECT_MESSAGE_TYPING: 16384;
   };
-  WSEvents: [
-    "READY",
-    "RESUMED",
-    "APPLICATION_COMMAND_CREATE",
-    "APPLICATION_COMMAND_DELETE",
-    "APPLICATION_COMMAND_UPDATE",
-    "GUILD_CREATE",
-    "GUILD_DELETE",
-    "GUILD_UPDATE",
-    "INVITE_CREATE",
-    "INVITE_DELETE",
-    "GUILD_MEMBER_ADD",
-    "GUILD_MEMBER_REMOVE",
-    "GUILD_MEMBER_UPDATE",
-    "GUILD_MEMBERS_CHUNK",
-    "GUILD_INTEGRATIONS_UPDATE",
-    "GUILD_ROLE_CREATE",
-    "GUILD_ROLE_DELETE",
-    "GUILD_ROLE_UPDATE",
-    "GUILD_BAN_ADD",
-    "GUILD_BAN_REMOVE",
-    "GUILD_EMOJIS_UPDATE",
-    "CHANNEL_CREATE",
-    "CHANNEL_DELETE",
-    "CHANNEL_UPDATE",
-    "CHANNEL_PINS_UPDATE",
-    "MESSAGE_CREATE",
-    "MESSAGE_DELETE",
-    "MESSAGE_UPDATE",
-    "MESSAGE_DELETE_BULK",
-    "MESSAGE_REACTION_ADD",
-    "MESSAGE_REACTION_REMOVE",
-    "MESSAGE_REACTION_REMOVE_ALL",
-    "MESSAGE_REACTION_REMOVE_EMOJI",
-    "THREAD_CREATE",
-    "THREAD_UPDATE",
-    "THREAD_DELETE",
-    "THREAD_LIST_SYNC",
-    "THREAD_MEMBER_UPDATE",
-    "THREAD_MEMBERS_UPDATE",
-    "USER_UPDATE",
-    "PRESENCE_UPDATE",
-    "TYPING_START",
-    "VOICE_STATE_UPDATE",
-    "VOICE_SERVER_UPDATE",
-    "WEBHOOKS_UPDATE",
-    "INTERACTION_CREATE",
-    "STAGE_INSTANCE_CREATE",
-    "STAGE_INSTANCE_UPDATE",
-    "STAGE_INSTANCE_DELETE"
-  ];
   ChannelTypes: {
     GUILD_TEXT: 0;
     DM: 1;
@@ -462,7 +411,7 @@ export interface ApplicationCommandOption {
 export interface ApplicationCommandResolve {
   users?: Map<Snowflake, User>;
   members?: Map<Snowflake, Member>;
-  roles?: Map<Snowflake, Role>; // TODO: ROLE
+  roles?: Map<Snowflake, Role>;
   channels?: Map<Snowflake, Channel>;
   messages?: Map<Snowflake, Message>;
 }
@@ -470,7 +419,7 @@ export interface ApplicationCommandResolve {
 export interface ApplicationCommand {
   name: string;
   id: Snowflake;
-  type: ApplicationCommandTypes | "UNKNOWN";
+  type: ApplicationCommandTypes;
   options?: ApplicationCommandOption[];
   default_permission?: boolean;
 }
@@ -573,7 +522,7 @@ export class BaseGuildChannel extends Channel {
   public parentId: Snowflake;
   public nsfw: boolean;
   public guildId: Snowflake;
-  public type: ChannelType | "UNKNOWN";
+  public type: ChannelType;
   public messages: LimitedCollection<Snowflake, Message>;
 }
 
@@ -601,16 +550,16 @@ export class Guild extends Base {
   public name: string;
   public verificationLevel: GuildVerificationLevel;
   public members: LimitedCollection<Snowflake, Member>;
+  public roles: LimitedCollection<Snowflake, Role>;
+  public channels: LimitedCollection<Snowflake, Channel>;
   public afk?: AFKChannel;
   public widget?: GuildWidget;
-  public roles?: Snowflake[];
   public emojis?: Snowflake[];
   public features?: GuildFeatures[];
   public iconHash?: string;
   public bannerHash: string;
   public description?: string;
   public boost?: GuildBoost;
-  public channels?: LimitedCollection<Snowflake, Channel>;
   public readonly owner: User | null;
 }
 
@@ -654,7 +603,8 @@ export class Shard extends EventEmitter {
   public sequence: number;
   public lastHeartbeatAcked: boolean;
   public heartbeatInterval: NodeJS.Timeout;
-  public status: string; // Mudar para um type
+  // TODO: Mudar para uma union dentro de um type
+  public status: string;
   public lastHeartbeatReceived: number;
   public lastHeartbeatSent: Date;
   public _totalGuilds: number;
@@ -696,7 +646,7 @@ export class ApplicationCommandInteraction extends Interaction {
 }
 
 export class MessageComponentInteraction extends Interaction {
-  public componentType: MessageComponentTypes | "UNKNOWN";
+  public componentType: MessageComponentTypes;
   public customId: string;
   public values?: string[];
 }
@@ -714,7 +664,7 @@ export class ApplicationCommandOptions {
 }
 
 export class Cache<K, V> {
-  public constructor(cacheOptions: CacheOptions);
+  public constructor(cacheOptions: CacheOptions<K, V>);
   public cache: LimitedCollection<K, V> | Collection<K, V>;
   public limited: boolean;
   public get(key: K): V | null;
