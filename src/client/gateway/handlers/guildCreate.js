@@ -7,8 +7,8 @@ module.exports = (client, { d: data }, shard) => {
     }
   }
 
-  if (shard._guildsLoaded !== undefined) {
-    shard._guildsLoaded++;
+  if (shard._remainingGuilds !== undefined) {
+    if (shard._remainingGuilds > 0) shard._remainingGuilds--;
     shard.isReady();
   }
 

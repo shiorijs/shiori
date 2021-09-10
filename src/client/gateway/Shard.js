@@ -139,18 +139,17 @@ class Shard extends EventEmitter {
   }
 
   isReady () {
-    if (this._totalGuilds === undefined) return;
+    if (this._remainingGuilds === undefined) return;
     if (this._guildQueueTimeout !== undefined) clearTimeout(this._guildQueueTimeout);
 
     const emitReady = () => {
-      this._guildsLoaded = undefined;
-      this._totalGuilds = undefined;
+      this._remainingGuilds = undefined;
       this._guildQueueTimeout = undefined;
 
       this.client.emit("ready");
     };
 
-    if (this._guildsLoaded >= this._totalGuilds) emitReady();
+    if (this._remainingGuilds === 0) emitReady();
     else {
       this._guildQueueTimeout = setTimeout(emitReady, 15000);
     }

@@ -607,8 +607,7 @@ export class Shard extends EventEmitter {
   public status: string;
   public lastHeartbeatReceived: number;
   public lastHeartbeatSent: Date;
-  public _totalGuilds: number;
-  public _guildsLoaded: number;
+  public _remainingGuilds: number;
   public _guildQueueTimeout: NodeJS.Timeout;
   private client: Client;
   private manager: GatewayManager;
