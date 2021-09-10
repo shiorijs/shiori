@@ -10,6 +10,10 @@ export type ImageFormats = "webp" | "png" | "jpg" | "jpeg" | "gif";
 export type ImageSizes = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
 export type AllowedMessageMentions = "roles" | "users" | "everyone";
 export type EmbedType = "rich" | "image" | "video" | "gifv" | "article" | "link";
+
+// Gateway and Rest
+export type IntentsFlags = keyof Constants["INTENTS"];
+
 export type GuildFeatures =
   "ANIMATED_ICON" | "BANNER" | "COMMERCE" | "COMMUNITY" | "DISCOVERABLE" | "FEATURABLE"              |
   "INVITE_SPLASH" | "MEMBER_VERIFICATION_GATE_ENABLED" | "NEWS" | "PARTNERED" | "PREVIEW_ENABLED"    |
@@ -130,7 +134,7 @@ export interface ClientCache {
 export interface ClientOptions {
   ws: WSOptions;
   rest: RestOptions;
-  intents: number | keyof Constants["INTENTS"][];
+  intents: number | IntentsFlags[];
   shardCount: number;
   blockedEvents: string[];
   autoReconnect: boolean;
