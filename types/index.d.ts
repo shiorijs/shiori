@@ -728,9 +728,14 @@ export class UsersCache extends Cache<Snowflake, User> {
   public fetch(userId: string): Promise<User>;
 }
 
-export class LimitedCollection<K, V> extends Map<K, V> {
-  public add(id: K, item: V): V;
-  public filter(func: (id: K, item: V) => boolean): K[];
-  public map(func: (item: V) => unknown): V[];
-  public remove(item: K): V | undefined;
+export class Collection<K, V> extends Map<K, V> {
+  public add(key: K, value: V, extra: unknown[]): V;
+  public filter(callback: (value: V, key: K) => boolean): K[];
+  public find(callback: (value: V, key: K) => boolean): unknown[];
+  public map(callback: (value: V, key: K) => unknown): V[];
+  public remove(key: K): V | null;
+}
+
+export class LimitedCollection<K, V> extends Collection<K, V> {
+  private sweep(): void;
 }

@@ -1,8 +1,8 @@
 const User = require("../structures/User");
 const Endpoints = require("../rest/Endpoints");
-const LimitedCache = require("./LimitedCache");
+const Cache = require("./Cache");
 
-class UsersCache extends LimitedCache {
+class UsersCache extends Cache {
   #client;
 
   constructor (client) {
@@ -13,6 +13,6 @@ class UsersCache extends LimitedCache {
   async fetch (userId) {
     return await this.#client.rest.request("get", Endpoints.USER(userId));
   }
-};
+}
 
 module.exports = UsersCache;

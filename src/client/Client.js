@@ -5,6 +5,7 @@ const PluginsManager = require("../managers/PluginsManager");
 
 const Constants = require("../utils/Constants");
 const Option = require("../utils/Option");
+const Collection = require("../utils/Collection");
 const ClientUtils = require("./ClientUtils");
 const UsersCache = require("../cache/UsersCache");
 const GuildsCache = require("../cache/GuildsCache");
@@ -30,7 +31,7 @@ class Client extends EventEmitter {
 
     this.users = new UsersCache(this);
     this.guilds = new GuildsCache(this);
-    this.shards = new Map();
+    this.shards = new Collection();
 
     Object.defineProperties(this, {
       token: { value: token, writable: false },

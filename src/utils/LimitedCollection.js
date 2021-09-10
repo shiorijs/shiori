@@ -1,11 +1,13 @@
-class LimitedCollection extends Map {
+const Collection = require("./Collection");
+
+class LimitedCollection extends Collection {
   #options;
 
   /**
   * Constructs a limited collection with cache
   */
   constructor (cache = undefined, BaseClass = undefined) {
-    super();
+    super(BaseClass);
 
     /**
      * The amount of items that this collection supports.
@@ -19,8 +21,6 @@ class LimitedCollection extends Map {
       * @type {?CacheOptions}
       */
     this.#options = cache;
-
-    this.baseClass = BaseClass;
 
     if (this.#options !== undefined) this.#sweep();
   }
@@ -43,11 +43,11 @@ class LimitedCollection extends Map {
   }
 
   /**
-    * Adds a item on the collection
-    * @param {string} id The identifier to be used as the value key
-    * @param {object} item The value to be added
+    * Adds a new item to this collection
+    * @param {*} key The identifier to be used as the value key
+    * @param {*} value The value to be added
     * @param {*[]} extra Extra parameters to be passed when instantiating the base class
-    * @returns {object} The created item
+    * @returns {?Collection} The created item, or null if none was created
     */
   add (id, item, ...extra) {
     if (this.limit === 0 || id == undefined) return item;
@@ -59,21 +59,6 @@ class LimitedCollection extends Map {
     if (this.baseClass !== undefined) item = new this.baseClass(item, ...extra);
 
     return (this.set(id, item), item);
-  }
-
-  /**
-    * Return all the objects that make the function evaluate true
-    * @param {Function} func A function that takes an object and returns true if it matches
-    * @returns {Class[]} An array containing all the objects that matched
-    */
-  filter (func) {
-    const array = [];
-
-    for (const [id, item] of this.entries()) {
-      if (func(item, id)) array.push(id);
-    }
-
-    return array;
   }
 }
 

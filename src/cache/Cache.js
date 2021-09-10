@@ -1,8 +1,13 @@
+const Collection = require("../utils/Collection");
 const LimitedCollection = require("../utils/LimitedCollection");
 
-class LimitedCache {
+class Cache {
   constructor (cacheValues, BaseClass) {
-    this.cache = new LimitedCollection(cacheValues, BaseClass);
+    this.cache = cacheValues !== undefined
+      ? new LimitedCollection(cacheValues, BaseClass)
+      : new Collection(BaseClass);
+
+    this.limited = this.cache instanceof LimitedCollection;
   }
 
   get (id) {
@@ -16,8 +21,8 @@ class LimitedCache {
     * @param {*[]} extra Extra parameters to be passed when instantiating the base class
     * @returns {object} The created item
     */
-  add (id, item, ...extra) {
-    return this.cache.add(id, item, ...extra);
+  add (id, item, extra = []) {
+    return this.cache.add(id, item, extra);
   }
 
   /**
@@ -26,13 +31,7 @@ class LimitedCache {
     * @returns {Class[]} An array containing all the objects that matched
     */
   filter (func) {
-    const array = [];
-
-    for (const [id, item] of this.cache.entries()) {
-      if (func(item, id)) array.push(id);
-    }
-
-    return array;
+    return this.cache.filter(func);
   }
 
   /**
@@ -41,23 +40,17 @@ class LimitedCache {
     * @returns {Array} An array containing the results
     */
   map (func) {
-    const array = [];
-
-    for (const item of this.cache.values()) array.push(func(item));
-
-    return array;
+    return this.cache.map(func);
   }
 
   /**
   * Remove an object
-  * @param {string} item The ID of the value to be removed
+  * @param {string} id The identifier of the value to be removed
   * @returns {Class?} The removed object, or null if nothing was removed
   */
   remove (id) {
-    if (!this.cache.has(id)) return null;
-
-    return (this.cache.delete(id), this.cache.get(id));
+    return this.cache.remove(id);
   }
 }
 
-module.exports = LimitedCache;
+module.exports = Cache;

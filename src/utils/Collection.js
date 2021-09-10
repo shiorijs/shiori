@@ -1,0 +1,82 @@
+class Collection extends Map {
+  /**
+  * Constructs a collection based on a map
+  */
+  constructor (BaseClass = undefined) {
+    super();
+
+    this.baseClass = BaseClass;
+  }
+
+  /**
+    * Adds a new item to this collection
+    * @param {*} key The identifier to be used as the value key
+    * @param {*} value The value to be added
+    * @param {*[]} extra Extra parameters to be passed when instantiating the base class
+    * @returns {?Collection} The created item, or null if none was created
+    */
+  add (key, value, ...extra) {
+    if (key == undefined || value == undefined) return null;
+
+    if (this.has(key)) return this.get(key);
+    if (this.baseClass !== undefined) value = new this.baseClass(value, ...extra);
+
+    return (this.set(key, value), value);
+  }
+
+  /**
+    * Returns all elements that pass the test implemented by the provided function.
+    * @param {(value: unknown, key: unknown) => boolean} callback A function to test each element of this collection, must return a boolean.
+    * @returns {*[]} An array containing all the keys that matched
+    */
+  filter (callback) {
+    const array = [];
+
+    for (const [key, value] of this.entries()) {
+      if (callback(value, key)) array.push(key);
+    }
+
+    return array;
+  }
+
+  /**
+    * Searches for the first item in this collection that satisfies the provided testing function.
+    * @param {(value: unknown, key: unknown) => boolean} callback The function to execute on each item of this collection, must return a boolean.
+    * @returns {?*} The item that was found, or null if none was found
+    */
+  find (callback) {
+    for (const [key, value] of this.entries()) {
+      if (callback(value, key)) return value;
+    }
+
+    return null;
+  }
+
+  /**
+    * Returns an array populated with the results of calling a provided function on every element of this collection.
+    * @param {(value: unknown, key: unknown) => any} callback The function that will be called for every element of this collection.
+    * @returns {Array} An array with each element being the result of the callback function.
+    */
+  map (callback) {
+    const array = [];
+
+    for (const [key, value] of this.entries()) array.push(callback(value, key));
+
+    return array;
+  }
+
+  /**
+    * Removes an item from this collection and returns that item
+    * @param {*} key The idenfifier of the value to be removed
+    * @returns {Collection?} The removed object, or null if nothing was removed
+    */
+  remove (key) {
+    if (!this.has(key)) return null;
+
+    const value = this.get(key);
+
+    return (this.delete(key), value);
+  }
+}
+
+module.exports = Collection;

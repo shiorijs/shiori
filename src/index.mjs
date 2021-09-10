@@ -30,6 +30,7 @@ export const {
 
   // Utilities
   LimitedCollection,
+  Collection,
   Intents,
   Constants
 } = Shiori;

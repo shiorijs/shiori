@@ -1,8 +1,8 @@
 const Guild = require("../structures/Guild");
 const Endpoints = require("../rest/Endpoints");
-const LimitedCache = require("./LimitedCache");
+const Cache = require("./Cache");
 
-class GuildsCache extends LimitedCache {
+class GuildsCache extends Cache {
   #client;
 
   constructor (client) {
@@ -13,6 +13,6 @@ class GuildsCache extends LimitedCache {
   async fetch (userId) {
     return await this.#client.rest.request("get", Endpoints.USER(userId));
   }
-};
+}
 
 module.exports = GuildsCache;

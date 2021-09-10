@@ -30,6 +30,7 @@ Shiori.ApplicationCommandPlugin = require("./plugins/ApplicationCommandPlugin");
 
 // Utilities
 Shiori.LimitedCollection = require("./utils/LimitedCollection");
+Shiori.Collection = require("./utils/Collection");
 Shiori.Intents = Constants.INTENTS;
 Shiori.Constants = Constants;
 
