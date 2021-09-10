@@ -1,9 +1,8 @@
-import ClientUtils from "../src/client/ClientUtils";
-import RestManager from "../src/rest/RestManager";
 import WebSocket from "ws";
 
 // Types
 
+export type HTTPMethods = "get" | "post" | "patch" | "put" | "delete" | "head";
 export type InteractionMessageCreateOptions = Omit<MessageCreateOptions, "file">;
 export type Snowflake = `${bigint}`;
 export type ImageFormats = "webp" | "png" | "jpg" | "jpeg" | "gif";
@@ -309,6 +308,26 @@ export interface ApplicationCommand {
 }
 
 // Classes
+
+export class RestManager {
+  public constructor(client: Client, options: RestOptions);
+  private handlers: LimitedCollection<string, Bucket>;
+  public options: RestOptions;
+  public client: Client;
+  public userAgent: string;
+  public apiURL: string;
+  // TODO: Better type for api
+  public readonly api: unknown;
+  // TODO: Better type for options
+  public request(method: HTTPMethods, url: string, options: object): void;
+  public routefy(url: string): string;
+  private resolveRequest(method: HTTPMethods, url: string, options: object)
+}
+
+// TODO
+export class Bucket {
+
+}
 
 export class Client {
   public constructor(token: string, options: ClientOptions);

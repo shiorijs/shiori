@@ -11,7 +11,7 @@ class RestManager {
 
   /**
    * @param {Client} client Shiori Client
-   * @param {RestOptions} [options] Options to be used when creating requests.
+   * @param {RestOptions} options Options to be used when creating requests.
    */
   constructor (client, options) {
     this.options = options;
