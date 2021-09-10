@@ -1,6 +1,6 @@
 const LimitedCollection = require("../utils/LimitedCollection");
 
-class LimitedManager {
+class LimitedCache {
   constructor (cacheValues, BaseClass) {
     this.cache = new LimitedCollection(cacheValues, BaseClass);
   }
@@ -60,4 +60,4 @@ class LimitedManager {
   }
 }
 
-module.exports = LimitedManager;
+module.exports = LimitedCache;

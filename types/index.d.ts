@@ -123,7 +123,7 @@ export interface CacheOptions {
   toAdd: (value: object, key: Snowflake | unknown) => boolean;
   toRemove: (value: object, key: Snowflake | unknown) => boolean;
   sweep: number;
-  sweepTimeout: number
+  sweepTimeout: number;
 }
 
 export interface ClientCache {
@@ -194,7 +194,7 @@ export interface ShardMessageOptions {
 
 // TODO
 export interface MessageEditOptions {
-
+  content: string;
 }
 
 export interface MessageMentions {
@@ -269,7 +269,7 @@ export interface Constants {
   REST: {
     BASE_URL: "https://discord.com/api";
     API_VERSION: 9;
-  }
+  };
   OP_CODES: {
     EVENT: 0;
     HEARTBEAT: 1;
@@ -283,9 +283,9 @@ export interface Constants {
     INVALID_SESSION: 9;
     HELLO: 10;
     HEARTBEAT_ACK: 11;
-  }
+  };
   INTENTS: {
-    GUILDS:1;
+    GUILDS: 1;
     GUILD_MEMBERS: 2;
     GUILD_BANS: 4;
     GUILD_EMOJIS: 8;
@@ -300,7 +300,7 @@ export interface Constants {
     DIRECT_MESSAGES: 4096;
     DIRECT_MESSAGE_REACTIONS: 8192;
     DIRECT_MESSAGE_TYPING: 16384;
-  }
+  };
   WSEvents: [
     "READY",
     "RESUMED",
@@ -351,10 +351,10 @@ export interface Constants {
     "STAGE_INSTANCE_CREATE",
     "STAGE_INSTANCE_UPDATE",
     "STAGE_INSTANCE_DELETE"
-  ]
+  ];
   ChannelTypes: {
-    GUILD_TEXT: 0; 
-    DM: 1; 
+    GUILD_TEXT: 0;
+    DM: 1;
     GUILD_VOICE: 2;
     GROUP_DM: 3;
     GUILD_CATEGORY: 4;
@@ -364,29 +364,29 @@ export interface Constants {
     GUILD_PUBLIC_THREAD: 11;
     GUILD_PRIVATE_THREAD: 12;
     GUILD_STAGE_VOICE: 13;
-  }
+  };
   MessageComponentTypes: {
     ACTION_ROW: 1;
     BUTTON: 2;
     SELECT_MENU: 3;
-  }
+  };
   InteractionTypes: {
     PING: 1;
     APPLICATION_COMMAND: 2;
     MESSAGE_COMPONENT: 3;
-  }
+  };
   InteractionResponseTypes: {
     PONG: 1;
     CHANNEL_MESSAGE_WITH_SOURCE: 4;
     DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE: 5;
     DEFERRED_UPDATE_MESSAGE: 6;
     UPDATE_MESSAGE: 7;
-  }
+  };
   CommandTypes: {
     CHAT_INPUT: 1;
     USER: 2;
     MESSAGE: 3;
-  }
+  };
   CommandOptionTypes: {
     SUB_COMMAND: 1;
     SUB_COMMAND_GROUP: 2;
@@ -398,7 +398,7 @@ export interface Constants {
     ROLE:	8;
     MENTIONABLE: 9;
     NUMBER:	10;
-  }
+  };
   GatewayErrors: {
     UNKNOWN: 4000;
     UNKNOWN_OPCODE: 4001;
@@ -414,14 +414,14 @@ export interface Constants {
     INVALID_API_VERSION: 4012;
     INVALID_INTENT: 4013;
     DISALLOWED_INTENT: 4014;
-  }
+  };
   ImageFormats: ["webp", "png", "jpg", "jpeg", "gif"];
   ImageSizes: [16, 32, 64, 128, 256, 512, 1024, 2048, 4096];
 }
 
 // TODO
 export interface MessageComponents {
-
+  custom_id: string;
 }
 
 export interface MessageAttachments {
@@ -486,12 +486,12 @@ export class RestManager {
   // TODO: Better type for options
   public request(method: HTTPMethods, url: string, options: object): void;
   public routefy(url: string): string;
-  private resolveRequest(method: HTTPMethods, url: string, options: object)
+  private resolveRequest(method: HTTPMethods, url: string, options: object);
 }
 
 // TODO
 export class Bucket {
-
+  public remaining: number;
 }
 
 export class Client {
@@ -500,9 +500,9 @@ export class Client {
   public rest: RestManager;
   public utils: ClientUtils;
   public plugins: string[];
-  public users: UsersManager;
-  public guilds: GuildsManager;
-  public shards: Map<Number, Shard>;
+  public users: UsersCache;
+  public guilds: GuildsCache;
+  public shards: Map<number, Shard>;
   public token: string;
   public channelMap: object;
   public start(): void;
@@ -512,7 +512,7 @@ export class Client {
 export class ClientUtils {
   private client: Client;
   public getChannel(channelId: Snowflake): Channel;
-  public image(target: Guild | User): Function // Especificar melhor a callback
+  public image(target: Guild | User): () => void; // Especificar melhor a callback
 }
 
 export class Base {
@@ -545,7 +545,7 @@ export class Message extends Base {
   public readonly deletable: boolean;
   public readonly editable: boolean;
   public readonly channel: Channel | null;
-  public readonly guild: Guild | null;  
+  public readonly guild: Guild | null;
   public delete(): Promise<void>;
   public addReaction(reaction: string): Promise<void>;
   public edit(options: MessageEditOptions): Promise<void>;
@@ -582,7 +582,7 @@ export class Member extends Base {
   public roles?: Snowflake[];
   public permissions?: string[];
   public readonly user: User;
-  public readonly guild: Guild | null;  
+  public readonly guild: Guild | null;
 }
 
 export class Guild extends Base {
@@ -620,10 +620,10 @@ export class Interaction extends Base {
   public isCommand(): boolean;
   public isSelectMenu(): boolean;
   public isButton(): boolean;
-  public transform(data: object, client: Client): 
+  public transform(data: object, client: Client):
     ApplicationCommandInteraction | MessageComponentInteraction | Interaction;
   public reply(options: InteractionMessageCreateOptions): Promise<Message>;
-  public createFollowup(options: InteractionMessageCreateOptions): Promise<Message>
+  public createFollowup(options: InteractionMessageCreateOptions): Promise<Message>;
   public defer(ephemeral: boolean): Promise<Message>;
   public delete(messageId: string): Promise<void>;
   public edit(options: MessageEditOptions | string): Promise<void>;
@@ -631,7 +631,7 @@ export class Interaction extends Base {
 }
 
 export class Role extends Base {
-
+  public id: Snowflake;
 }
 
 export class Shard extends EventEmitter {
@@ -680,7 +680,7 @@ export class ApplicationCommandInteraction extends Interaction {
   public targetId: Snowflake;
   public targetType: ApplicationCommandTypes;
   public options: ApplicationCommandOptions;
-  public resolveTarget(targetType: "user" | "message" | "member" | "role"): 
+  public resolveTarget(targetType: "user" | "message" | "member" | "role"):
     User[] | Message[] | Member[] | Role[] | Channel[] | null;
 }
 
@@ -702,26 +702,26 @@ export class ApplicationCommandOptions {
   public number(optionName: string): boolean;
 }
 
-export class CachedManager<K, V> {
+export class Cache<K, V> {
   public cache: LimitedCollection<K, V>;
   public add(id: K, item: V): V;
   public get(id: K): V;
-  public filter(func: (id: K, item: V) => boolean): Array<K>;
-  public map(func: (item: V) => unknown): Array<V>;
+  public filter(func: (id: K, item: V) => boolean): K[];
+  public map(func: (item: V) => unknown): V[];
   public remove(id: K): V | null;
 }
 
-export class GuildsManager extends CachedManager<Snowflake, Guild> {
+export class GuildsCache extends Cache<Snowflake, Guild> {
   public fetch(guildId: string): Promise<Guild>;
 }
 
-export class UsersManager extends CachedManager<Snowflake, User> {
+export class UsersCache extends Cache<Snowflake, User> {
   public fetch(userId: string): Promise<User>;
 }
 
 export class LimitedCollection<K, V> extends Map<K, V> {
   public add(id: K, item: V): V;
-  public filter(func: (id: K, item: V) => boolean): Array<K>;
-  public map(func: (item: V) => unknown): Array<V>;
+  public filter(func: (id: K, item: V) => boolean): K[];
+  public map(func: (item: V) => unknown): V[];
   public remove(item: K): V | undefined;
 }

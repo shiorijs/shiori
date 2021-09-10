@@ -6,8 +6,8 @@ const PluginsManager = require("../managers/PluginsManager");
 const Constants = require("../utils/Constants");
 const Option = require("../utils/Option");
 const ClientUtils = require("./ClientUtils");
-const UsersManager = require("../managers/UsersManager");
-const GuildsManager = require("../managers/GuildsManager");
+const UsersCache = require("../cache/UsersCache");
+const GuildsCache = require("../cache/GuildsCache");
 
 class Client extends EventEmitter {
   /**
@@ -28,8 +28,8 @@ class Client extends EventEmitter {
     this.utils = new ClientUtils(this);
     this.plugins = this.options.plugins.map(p => p?.name);
 
-    this.users = new UsersManager(this);
-    this.guilds = new GuildsManager(this);
+    this.users = new UsersCache(this);
+    this.guilds = new GuildsCache(this);
     this.shards = new Map();
 
     Object.defineProperties(this, {

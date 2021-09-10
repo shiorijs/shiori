@@ -1,8 +1,8 @@
 const User = require("../structures/User");
 const Endpoints = require("../rest/Endpoints");
-const LimitedManager = require("./LimitedManager");
+const LimitedCache = require("./LimitedCache");
 
-module.exports = class UsersManager extends LimitedManager {
+class UsersCache extends LimitedCache {
   #client;
 
   constructor (client) {
@@ -14,3 +14,5 @@ module.exports = class UsersManager extends LimitedManager {
     return await this.#client.rest.request("get", Endpoints.USER(userId));
   }
 };
+
+module.exports = UsersCache;
