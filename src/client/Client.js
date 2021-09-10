@@ -13,13 +13,13 @@ const GuildsCache = require("../cache/GuildsCache");
 class Client extends EventEmitter {
   /**
    * @param {string} token The client token
-   * @param {object} options The client options
+   * @param {ClientOptions} options The client options
    */
   constructor (token, options) {
     super();
 
     if (!token || typeof (token) !== "string") throw new Error("No token was assigned on \"Client\"!");
-    
+
     /**
      * Client Options
      * @type {ClientOptions}
@@ -27,22 +27,25 @@ class Client extends EventEmitter {
     this.options = Option.defaultOptions(options);
 
     if (this.options.shardCount <= 0) throw new Error("shardCount cannot be lower or equal to 0");
-    
+
     /**
      * Websocket Manager
      * @type {GatewayManager}
      */
     this.ws = new GatewayManager(this);
+
     /**
      * Rest Manager that handles https requests
      * @type {RestManager}
      */
     this.rest = new RestManager(this, options.rest);
+
     /**
      * Client Utilities functions
      * @type {ClientUtils}
      */
     this.utils = new ClientUtils(this);
+
     /**
      * An array of plugins, mapped by their name
      * @type {string[]}
@@ -107,9 +110,9 @@ class Client extends EventEmitter {
   }
 
   /**
-  * @param {string} type Type of the structure to fetch: user, role, channel or guild
-  * @param {string} id ID of an user, role, channel or guild to fetch
-  */
+    * @param {string} type Type of the structure to fetch: user, role, channel or guild
+    * @param {string} id ID of an user, role, channel or guild to fetch
+    */
   getInformation () {
     return true;
   }

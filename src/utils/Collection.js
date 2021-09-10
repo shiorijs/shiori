@@ -1,10 +1,18 @@
+/**
+ * Represents a refactored version of Map.
+ * @extends {Map}
+ */
 class Collection extends Map {
   /**
-  * Constructs a collection based on a map
-  */
+   * @param {*} BaseClass The class that all items will be instantiaded when being created.
+   */
   constructor (BaseClass = undefined) {
     super();
 
+    /**
+     * The class that all items will be instantiaded when being created.
+     * @type {*}
+     */
     this.baseClass = BaseClass;
   }
 

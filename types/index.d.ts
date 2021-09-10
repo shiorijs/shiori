@@ -712,7 +712,9 @@ export class ApplicationCommandOptions {
 }
 
 export class Cache<K, V> {
-  public cache: LimitedCollection<K, V>;
+  public cache: LimitedCollection<K, V> | Collection<K, V>;
+  public limited: boolean;
+  public get(key: K): V | null;
   public add(key: K, value: V, extra: unknown[]): V;
   public filter(callback: (value: V, key: K) => boolean): K[];
   public find(callback: (value: V, key: K) => boolean): unknown[];

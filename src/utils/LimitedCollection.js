@@ -1,11 +1,17 @@
 const Collection = require("./Collection");
 
+/**
+ * Represents a limited version of a Collection.
+ * Will have all of it's items sweeped if the cache option is set.
+ * @extends {Collection}
+ */
 class LimitedCollection extends Collection {
   #options;
 
   /**
-  * Constructs a limited collection with cache
-  */
+   * @param {?CacheOptions} cache The cache options
+   * @param {*} BaseClass The class that all items will be instantiaded when being created.
+   */
   constructor (cache = undefined, BaseClass = undefined) {
     super(BaseClass);
 
