@@ -58,6 +58,6 @@ class LimitedManager {
 
     return (this.cache.delete(id), this.cache.get(id));
   }
-};
+}
 
 module.exports = LimitedManager;
