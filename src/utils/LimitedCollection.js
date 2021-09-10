@@ -46,7 +46,7 @@ class LimitedCollection extends Collection {
     * Adds a new item to this collection
     * @param {*} key The identifier to be used as the value key
     * @param {*} value The value to be added
-    * @param {*[]} extra Extra parameters to be passed when instantiating the base class
+    * @param {Array<*>} extra Extra parameters to be passed when instantiating the base class
     * @returns {?Collection} The created item, or null if none was created
     */
   add (id, item, ...extra) {

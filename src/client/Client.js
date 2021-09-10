@@ -19,18 +19,52 @@ class Client extends EventEmitter {
     super();
 
     if (!token || typeof (token) !== "string") throw new Error("No token was assigned on \"Client\"!");
-
+    
+    /**
+     * Client Options
+     * @type {ClientOptions}
+     */
     this.options = Option.defaultOptions(options);
 
     if (this.options.shardCount <= 0) throw new Error("shardCount cannot be lower or equal to 0");
-
+    
+    /**
+     * Websocket Manager
+     * @type {GatewayManager}
+     */
     this.ws = new GatewayManager(this);
+    /**
+     * Rest Manager that handles https requests
+     * @type {RestManager}
+     */
     this.rest = new RestManager(this, options.rest);
+    /**
+     * Client Utilities functions
+     * @type {ClientUtils}
+     */
     this.utils = new ClientUtils(this);
+    /**
+     * An array of plugins, mapped by their name
+     * @type {string[]}
+     */
     this.plugins = this.options.plugins.map(p => p?.name);
 
+    /**
+     * All of the {@link User} objects that have been cached until now
+     * @type {UsersCache}
+     */
     this.users = new UsersCache(this);
+
+    /**
+     * All of the {@link Guild} objects that have been cached until now
+     * @type {GuildsCache}
+     */
     this.guilds = new GuildsCache(this);
+
+    /**
+     * A collection that includes all of the client shards
+     * @type {Collection<number, Shard>}
+     */
     this.shards = new Collection();
 
     Object.defineProperties(this, {
