@@ -152,7 +152,7 @@ class Shard extends EventEmitter {
 
     if (this._guildsLoaded >= this._totalGuilds) emitReady();
     else {
-      this._guildQueueTimeout = setTimeout(emitReady.bind(this), 15000);
+      this._guildQueueTimeout = setTimeout(emitReady, 15000);
     }
   }
 
