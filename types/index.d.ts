@@ -130,7 +130,7 @@ export interface ClientCache {
 export interface ClientOptions {
   ws: WSOptions;
   rest: RestOptions;
-  intents: Constants["INTENTS"][] | number;
+  intents: number | keyof Constants["INTENTS"][];
   shardCount: number;
   blockedEvents: string[];
   autoReconnect: boolean;
