@@ -119,17 +119,17 @@ export interface RestOptions {
   timeout: number;
 }
 
-export interface CacheOptions {
+export interface CacheOptions<K, V> {
+  toAdd: (value: V, key: K) => boolean;
+  toRemove: (value: V, key: K) => boolean;
   limit: number;
-  toAdd: (value: object, key: Snowflake | unknown) => boolean;
-  toRemove: (value: object, key: Snowflake | unknown) => boolean;
   sweep: number;
   sweepTimeout: number;
 }
 
 export interface ClientCache {
-  users: CacheOptions;
-  guilds: CacheOptions;
+  users: CacheOptions<Snowflake, User>;
+  guilds: CacheOptions<Snowflake, Guild>;
 }
 
 export interface ClientOptions {
