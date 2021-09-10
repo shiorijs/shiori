@@ -1,7 +1,6 @@
 const METHODS = ["get", "post", "patch", "put", "delete", "head"];
 
 const Bucket = require("./Bucket");
-const Constants = require("../utils/Constants");
 const LimitedCollection = require("../utils/LimitedCollection");
 
 /**
@@ -12,16 +11,10 @@ class RestManager {
 
   /**
    * @param {Client} client Shiori Client
-   * @param {object} [options={}] Options to be used when creating requests.
-   * @param {string} [options.version] Discord API version
-   * @param {boolean} [options.fetchAllUsers] Whether to get all users. Guild Members intent required
+   * @param {RestOptions} [options] Options to be used when creating requests.
    */
-  constructor (client, options = {}) {
-    this.options = Object.assign({
-      version: Constants.REST.API_VERSION,
-      fetchAllUsers: false,
-      timeout: 15000
-    }, options.rest);
+  constructor (client, options) {
+    this.options = options;
 
     /**
      * The base hitomi client.
@@ -32,7 +25,7 @@ class RestManager {
     Object.defineProperty(this, "client", { value: client });
 
     /**
-     * Handlers used to store buckets.
+     * Collection used to store buckets.
      * @type {LimitedCollection<string, Bucket>}
      */
     this.#handlers = new LimitedCollection({

@@ -63,7 +63,7 @@ class GatewayManager {
     if (!shard || shard.id == undefined) return;
 
     this.queue.delete(shard);
-    this.client.shards.add(shard.id, shard);
+    this.client.shards.set(shard.id, shard);
 
     try {
       await shard.connect();

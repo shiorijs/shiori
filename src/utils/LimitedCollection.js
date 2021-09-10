@@ -2,9 +2,9 @@ class LimitedCollection extends Map {
   #options;
 
   /**
-  * Construct a Collection
+  * Constructs a temporarily collection
   */
-  constructor (cache = undefined) {
+  constructor (cache = undefined, BaseClass = undefined) {
     super();
 
     /**
@@ -16,9 +16,11 @@ class LimitedCollection extends Map {
     /**
       * The cache options to be adressed to this collection
       * @private
-      * @type {object | undefined}
+      * @type {?CacheOptions}
       */
     this.#options = cache;
+
+    this.baseClass = BaseClass;
 
     if (this.#options !== undefined) this.#sweep();
   }
@@ -42,36 +44,37 @@ class LimitedCollection extends Map {
 
   /**
     * Adds a item on the collection
-    * @param {string} id The item id, to be used as the key
-    * @param {object} item The item to be added
+    * @param {string} id The identifier to be used as the value key
+    * @param {object} item The value to be added
+    * @param {*[]} extra Extra parameters to be passed when instantiating the base class
     * @returns {object} The created item
     */
-  add (id, item) {
-    if (this.limit === 0) return item;
+  add (id, item, ...extra) {
+    if (this.limit === 0 || id == undefined) return item;
 
-    if (id == undefined) throw new Error("Missing id");
     if (this.has(id)) return this.get(id);
     if (this.#options && !this.#options.toAdd(item, id)) return;
 
-    if (this.limit && this.size > this.limit) this.delete([...this.keys()].slice(-1)[0]);
+    if (this.limit && this.size > this.limit) this.delete(this.keys().next().value);
+    if (this.baseClass !== undefined) item = new this.baseClass(item, ...extra);
 
     return (this.set(id, item), item);
   }
 
-    /**
+  /**
     * Return all the objects that make the function evaluate true
     * @param {Function} func A function that takes an object and returns true if it matches
     * @returns {Class[]} An array containing all the objects that matched
     */
-     filter (func) {
-      const array = [];
-  
-      for (const [id, item] of this.entries()) {
-        if (func(item, id)) array.push(id);
-      }
-  
-      return array;
+  filter (func) {
+    const array = [];
+
+    for (const [id, item] of this.entries()) {
+      if (func(item, id)) array.push(id);
     }
+
+    return array;
+  }
 }
 
 module.exports = LimitedCollection;

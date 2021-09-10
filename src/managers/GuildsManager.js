@@ -1,12 +1,12 @@
-const User = require("../structures/User");
+const Guild = require("../structures/Guild");
 const Endpoints = require("../rest/Endpoints");
 const LimitedManager = require("./LimitedManager");
 
-module.exports = class UsersManager extends LimitedManager {
+module.exports = class GuildsManager extends LimitedManager {
   #client;
 
   constructor (client) {
-    super(client.options.cache.users, User);
+    super(client.options.cache.guilds, Guild);
     this.#client = client;
   }
 

@@ -78,6 +78,9 @@ class Shard extends EventEmitter {
     this.status = "IDLE";
     this.lastHeartbeatReceived = 0;
     this.lastHeartbeatSent = 0;
+    this._totalGuilds = 0;
+    this._guildsLoaded = 0;
+    this._guildQueueTimeout = undefined;
   }
 
   /**
@@ -87,10 +90,10 @@ class Shard extends EventEmitter {
   connect () {
     this.connection = new WebSocket(this.manager.websocketURL);
 
-    this.connection.on("message", (message) => this.websocketMessageReceive(message));
-    this.connection.on("open", () => this.websocketConnectionOpen());
-    this.connection.on("error", (error) => this.websocketError(error));
-    this.connection.on("close", (...args) => this.websocketCloseConnection(...args));
+    this.connection.on("message", (message) => this.#websocketMessageReceive(message));
+    this.connection.on("open", () => this.#websocketConnectionOpen());
+    this.connection.on("error", (error) => this.#websocketError(error));
+    this.connection.on("close", (...args) => this.#websocketCloseConnection(...args));
 
     this.connectTimeout = setTimeout(() => {
       if (this.connection.readyState === WebSocket.CONNECTING) this.disconnect(true);
@@ -103,7 +106,7 @@ class Shard extends EventEmitter {
     * @param {string} reason Reason for the disconnect
     * @returns {void}
     */
-  websocketCloseConnection ({ code } = {}) {
+  #websocketCloseConnection ({ code } = {}) {
     const GatewayError = Constants.GatewayErrors;
     let reconnect = true;
 
@@ -135,12 +138,30 @@ class Shard extends EventEmitter {
     this.disconnect(reconnect);
   }
 
+  isReady () {
+    if (this._totalGuilds === undefined) return;
+    if (this._guildQueueTimeout !== undefined) clearTimeout(this._guildQueueTimeout);
+
+    const emitReady = () => {
+      this._guildsLoaded = undefined;
+      this._totalGuilds = undefined;
+      this._guildQueueTimeout = undefined;
+
+      this.client.emit("ready");
+    };
+
+    if (this._guildsLoaded >= this._totalGuilds) emitReady();
+    else {
+      this._guildQueueTimeout = setTimeout(emitReady.bind(this), 15000);
+    }
+  }
+
   /**
     * Fired when occurs an error in the websocket connection.
     * @param {Error} error The error that occurred
     * @returns {void}
     */
-  websocketError (error) {
+  #websocketError (error) {
     /**
       * Fired when an error occurs in a shard
       * @event Client#shardError
@@ -155,7 +176,7 @@ class Shard extends EventEmitter {
     * @param {object} data received from the websocket
     * @returns {void}
     */
-  websocketMessageReceive (data) {
+  #websocketMessageReceive (data) {
     if (data instanceof ArrayBuffer) {
       if (Erlpack) data = Buffer.from(data);
     }
@@ -171,7 +192,7 @@ class Shard extends EventEmitter {
     * Fired when the connection with websocket opens.
     * @returns {void}
     */
-  websocketConnectionOpen () {
+  #websocketConnectionOpen () {
     /**
     * Fired when the shard establishes a connection
     * @event Client#connect
@@ -198,14 +219,14 @@ class Shard extends EventEmitter {
         this.client.emit("debug", `Shard ${this.id} connected! (${percent}%)`);
 
         this.lastHeartbeatAcked = true;
-        this.sendHeartbeat();
+        this.#sendHeartbeat();
         break;
       }
     }
 
     switch (packet.op) {
       case Constants.OP_CODES.EVENT: return this.manager.handlePacket(packet, this);
-      case Constants.OP_CODES.HEARTBEAT: return this.sendHeartbeat();
+      case Constants.OP_CODES.HEARTBEAT: return this.#sendHeartbeat();
       case Constants.OP_CODES.HEARTBEAT_ACK: {
         this.lastHeartbeatAcked = true;
         this.lastHeartbeatReceived = Date.now();
@@ -217,7 +238,7 @@ class Shard extends EventEmitter {
         if (packet.d?.heartbeat_interval) {
           if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
 
-          this.heartbeatInterval = setInterval(() => this.sendHeartbeat(), packet.d.heartbeat_interval);
+          this.heartbeatInterval = setInterval(() => this.#sendHeartbeat(), packet.d.heartbeat_interval);
         }
 
         if (this.connectTimeout) clearTimeout(this.connectTimeout);
@@ -235,8 +256,8 @@ class Shard extends EventEmitter {
             }
           });
         } else {
-          this.identify();
-          this.sendHeartbeat();
+          this.#identify();
+          this.#sendHeartbeat();
         }
         break;
       }
@@ -249,7 +270,7 @@ class Shard extends EventEmitter {
         this.sessionId = null;
         this.sequence = 0;
 
-        if (packet.d) return this.identify();
+        if (packet.d) return this.#identify();
 
         break;
       }
@@ -261,7 +282,7 @@ class Shard extends EventEmitter {
     * Required for discord to recognize who is connecting
     * @returns {object}
     */
-  identify () {
+  #identify () {
     const d = {
       token: this.client.token,
       intents: this.client.options.intents,
@@ -281,7 +302,7 @@ class Shard extends EventEmitter {
     * Send a heartbeat to discord. Required to keep a connection
     * @returns {void}
     */
-  sendHeartbeat () {
+  #sendHeartbeat () {
     if (this.status === "RESUMING") return;
 
     if (!this.lastHeartbeatAcked) {
@@ -336,7 +357,7 @@ class Shard extends EventEmitter {
     }
 
     try {
-      this.connection.removeEventListener("close", this.websocketCloseConnection);
+      this.connection.removeEventListener("close", this.#websocketCloseConnection);
 
       if (reconnect && this.sessionId) {
         if (this.connection.readyState === WebSocket.OPEN) {

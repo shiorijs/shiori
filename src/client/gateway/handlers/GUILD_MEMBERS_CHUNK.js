@@ -1,4 +1,3 @@
-const User = require("../../../structures/User");
 const Member = require("../../../structures/Member");
 
 module.exports = (client, { d: data }) => {
@@ -7,7 +6,7 @@ module.exports = (client, { d: data }) => {
   if (guild) {
     for (const member of data.members) {
       guild.members.add(member.user.id, new Member(member, client, guild.id));
-      client.users.add(member.user.id, new User(member.user, client));
+      client.users.add(member.user.id, member.user, client);
     }
   }
 };

@@ -1,5 +1,4 @@
 const EventEmitter = require("events");
-const LimitedCollection = require("../utils/LimitedCollection");
 const GatewayManager = require("./gateway/GatewayManager");
 const RestManager = require("../rest/RestManager");
 const PluginsManager = require("../managers/PluginsManager");
@@ -8,45 +7,44 @@ const Constants = require("../utils/Constants");
 const Option = require("../utils/Option");
 const ClientUtils = require("./ClientUtils");
 const UsersManager = require("../managers/UsersManager");
+const GuildsManager = require("../managers/GuildsManager");
 
 class Client extends EventEmitter {
   /**
    * @param {string} token The client token
-   * @param {object} clientOptions The client options
+   * @param {object} options The client options
    */
-  constructor (token, clientOptions) {
+  constructor (token, options) {
     super();
 
     if (!token || typeof (token) !== "string") throw new Error("No token was assigned on \"Client\"!");
 
-    this.options = Option.defaultOptions(clientOptions);
+    this.options = Option.defaultOptions(options);
 
     if (this.options.shardCount <= 0) throw new Error("shardCount cannot be lower or equal to 0");
 
     this.ws = new GatewayManager(this);
-    this.rest = new RestManager(this, clientOptions);
+    this.rest = new RestManager(this, options.rest);
     this.utils = new ClientUtils(this);
     this.plugins = this.options.plugins.map(p => p?.name);
 
     this.users = new UsersManager(this);
+    this.guilds = new GuildsManager(this);
+    this.shards = new Map();
 
     Object.defineProperties(this, {
-      guilds: { value: new LimitedCollection(this.options.cache.guilds), writable: false },
-      shards: { value: new LimitedCollection(), writable: false },
       token: { value: token, writable: false },
       channelMap: { value: { }, writable: true }
     });
 
-    if ("intents" in this.options) {
-      if (Array.isArray(this.options.intents)) {
-        let bitmask = 0;
+    if (Array.isArray(this.options.intents)) {
+      let bitmask = 0;
 
-        for (const intent of this.options.intents) {
-          if (Constants.INTENTS[intent]) bitmask |= Constants.INTENTS[intent];
-        }
-
-        this.options.intents = bitmask;
+      for (const intent of this.options.intents) {
+        if (Constants.INTENTS[intent]) bitmask |= Constants.INTENTS[intent];
       }
+
+      this.options.intents = bitmask;
     }
   }
 
@@ -69,12 +67,12 @@ class Client extends EventEmitter {
     } catch (error) {
       if (!this.options.autoReconnect) throw error;
 
-      setTimeout(() => this.ws.createShardConnection(), 3000);
+      setTimeout(() => this.ws.createShardConnection(), 5000);
     }
   }
 
   /**
-  * @param {string} type Type of the structure to fetch, user, role, channel or guild
+  * @param {string} type Type of the structure to fetch: user, role, channel or guild
   * @param {string} id ID of an user, role, channel or guild to fetch
   */
   getInformation () {

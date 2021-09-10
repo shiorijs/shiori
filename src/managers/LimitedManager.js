@@ -1,9 +1,8 @@
 const LimitedCollection = require("../utils/LimitedCollection");
 
-module.exports = class CachedManager {
-  constructor (name, cacheValues) {
-    this.name = name;
-    this.cache = new LimitedCollection(cacheValues);
+class LimitedManager {
+  constructor (cacheValues, BaseClass) {
+    this.cache = new LimitedCollection(cacheValues, BaseClass);
   }
 
   get (id) {
@@ -14,10 +13,11 @@ module.exports = class CachedManager {
     * Adds an item on the collection
     * @param {string} id The item id, to be used as the key
     * @param {object} item The item to be added
+    * @param {*[]} extra Extra parameters to be passed when instantiating the base class
     * @returns {object} The created item
     */
-  add (id, item) {
-    return this.cache.add(id, item);
+  add (id, item, ...extra) {
+    return this.cache.add(id, item, ...extra);
   }
 
   /**
@@ -50,13 +50,14 @@ module.exports = class CachedManager {
 
   /**
   * Remove an object
-  * @param {object} item The object
-  * @param {string} [item.id] The ID of the object
+  * @param {string} item The ID of the value to be removed
   * @returns {Class?} The removed object, or null if nothing was removed
   */
-  remove (item) {
-    if (!this.cache.has(item.id)) return null;
+  remove (id) {
+    if (!this.cache.has(id)) return null;
 
-    return (this.cache.delete(item.id), this.cache.get(item.id));
+    return (this.cache.delete(id), this.cache.get(id));
   }
 };
+
+module.exports = LimitedManager;

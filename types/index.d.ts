@@ -1,7 +1,6 @@
 import ClientUtils from "../src/client/ClientUtils";
-import GatewayManager from "../src/client/gateway/GatewayManager";
-import Shard from "../src/client/gateway/Shard";
 import RestManager from "../src/rest/RestManager";
+import WebSocket from "ws";
 
 // Types
 
@@ -105,7 +104,8 @@ export interface WSOptions {
 
 export interface RestOptions {
   version: number;
-  fetchAllUsers: boolean
+  fetchAllUsers: boolean;
+  timeout: number;
 }
 
 export interface CacheOptions {
@@ -175,6 +175,11 @@ export interface MessageReference {
   channel_id?: Snowflake;
   guild_id?: Snowflake;
   fail_if_not_exists: boolean;
+}
+
+export interface ShardMessageOptions {
+  op: number;
+  d: never;
 }
 
 // TODO
@@ -310,13 +315,12 @@ export class Client {
   public ws: GatewayManager;
   public rest: RestManager;
   public utils: ClientUtils;
-  public plugins: Array<Plugin>;
-
-  public users: LimitedCollection<Snowflake, User>;
-  public channels: LimitedCollection<Snowflake, Channel>;
-  public shards: LimitedCollection<Snowflake, Shard>;
+  public plugins: string[];
+  public users: UsersManager;
+  public guilds: LimitedCollection<Snowflake, Guild>;
+  public shards: Map<Number, Shard>;
   public token: string;
-
+  public channelMap: object;
   public start(): void;
   public getInformation(type: string, id: Snowflake): any;
 }
@@ -442,6 +446,46 @@ export class Interaction extends Base {
   public async getMessage(messageId: string): Message;
 }
 
+export class Shard extends EventEmitter {
+  public constructor(manager: GatewayManager, id: number);
+  public id: number;
+  public sessionId: string | null;
+  public reconnectInterval: number;
+  public reconnectAttempts: number;
+  public sequence: number;
+  public lastHeartbeatAcked: boolean;
+  public heartbeatInterval: NodeJS.Timeout;
+  public status: string; // Mudar para um type
+  public lastHeartbeatReceived: number;
+  public lastHeartbeatSent: Date;
+  public _totalGuilds: number;
+  public _guildsLoaded: number;
+  public _guildQueueTimeout: NodeJS.Timeout;
+  private client: Client;
+  private manager: GatewayManager;
+  private connection: WebSocket;
+  public setDefaultProperties(): void;
+  public connect(): void;
+  public isReady(): void;
+  public packetReceive(packet: object): void;
+  public disconnect(reconnect: boolean): void;
+  public sendWebsocketMessage(data: ShardMessageOptions): void;
+  private websocketError(error: Error): void;
+  private websocketMessageReceive(data: object): void;
+  private websocketConnectionOpen(): void;
+  private websocketCloseConnection(): void;
+  private identify(): void;
+  private sendHeartbeat(): void;
+}
+
+export class GatewayManager {
+  private websocketURL: string;
+  private client: Client;
+  private queue: Set<Shard>;
+  public createShardConnection(): void;
+  private connectShard(_shard: Shard | null): void;
+}
+
 export class ApplicationCommandInteraction extends Interaction {
   public command: ApplicationCommand;
   public resolved: ApplicationCommandResolve;
@@ -470,9 +514,22 @@ export class ApplicationCommandOptions {
   public number(optionName: string): boolean;
 }
 
+export class CachedManager<K, V> {
+  public cache: LimitedCollection<K, V>;
+  public add(id: K, item: V): v;
+  public get(id: K): V;
+  public filter(func: (id: K, item: V) => boolean): Array<K>;
+  public map(func: (item: V) => unknown): Array<V>;
+  public remove(id: K): V | null;
+}
+
+export class UsersManager extends CachedManager<Snowflake, User> {
+  async fetch(userId: string): User;
+}
+
 export class LimitedCollection<K, V> extends Map<K, V> {
   public add(id: K, item: V): V;
-  public filter(func: (id: K, item: V) => boolean): Array<V>;
+  public filter(func: (id: K, item: V) => boolean): Array<K>;
   public map(func: (item: V) => unknown): Array<V>;
   public remove(item: K): V | undefined;
 }
