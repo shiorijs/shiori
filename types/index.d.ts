@@ -712,6 +712,7 @@ export class ApplicationCommandOptions {
 }
 
 export class Cache<K, V> {
+  public constructor(cacheOptions: CacheOptions);
   public cache: LimitedCollection<K, V> | Collection<K, V>;
   public limited: boolean;
   public get(key: K): V | null;
@@ -723,10 +724,12 @@ export class Cache<K, V> {
 }
 
 export class GuildsCache extends Cache<Snowflake, Guild> {
+  public constructor(client: Client);
   public fetch(guildId: string): Promise<Guild>;
 }
 
 export class UsersCache extends Cache<Snowflake, User> {
+  public constructor(client: Client);
   public fetch(userId: string): Promise<User>;
 }
 
