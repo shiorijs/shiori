@@ -1,5 +1,5 @@
 const EventEmitter = require("events");
-const Collection = require("../utils/Collection");
+const LimitedCollection = require("../utils/LimitedCollection");
 const GatewayManager = require("./gateway/GatewayManager");
 const RestManager = require("../rest/RestManager");
 const PluginsManager = require("../managers/PluginsManager");
@@ -7,6 +7,7 @@ const PluginsManager = require("../managers/PluginsManager");
 const Constants = require("../utils/Constants");
 const Option = require("../utils/Option");
 const ClientUtils = require("./ClientUtils");
+const UsersManager = require("../managers/UsersManager");
 
 class Client extends EventEmitter {
   /**
@@ -25,12 +26,13 @@ class Client extends EventEmitter {
     this.ws = new GatewayManager(this);
     this.rest = new RestManager(this, clientOptions);
     this.utils = new ClientUtils(this);
-    this.plugins = this.options.plugins.map(c => c?.name);
+    this.plugins = this.options.plugins.map(p => p?.name);
+
+    this.users = new UsersManager(this);
 
     Object.defineProperties(this, {
-      users: { value: new Collection(this.options.cache.users), writable: false },
-      guilds: { value: new Collection(this.options.cache.guilds), writable: false },
-      shards: { value: new Collection(), writable: false },
+      guilds: { value: new LimitedCollection(this.options.cache.guilds), writable: false },
+      shards: { value: new LimitedCollection(), writable: false },
       token: { value: token, writable: false },
       channelMap: { value: { }, writable: true }
     });

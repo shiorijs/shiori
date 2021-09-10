@@ -312,9 +312,9 @@ export class Client {
   public utils: ClientUtils;
   public plugins: Array<Plugin>;
 
-  public users: Collection<Snowflake, User>;
-  public channels: Collection<Snowflake, Channel>;
-  public shards: Collection<Snowflake, Shard>;
+  public users: LimitedCollection<Snowflake, User>;
+  public channels: LimitedCollection<Snowflake, Channel>;
+  public shards: LimitedCollection<Snowflake, Shard>;
   public token: string;
 
   public start(): void;
@@ -375,7 +375,7 @@ export class BaseGuildChannel extends Channel {
   public nsfw: boolean;
   public guildId: Snowflake;
   public type: ChannelType | "UNKNOWN";
-  public messages: Collection<Snowflake, Message>;
+  public messages: LimitedCollection<Snowflake, Message>;
 }
 
 export class TextChannel extends BaseGuildChannel {
@@ -401,7 +401,7 @@ export class Guild extends Base {
   public ownerId: Snowflake;
   public name: string;
   public verificationLevel: GuildVerificationLevel;
-  public members: Collection<Snowflake, Member>;
+  public members: LimitedCollection<Snowflake, Member>;
   public afk?: AFKChannel;
   public widget?: GuildWidget;
   public roles?: Snowflake[];
@@ -411,7 +411,7 @@ export class Guild extends Base {
   public bannerHash: string;
   public description?: string;
   public boost?: GuildBoost;
-  public channels?: Collection<Snowflake, Channel>;
+  public channels?: LimitedCollection<Snowflake, Channel>;
   public readonly owner: User | null;
 }
 
@@ -470,7 +470,7 @@ export class ApplicationCommandOptions {
   public number(optionName: string): boolean;
 }
 
-export class Collection<K, V> extends Map<K, V> {
+export class LimitedCollection<K, V> extends Map<K, V> {
   public add(id: K, item: V): V;
   public filter(func: (id: K, item: V) => boolean): Array<V>;
   public map(func: (item: V) => unknown): Array<V>;

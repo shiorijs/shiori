@@ -29,7 +29,7 @@ Shiori.MessageComponentInteraction = require("./structures/Interactions/MessageC
 Shiori.ApplicationCommandPlugin = require("./plugins/ApplicationCommandPlugin");
 
 // Utilities
-Shiori.Collection = require("./utils/Collection");
+Shiori.LimitedCollection = require("./utils/LimitedCollection");
 Shiori.Intents = Constants.INTENTS;
 Shiori.Constants = Constants;
 

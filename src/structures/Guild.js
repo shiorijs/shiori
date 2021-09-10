@@ -1,6 +1,6 @@
 const Base = require("./Base");
 const Channel = require("./Channel");
-const Collection = require("../utils/Collection");
+const LimitedCollection = require("../utils/LimitedCollection");
 
 /**
   * Represents a discord guild
@@ -18,17 +18,17 @@ class Guild extends Base {
 
     /**
      * Members that belongs to this guild
-     * @type {Collection<String, Member>}
+     * @type {LimitedCollection<String, Member>}
      * @name Guild#members
      */
-    Object.defineProperty(this, "members", { value: new Collection(cache.members), writable: true });
+    Object.defineProperty(this, "members", { value: new LimitedCollection(cache.members), writable: true });
 
     /**
      * Channels that belongs to this guild
-     * @type {Collection<String, Channel>}
+     * @type {LimitedCollection<String, Channel>}
      * @name Guild#channels
      */
-    Object.defineProperty(this, "channels", { value: new Collection(cache.channels), writable: true });
+    Object.defineProperty(this, "channels", { value: new LimitedCollection(cache.channels), writable: true });
 
     /**
      * The guildId

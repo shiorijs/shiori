@@ -1,5 +1,5 @@
 const Channel = require("./Channel");
-const Collection = require("../utils/Collection");
+const LimitedCollection = require("../utils/LimitedCollection");
 
 /**
  * Represents a guild channel.
@@ -27,10 +27,10 @@ class BaseGuildChannel extends Channel {
 
     /**
      * Messages that belongs to this channel
-     * @type {Collection<string, Message>}
+     * @type {LimitedCollection<string, Message>}
      * @name BaseGuildChannel#messages
      */
-    Object.defineProperty(this, "messages", { value: new Collection(), writable: true });
+    Object.defineProperty(this, "messages", { value: new LimitedCollection(), writable: true });
   }
 
   _update (data) {

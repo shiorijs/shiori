@@ -29,7 +29,7 @@ export const {
   ApplicationCommandPlugin,
 
   // Utilities
-  Collection,
+  LimitedCollection,
   Intents,
   Constants
 } = Shiori;
