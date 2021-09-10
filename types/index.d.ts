@@ -1,5 +1,6 @@
 import EventEmitter from "events";
 import WebSocket from "ws";
+import AsyncQueue from "../src/utils/AsyncQueue";
 
 // Types
 
@@ -489,9 +490,17 @@ export class RestManager {
   private resolveRequest(method: HTTPMethods, url: string, options: object);
 }
 
-// TODO
 export class Bucket {
+  public constructor(manager: RestManager);
+  private asyncQueue: AsyncQueue;
   public remaining: number;
+  public reset: Date;
+  public readonly inactive: boolean;
+  public readonly globalLimited: boolean;
+  public readonly localLimited: boolean;
+  // TODO: Better type for options
+  public queueRequest(path: string, options: object, route: string): Promise<unknown>;
+  public executeRequest(path: string, options: object, route: string): Promise<unknown>;
 }
 
 export class Client {

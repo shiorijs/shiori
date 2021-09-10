@@ -2,7 +2,7 @@ class LimitedCollection extends Map {
   #options;
 
   /**
-  * Constructs a temporarily collection
+  * Constructs a limited collection with cache
   */
   constructor (cache = undefined, BaseClass = undefined) {
     super();
