@@ -317,7 +317,7 @@ export class Client {
   public utils: ClientUtils;
   public plugins: string[];
   public users: UsersManager;
-  public guilds: LimitedCollection<Snowflake, Guild>;
+  public guilds: GuildsManager;
   public shards: Map<Number, Shard>;
   public token: string;
   public channelMap: object;
@@ -521,6 +521,10 @@ export class CachedManager<K, V> {
   public filter(func: (id: K, item: V) => boolean): Array<K>;
   public map(func: (item: V) => unknown): Array<V>;
   public remove(id: K): V | null;
+}
+
+export class GuildsManager extends CachedManager<Snowflake, Guild> {
+  async fetch(guildId: string): Guild;
 }
 
 export class UsersManager extends CachedManager<Snowflake, User> {
