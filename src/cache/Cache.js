@@ -7,6 +7,7 @@ const LimitedCollection = require("../utils/LimitedCollection");
 class Cache {
   /**
    * @param {CacheOptions} cacheOptions The cache options, if set, this cache will hold a Limited Collection
+   * @param {*} BaseClass The class that all items will be instantiaded when being created.
    */
   constructor (cacheOptions, BaseClass) {
     /**

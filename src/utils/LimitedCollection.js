@@ -55,16 +55,16 @@ class LimitedCollection extends Collection {
     * @param {Array<*>} extra Extra parameters to be passed when instantiating the base class
     * @returns {?Collection} The created item, or null if none was created
     */
-  add (id, item, ...extra) {
-    if (this.limit === 0 || id == undefined) return item;
+  add (key, value, ...extra) {
+    if (this.limit === 0 || key == undefined) return value;
 
-    if (this.has(id)) return this.get(id);
-    if (this.#options && !this.#options.toAdd(item, id)) return;
+    if (this.has(key)) return this.get(key);
+    if (this.#options && !this.#options.toAdd(value, key)) return;
 
     if (this.limit && this.size > this.limit) this.delete(this.keys().next().value);
-    if (this.baseClass !== undefined) item = new this.baseClass(item, ...extra);
+    if (this.baseClass !== undefined) value = new this.baseClass(value, ...extra);
 
-    return (this.set(id, item), item);
+    return (this.set(key, value), value);
   }
 }
 
