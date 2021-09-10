@@ -1,3 +1,4 @@
+import EventEmitter from "events";
 import WebSocket from "ws";
 
 // Types
@@ -30,7 +31,13 @@ export enum ChannelType {
   GUILD_PUBLIC_THREAD = 11,
   GUILD_PRIVATE_THREAD = 12,
   GUILD_STAGE_VOICE = 13
-};
+}
+
+export enum InteractionTypes {
+  PING = 1,
+  APPLICATION_COMMAND	= 2,
+  MESSAGE_COMPONENT	= 3
+}
 
 export enum MessageType {
   DEFAULT	= 0,
@@ -123,12 +130,12 @@ export interface ClientCache {
 export interface ClientOptions {
   ws: WSOptions;
   rest: RestOptions;
-  intents: Array<string> | number;
+  intents: string[] | number;
   shardCount: number;
-  blockedEvents: Array<string>;
+  blockedEvents: string[];
   autoReconnect: boolean;
   connectionTimeout: number;
-  plugins: Array<typeof Class>;
+  plugins: string[];
   cache: ClientCache;
   defaultFormat: ImageFormats;
   defaultSize: ImageSizes;
@@ -346,7 +353,7 @@ export class Client {
 
 export class ClientUtils {
   private client: Client;
-  public getChannel(channelId: snowflake): Channel;
+  public getChannel(channelId: Snowflake): Channel;
   public image(target: Guild | User): Function // Especificar melhor a callback
 }
 
@@ -381,9 +388,9 @@ export class Message extends Base {
   public readonly editable: boolean;
   public readonly channel: Channel | null;
   public readonly guild: Guild | null;  
-  public async delete(): void;
-  public async addReaction(reaction: string): void;
-  public async edit(options: MessageEditOptions): void;
+  public delete(): Promise<void>;
+  public addReaction(reaction: string): Promise<void>;
+  public edit(options: MessageEditOptions): Promise<void>;
 }
 
 export class Channel extends Base {
@@ -457,12 +464,16 @@ export class Interaction extends Base {
   public isButton(): boolean;
   public transform(data: object, client: Client): 
     ApplicationCommandInteraction | MessageComponentInteraction | Interaction;
-  public async reply(options: InteractionMessageCreateOptions): Message;
-  public async createFollowup(options: InteractionMessageCreateOptions): Message
-  public async defer(ephemeral: boolean): Message;
-  public async delete(messageId: string): Promise<void>;
-  public async edit(options: MessageEditOptions | string): Promise<void>;
-  public async getMessage(messageId: string): Message;
+  public reply(options: InteractionMessageCreateOptions): Promise<Message>;
+  public createFollowup(options: InteractionMessageCreateOptions): Promise<Message>
+  public defer(ephemeral: boolean): Promise<Message>;
+  public delete(messageId: string): Promise<void>;
+  public edit(options: MessageEditOptions | string): Promise<void>;
+  public getMessage(messageId: string): Promise<Message>;
+}
+
+export class Role extends Base {
+
 }
 
 export class Shard extends EventEmitter {
@@ -535,7 +546,7 @@ export class ApplicationCommandOptions {
 
 export class CachedManager<K, V> {
   public cache: LimitedCollection<K, V>;
-  public add(id: K, item: V): v;
+  public add(id: K, item: V): V;
   public get(id: K): V;
   public filter(func: (id: K, item: V) => boolean): Array<K>;
   public map(func: (item: V) => unknown): Array<V>;
@@ -543,11 +554,11 @@ export class CachedManager<K, V> {
 }
 
 export class GuildsManager extends CachedManager<Snowflake, Guild> {
-  async fetch(guildId: string): Guild;
+  public fetch(guildId: string): Promise<Guild>;
 }
 
 export class UsersManager extends CachedManager<Snowflake, User> {
-  async fetch(userId: string): User;
+  public fetch(userId: string): Promise<User>;
 }
 
 export class LimitedCollection<K, V> extends Map<K, V> {
