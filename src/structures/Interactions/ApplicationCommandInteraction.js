@@ -2,9 +2,6 @@ const { InteractionTypes } = require("../../utils/Constants");
 const Interaction = require("./Interaction");
 const ApplicationCommandOptions = require("./ApplicationCommandOptions");
 
-const Message = require("../Message");
-const Member = require("../Member");
-const Role = require("../Role");
 const Channel = require("../Channel");
 
 /**
@@ -89,9 +86,9 @@ class ApplicationCommandInteraction extends Interaction {
 
     const resolve = {
       user: (id, user) => this.client.users.add(id, user, this.client),
-      message: (id, message) => this.channel.messages?.add(id, new Message(message, this.client)),
-      member: (id, member) => this.guild.members.add(id, new Member(member, this.client, this.guildId)),
-      role: (id, role) => this.guild.roles.add(id, new Role(role, this.client)),
+      message: (id, message) => this.channel.messages?.add(id, message, this.client),
+      member: (id, member) => this.guild.members.add(id, member, this.client, this.guildId),
+      role: (id, role) => this.guild.roles.add(id, role, this.client),
       // eslint-disable-next-line no-unused-vars
       channel: (_, channel) => Channel.transform({ guildId: this.guildId, ...channel }, this.client)
     };

@@ -130,6 +130,8 @@ export interface CacheOptions<K, V> {
 export interface ClientCache {
   users: CacheOptions<Snowflake, User>;
   guilds: CacheOptions<Snowflake, Guild>;
+  messages: CacheOptions<Snowflake, Message>;
+  roles: CacheOptions<Snowflake, Role>;
 }
 
 export interface ClientOptions {

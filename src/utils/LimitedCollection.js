@@ -62,7 +62,8 @@ class LimitedCollection extends Collection {
     if (this.#options && !this.#options.toAdd(value, key)) return;
 
     if (this.limit && this.size > this.limit) this.delete(this.keys().next().value);
-    if (this.baseClass !== undefined) value = new this.baseClass(value, ...extra);
+    if (this.baseClass !== undefined && !(value instanceof this.baseClass))
+      value = new this.baseClass(value, ...extra);
 
     return (this.set(key, value), value);
   }

@@ -7,6 +7,9 @@ const client = Shiori(process.env.DISCORD_TOKEN, {
   rest: { fetchAllUsers: true },
   plugins: [Shiori.ApplicationCommandPlugin],
   cache: {
+    members: {
+      limit: 1
+    },
     users: {
       limit: Infinity,
       sweep: 10,
@@ -52,7 +55,9 @@ client.on("messageCreate", async (message) => {
   }
 });
 
-client.on("ready", () => write("Ready!"));
+client.on("ready", () => {
+  write("Ready!");
+});
 client.on("shardError", (error, shardID) => write(`Shard Error: ${error} ID: ${shardID}`));
 client.on("warn", (warn) => write(`Aviso ${warn}`));
 client.on("error", (error) => write(`Erro: ${error}`));
