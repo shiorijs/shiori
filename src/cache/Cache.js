@@ -15,39 +15,48 @@ class Cache {
   }
 
   /**
-    * Adds an item on the collection
-    * @param {string} id The item id, to be used as the key
-    * @param {object} item The item to be added
+    * Adds a new item to this collection
+    * @param {*} key The identifier to be used as the value key
+    * @param {*} value The value to be added
     * @param {*[]} extra Extra parameters to be passed when instantiating the base class
-    * @returns {object} The created item
+    * @returns {?Collection} The created item, or null if none was created
     */
   add (id, item, extra = []) {
     return this.cache.add(id, item, extra);
   }
 
   /**
-    * Return all the objects that make the function evaluate true
-    * @param {Function} func A function that takes an object and returns true if it matches
-    * @returns {Class[]} An array containing all the objects that matched
+    * Returns all elements that pass the test implemented by the provided function.
+    * @param {(value: unknown, key: unknown) => boolean} callback A function to test each element of this collection, must return a boolean.
+    * @returns {*[]} An array containing all the keys that matched
     */
-  filter (func) {
-    return this.cache.filter(func);
+  filter (callback) {
+    return this.cache.filter(callback);
   }
 
   /**
-    * Return an array with the results of applying the given function to each element
-    * @param {Function} func A function that takes an object and returns something
-    * @returns {Array} An array containing the results
+    * Searches for the first item in this collection that satisfies the provided testing function.
+    * @param {(value: unknown, key: unknown) => boolean} callback The function to execute on each item of this collection, must return a boolean.
+    * @returns {?*} The item that was found, or null if none was found
     */
-  map (func) {
-    return this.cache.map(func);
+  find (callback) {
+    return this.cache.find(callback);
   }
 
   /**
-  * Remove an object
-  * @param {string} id The identifier of the value to be removed
-  * @returns {Class?} The removed object, or null if nothing was removed
-  */
+    * Returns an array populated with the results of calling a provided function on every element of this collection.
+    * @param {(value: unknown, key: unknown) => any} callback The function that will be called for every element of this collection.
+    * @returns {Array} An array with each element being the result of the callback function.
+    */
+  map (callback) {
+    return this.cache.map(callback);
+  }
+
+  /**
+    * Removes an item from this collection and returns that item
+    * @param {*} key The idenfifier of the value to be removed
+    * @returns {Collection?} The removed object, or null if nothing was removed
+    */
   remove (id) {
     return this.cache.remove(id);
   }

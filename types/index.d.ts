@@ -713,11 +713,11 @@ export class ApplicationCommandOptions {
 
 export class Cache<K, V> {
   public cache: LimitedCollection<K, V>;
-  public add(id: K, item: V): V;
-  public get(id: K): V;
-  public filter(func: (id: K, item: V) => boolean): K[];
-  public map(func: (item: V) => unknown): V[];
-  public remove(id: K): V | null;
+  public add(key: K, value: V, extra: unknown[]): V;
+  public filter(callback: (value: V, key: K) => boolean): K[];
+  public find(callback: (value: V, key: K) => boolean): unknown[];
+  public map(callback: (value: V, key: K) => unknown): V[];
+  public remove(key: K): V | null;
 }
 
 export class GuildsCache extends Cache<Snowflake, Guild> {
