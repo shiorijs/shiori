@@ -29,7 +29,7 @@ class Collection extends Map {
     if (this.has(key)) return this.get(key);
     if (this.baseClass !== undefined && !(value instanceof this.baseClass))
       value = new this.baseClass(value, ...extra);
-      
+
     return (this.set(key, value), value);
   }
 

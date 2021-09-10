@@ -96,6 +96,7 @@ class RestManager {
     const requestOptions = {
       hostname: "discord.com",
       data: options.data,
+      timeout: this.client.rest.options.timeout,
       method,
       headers
     };
