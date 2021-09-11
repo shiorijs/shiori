@@ -1,4 +1,4 @@
-const EventEmitter = require("events");
+const EventEmitter = require("../../utils/EventEmitter");
 const WebSocket = require("ws");
 
 let Erlpack;
@@ -23,16 +23,19 @@ class Shard extends EventEmitter {
       * @type {number}
       */
     this.id = id;
+
     /**
       * Session ID of the current shard connection
       * @type {string}
       */
     this.sessionId = null;
+
     /**
       * Interval in ms for reconnect time
       * @type {number}
       */
     this.reconnectInterval = 3000;
+
     /**
       * Current attempts of reconnecting
       * @type {number}
@@ -90,10 +93,17 @@ class Shard extends EventEmitter {
   connect () {
     this.connection = new WebSocket(this.manager.websocketURL);
 
+    this.connection.onmessage = this.#websocketMessageReceive.bind(this);
+    this.connection.onopen = this.#websocketConnectionOpen.bind(this);
+    this.connection.onerror = this.#websocketError.bind(this);
+    this.connection.onclose = this.#websocketCloseConnection.bind(this);
+
+    /*
     this.connection.on("message", (message) => this.#websocketMessageReceive(message));
     this.connection.on("open", () => this.#websocketConnectionOpen());
     this.connection.on("error", (error) => this.#websocketError(error));
     this.connection.on("close", (...args) => this.#websocketCloseConnection(...args));
+    */
 
     this.connectTimeout = setTimeout(() => {
       if (this.connection.readyState === WebSocket.CONNECTING) this.disconnect(true);
@@ -157,10 +167,17 @@ class Shard extends EventEmitter {
 
   /**
     * Fired when occurs an error in the websocket connection.
-    * @param {Error} error The error that occurred
+    * @param {object} error The error that occurred
     * @returns {void}
     */
-  #websocketError (error) {
+  #websocketError (event) {
+    const error = new Error({
+      message: event.message,
+      error: event.error,
+      type: event.type,
+      target: event.target
+    });
+    
     /**
       * Fired when an error occurs in a shard
       * @event Client#shardError
@@ -175,14 +192,16 @@ class Shard extends EventEmitter {
     * @param {object} data received from the websocket
     * @returns {void}
     */
-  #websocketMessageReceive (data) {
+  #websocketMessageReceive (event) {
+    let data = event.data;
+    
     if (data instanceof ArrayBuffer) {
       if (Erlpack) data = Buffer.from(data);
     }
 
     if (Array.isArray(data)) data = Buffer.concat(data);
 
-    data = Erlpack ? Erlpack.unpack(data) : JSON.parse(data.toString());
+    data = Erlpack ? Erlpack.unpack(data) : JSON.parse(data);
 
     this.packetReceive(data);
   }
@@ -212,7 +231,7 @@ class Shard extends EventEmitter {
     switch (packet.t) {
       case "READY": {
         this.sessionId = packet.d.session_id;
-        this.client.emit("shardReady", this.id);
+        this.emit("ready");
 
         const percent = (((this.id + 1) / this.client.options.shardCount) * 100).toFixed(1);
         this.client.emit("debug", `Shard ${this.id} connected! (${percent}%)`);
@@ -237,7 +256,9 @@ class Shard extends EventEmitter {
         if (packet.d?.heartbeat_interval) {
           if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
 
-          this.heartbeatInterval = setInterval(() => this.#sendHeartbeat(), packet.d.heartbeat_interval);
+          this.heartbeatInterval = setInterval(() => {
+            this.#sendHeartbeat();
+          }, packet.d.heartbeat_interval);
         }
 
         if (this.connectTimeout) clearTimeout(this.connectTimeout);
@@ -282,15 +303,16 @@ class Shard extends EventEmitter {
     * @returns {object}
     */
   #identify () {
+    const shardCount = this.client.options.shardCount;
+
     const d = {
       token: this.client.token,
       intents: this.client.options.intents,
-      shard: [this.id, this.client.options.shardCount],
-      v: this.client.options.ws.version,
+      shard: [this.id, shardCount <= 0 ? 1 : shardCount],
       properties: {
-        os: process.platform,
-        browser: "shiori",
-        device: "shiori"
+        $os: process.platform,
+        $browser: "shiori",
+        $device: "shiori"
       }
     };
 
@@ -371,7 +393,7 @@ class Shard extends EventEmitter {
     this.setDefaultProperties();
 
     /**
-      * Fired when the shard disconnects
+      * Fired when this shard disconnects
       * @event Client#disconnect
       * @prop {string} reason The reason why the shard disconnected
       */

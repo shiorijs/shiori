@@ -1,3 +1,5 @@
+const Collection = require("../../utils/Collection");
+
 const Shard = require("./Shard");
 const Constants = require("../../utils/Constants");
 
@@ -23,56 +25,40 @@ class GatewayManager {
     this.websocketURL = `${BASE_URL}?v=${client.options.ws.version}&encoding=${Erlpack ? "etf" : "json"}`;
 
     /**
+     * A collection that includes all of the gateway shards
+     * @type {Collection<number, Shard>}
+     */
+    this.shards = new Collection();
+
+    /**
+     * Whether the first shard has been connected
+     * @type {number}
+     */
+    this.firstShardConnected = false;
+
+    /**
       * Shiori Client
       * @private
       * @type {Client}
       * @name GatewayManager#client
       */
     Object.defineProperty(this, "client", { value: client, writable: false });
-
-    /**
-      * Shards queue
-      * @private
-      * @type {Set<Shard>}
-      * @name GatewayManager#queue
-      */
-    Object.defineProperty(this, "queue", { value: null, writable: true });
   }
 
-  /**
-    * Connect all shards and create a websocket connection for each one.
-    * @returns {Function}
-    */
-  createShardConnection () {
-    const { shards } = this.client.options;
+  async connect () {
+    const shards = this.client.options.shardCount;
 
-    this.queue = new Set(shards.map(id => new Shard(this, id)));
+    for (let id = 0; id < shards; id++) {
+      const shard = new Shard(this, id);
 
-    return this.#connectShard();
-  }
+      if (this.firstShardConnected === true) await this.client.utils.delay(7500);
 
-  /**
-  * Connects the last shard of the queue.
-  * @param {Shard | null} - The shard to be connected, if none, will connect the first shard of the queue
-  * @private
-  * @returns {void}
-  */
-  async #connectShard (_shard = null) {
-    const [shard] = _shard || this.queue;
+      this.firstShardConnected = true;
+      this.shards.add(id, shard);
 
-    if (!shard || shard.id == undefined) return;
-
-    this.queue.delete(shard);
-    this.client.shards.add(shard.id, shard);
-
-    try {
-      await shard.connect();
-    } catch (error) {
-      if (!error || !error.code) this.queue.add(shard);
-      else throw error;
+      shard.connect();
+      shard.waitFor("ready", () => true).then(() => true);
     }
-
-    if (this.queue.size) setTimeout(() => this.#connectShard(), 5000);
   }
 
   /**
@@ -85,7 +71,11 @@ class GatewayManager {
     if (!packet) return false;
 
     if (!this.client.options.blockedEvents.includes(packet.t)) {
-      const event = require(`./handlers/${Constants.ClientEvents[packet.t]}`);
+      let event = null;
+
+      try {
+        event = require(`./handlers/${Constants.ClientEvents[packet.t]}`);
+      } catch (error) {}
 
       if (event) event(this.client, packet, shard);
       else this.client.emit(packet.t, packet);
