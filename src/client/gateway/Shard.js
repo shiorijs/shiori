@@ -98,13 +98,6 @@ class Shard extends EventEmitter {
     this.connection.onerror = this.#websocketError.bind(this);
     this.connection.onclose = this.#websocketCloseConnection.bind(this);
 
-    /*
-    this.connection.on("message", (message) => this.#websocketMessageReceive(message));
-    this.connection.on("open", () => this.#websocketConnectionOpen());
-    this.connection.on("error", (error) => this.#websocketError(error));
-    this.connection.on("close", (...args) => this.#websocketCloseConnection(...args));
-    */
-
     this.connectTimeout = setTimeout(() => {
       if (this.connection.readyState === WebSocket.CONNECTING) this.disconnect(true);
     }, this.client.options.connectionTimeout);

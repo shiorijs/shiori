@@ -23,7 +23,7 @@ class GuildsCache extends Cache {
     * @returns {Guild}
     */
   async fetch (guildId) {
-    return await this.#client.rest.request("get", Endpoints.USER(guildId));
+    return await this.#client.rest.request("get", Endpoints.GUILD(guildId));
   }
 }
 

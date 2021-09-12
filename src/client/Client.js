@@ -94,16 +94,8 @@ class Client extends EventEmitter {
     } catch (error) {
       if (!this.options.autoReconnect) throw error;
 
-      setTimeout(() => this.gateway.connect(), 5000);
+      setTimeout(() => this.ws.createShardConnection(), 5000);
     }
-  }
-
-  /**
-    * @param {string} type Type of the structure to fetch: user, role, channel or guild
-    * @param {string} id ID of an user, role, channel or guild to fetch
-    */
-  getInformation () {
-    return true;
   }
 }
 

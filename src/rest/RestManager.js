@@ -34,7 +34,7 @@ class RestManager {
       limit: Infinity,
       sweep: 10,
       sweepTimeout: 600000
-    });
+    }, Bucket);
 
     /**
      * User Agent to be used on request headers.
@@ -78,7 +78,7 @@ class RestManager {
   request (method, url, options = {}) {
     const route = this.routefy(url);
 
-    if (!this.#handlers.has(route)) this.#handlers.add(route, new Bucket(this));
+    if (!this.#handlers.has(route)) this.#handlers.add(route, this);
 
     const { requestOptions, formattedUrl } = this.#resolveRequest(url, method, options);
 
