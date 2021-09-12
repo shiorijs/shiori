@@ -50,6 +50,7 @@ class Shard extends EventEmitter {
       * @name Shard#client
       */
     Object.defineProperty(this, "client", { value: manager.client, writable: false });
+
     /**
       * Gateway Manager
       * @private
@@ -57,6 +58,7 @@ class Shard extends EventEmitter {
       * @name Shard#manager
       */
     Object.defineProperty(this, "manager", { value: manager, writable: false });
+
     /**
       * Websocket Connection
       * @private
@@ -111,7 +113,9 @@ class Shard extends EventEmitter {
     */
   #websocketCloseConnection ({ code } = {}) {
     const GatewayError = Constants.GatewayErrors;
+
     let reconnect = true;
+    let error = null;
 
     switch (code) {
       case 1000:
@@ -119,16 +123,27 @@ class Shard extends EventEmitter {
         this.client.emit("shardError", "Websocket Connection closed with an unknown reason. Trying to reconnect...", this.id);
         break;
       }
-      case GatewayError.RECONNECT: {
+      case GatewayError.AUTHENTICATION_FAILED: {
+        error = new Error(`Authentication failed. A invalid token was provided.`);
+        reconnect = false;
+        break;
+      }
+      case GatewayError.DISALLOWED_INTENT: {
+        error = new Error(`A disallowed intent was provided, you may have specified an intent that you do not have access to.`)
+        reconnect = false;
+        break;
+      }
+      case GatewayError.INVALID_INTENT: {
+        error = new Error(`A invalid intent was provided. Provided intents: ${this.client.options.intents}`)
+        reconnect = false;
+        break;
+      }
+      case GatewayError.TIMED_OUT: {
         this.client.emit("shardError", "Discord asked for us to reconnect. At your service discord!", this.id);
         break;
       }
       case GatewayError.INVALID_SEQUENCE: {
         this.client.emit("shardError", "Discord invalidated our last sequence. Reconnecting...", this.id);
-        break;
-      }
-      case GatewayError.INVALID_SESSION: {
-        this.client.emit("shardError", "Discord invalidated our last session. Trying to reconnect...", this.id);
         break;
       }
       default: {
@@ -139,6 +154,8 @@ class Shard extends EventEmitter {
     }
 
     this.disconnect(reconnect);
+
+    if (error) throw error;
   }
 
   isReady () {
@@ -160,7 +177,7 @@ class Shard extends EventEmitter {
 
   /**
     * Fired when occurs an error in the websocket connection.
-    * @param {object} error The error that occurred
+    * @param {object} event The error that occurred
     * @returns {void}
     */
   #websocketError (event) {
@@ -293,7 +310,7 @@ class Shard extends EventEmitter {
   /**
     * Identify the connection.
     * Required for discord to recognize who is connecting
-    * @returns {object}
+    * @returns {void}
     */
   #identify () {
     const shardCount = this.client.options.shardCount;
@@ -301,7 +318,7 @@ class Shard extends EventEmitter {
     const d = {
       token: this.client.token,
       intents: this.client.options.intents,
-      shard: [this.id, shardCount <= 0 ? 1 : shardCount],
+      shard: [this.id, shardCount],
       properties: {
         $os: process.platform,
         $browser: "shiori",

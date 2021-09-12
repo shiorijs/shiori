@@ -456,13 +456,12 @@ export class Bucket {
 
 export class Client {
   public constructor(token: string, options: ClientOptions);
-  public ws: GatewayManager;
+  public gateway: GatewayManager;
   public rest: RestManager;
   public utils: ClientUtils;
   public plugins: string[];
   public users: UsersCache;
   public guilds: GuildsCache;
-  public shards: Map<number, Shard>;
   public token: string;
   public channelMap: object;
   public start(): void;
@@ -627,11 +626,11 @@ export class Shard extends EventEmitter {
 }
 
 export class GatewayManager {
+  public shards: Collection<Snowflake, Shard>;
   private websocketURL: string;
   private client: Client;
-  private queue: Set<Shard>;
-  public createShardConnection(): void;
-  private connectShard(_shard: Shard | null): void;
+  public connect(): void;
+  private handlePacket(packet: object, shard: Shard): void;
 }
 
 export class ApplicationCommandInteraction extends Interaction {

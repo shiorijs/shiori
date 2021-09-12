@@ -31,12 +31,6 @@ class GatewayManager {
     this.shards = new Collection();
 
     /**
-     * Whether the first shard has been connected
-     * @type {number}
-     */
-    this.firstShardConnected = false;
-
-    /**
       * Shiori Client
       * @private
       * @type {Client}
@@ -51,7 +45,7 @@ class GatewayManager {
     for (let id = 0; id < shards; id++) {
       const shard = new Shard(this, id);
 
-      if (this.firstShardConnected === true) await this.client.utils.delay(7500);
+      if (this.shards.has(0)) await this.client.utils.delay(7500);
 
       this.firstShardConnected = true;
       this.shards.add(id, shard);

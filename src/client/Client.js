@@ -25,6 +25,8 @@ class Client extends EventEmitter {
      */
     this.options = Option.defaultOptions(options);
 
+    if (this.options.shardCount <= 0) this.options.shardCount = 1;
+
     /**
      * Websocket Manager
      * @type {GatewayManager}
@@ -85,7 +87,7 @@ class Client extends EventEmitter {
    * client.start();
    */
   start () {
-    this.rest.setToken(this.token);
+    if (this.rest.token == undefined) this.rest.setToken(this.token);
 
     try {
       this.gateway.connect();
