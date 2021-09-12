@@ -1,6 +1,9 @@
 const Base = require("./Base");
 const Channel = require("./Channel");
-const Collection = require("../utils/Collection");
+const Member = require("./Member");
+const BaseGuildChannel = require("./BaseGuildChannel");
+const LimitedCollection = require("../utils/LimitedCollection");
+const Role = require("./Role");
 
 /**
   * Represents a discord guild
@@ -18,17 +21,21 @@ class Guild extends Base {
 
     /**
      * Members that belongs to this guild
-     * @type {Collection<String, Member>}
-     * @name Guild#members
+     * @type {LimitedCollection<string, Member>}
      */
-    Object.defineProperty(this, "members", { value: new Collection(cache.members), writable: true });
+    this.members = new LimitedCollection(cache.members, Member);
 
     /**
      * Channels that belongs to this guild
-     * @type {Collection<String, Channel>}
-     * @name Guild#channels
+     * @type {LimitedCollection<string, Channel>}
      */
-    Object.defineProperty(this, "channels", { value: new Collection(cache.channels), writable: true });
+    this.channels = new LimitedCollection(cache.channels, BaseGuildChannel);
+
+    /**
+     * Roles that belongs to this guild
+     * @type {LimitedCollection<string, Channel>}
+     */
+    this.roles = new LimitedCollection(cache.roles, Role);
 
     /**
      * The guildId
@@ -63,7 +70,7 @@ class Guild extends Base {
     }
 
     if (data.roles?.length) {
-      this.roles = data.roles.map(r => r.id);
+      for (const role of data.roles) this.roles.add(role.id, role, this.client);
     }
 
     if (data.emojis?.length) {
@@ -109,7 +116,7 @@ class Guild extends Base {
 
         if (!channel.id) continue;
 
-        this.channels.add(channel.id, channel);
+        this.channels.add(channel.id, channel, this.client);
         this.client.channelMap[channel.id] = this.id;
       }
     }

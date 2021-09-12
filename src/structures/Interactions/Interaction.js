@@ -3,7 +3,6 @@ const {
 } = require("../../utils/Constants");
 
 const Base = require("../Base");
-const Member = require("../Member");
 const Message = require("../Message");
 
 /**
@@ -83,7 +82,7 @@ class Interaction extends Base {
        * If this interaction was executed in a guild, the member who executed it
        * @type {Member}
        */
-      this.member = this.guild?.members.add(data.member.user.id, new Member(data.member));
+      this.member = this.guild?.members.add(data.member.user.id, data.member, this.client, this.guildId);
     }
   }
 

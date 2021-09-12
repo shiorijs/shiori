@@ -1,5 +1,5 @@
 const Shard = require("./Shard");
-const PacketHandlers = require("./handlers/");
+const Constants = require("../../utils/Constants");
 
 let Erlpack;
 
@@ -85,7 +85,7 @@ class GatewayManager {
     if (!packet) return false;
 
     if (!this.client.options.blockedEvents.includes(packet.t)) {
-      const event = PacketHandlers[packet.t];
+      const event = require(`./handlers/${Constants.ClientEvents[packet.t]}`);
 
       if (event) event(this.client, packet, shard);
       else this.client.emit(packet.t, packet);

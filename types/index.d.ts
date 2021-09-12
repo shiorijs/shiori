@@ -1,16 +1,20 @@
-import ClientUtils from "../src/client/ClientUtils";
-import GatewayManager from "../src/client/gateway/GatewayManager";
-import Shard from "../src/client/gateway/Shard";
-import RestManager from "../src/rest/RestManager";
+import EventEmitter from "events";
+import WebSocket from "ws";
+import AsyncQueue from "../src/utils/AsyncQueue";
 
 // Types
 
+export type HTTPMethods = "get" | "post" | "patch" | "put" | "delete" | "head";
 export type InteractionMessageCreateOptions = Omit<MessageCreateOptions, "file">;
 export type Snowflake = `${bigint}`;
 export type ImageFormats = "webp" | "png" | "jpg" | "jpeg" | "gif";
 export type ImageSizes = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
 export type AllowedMessageMentions = "roles" | "users" | "everyone";
 export type EmbedType = "rich" | "image" | "video" | "gifv" | "article" | "link";
+
+// Gateway and Rest
+export type IntentsFlags = keyof Constants["INTENTS"];
+
 export type GuildFeatures =
   "ANIMATED_ICON" | "BANNER" | "COMMERCE" | "COMMUNITY" | "DISCOVERABLE" | "FEATURABLE"              |
   "INVITE_SPLASH" | "MEMBER_VERIFICATION_GATE_ENABLED" | "NEWS" | "PARTNERED" | "PREVIEW_ENABLED"    |
@@ -32,7 +36,13 @@ export enum ChannelType {
   GUILD_PUBLIC_THREAD = 11,
   GUILD_PRIVATE_THREAD = 12,
   GUILD_STAGE_VOICE = 13
-};
+}
+
+export enum InteractionTypes {
+  PING = 1,
+  APPLICATION_COMMAND	= 2,
+  MESSAGE_COMPONENT	= 3
+}
 
 export enum MessageType {
   DEFAULT	= 0,
@@ -105,31 +115,34 @@ export interface WSOptions {
 
 export interface RestOptions {
   version: number;
-  fetchAllUsers: boolean
+  fetchAllUsers: boolean;
+  timeout: number;
 }
 
-export interface CacheOptions {
+export interface CacheOptions<K, V> {
+  toAdd: (value: V, key: K) => boolean;
+  toRemove: (value: V, key: K) => boolean;
   limit: number;
-  toAdd: (value: object, key: Snowflake | unknown) => boolean;
-  toRemove: (value: object, key: Snowflake | unknown) => boolean;
   sweep: number;
-  sweepTimeout: number
+  sweepTimeout: number;
 }
 
 export interface ClientCache {
-  users: CacheOptions;
-  guilds: CacheOptions;
+  users: CacheOptions<Snowflake, User>;
+  guilds: CacheOptions<Snowflake, Guild>;
+  messages: CacheOptions<Snowflake, Message>;
+  roles: CacheOptions<Snowflake, Role>;
 }
 
 export interface ClientOptions {
   ws: WSOptions;
   rest: RestOptions;
-  intents: Array<string> | number;
+  intents: number | IntentsFlags[];
   shardCount: number;
-  blockedEvents: Array<string>;
+  blockedEvents: string[];
   autoReconnect: boolean;
   connectionTimeout: number;
-  plugins: Array<typeof Class>;
+  plugins: string[];
   cache: ClientCache;
   defaultFormat: ImageFormats;
   defaultSize: ImageSizes;
@@ -177,9 +190,14 @@ export interface MessageReference {
   fail_if_not_exists: boolean;
 }
 
+export interface ShardMessageOptions {
+  op: number;
+  d: never;
+}
+
 // TODO
 export interface MessageEditOptions {
-
+  content: string;
 }
 
 export interface MessageMentions {
@@ -250,9 +268,112 @@ export interface MessageEmbed {
   fields?: EmbedField[];
 }
 
+export interface Constants {
+  REST: {
+    BASE_URL: "https://discord.com/api";
+    API_VERSION: 9;
+  };
+  OP_CODES: {
+    EVENT: 0;
+    HEARTBEAT: 1;
+    IDENTIFY: 2;
+    STATUS_UPDATE: 3;
+    VOICE_STATE_UPDATE: 4;
+    VOICE_GUILD_PING: 5;
+    RESUME: 6;
+    RECONNECT: 7;
+    REQUEST_GUILD_MEMBERS: 8;
+    INVALID_SESSION: 9;
+    HELLO: 10;
+    HEARTBEAT_ACK: 11;
+  };
+  INTENTS: {
+    GUILDS: 1;
+    GUILD_MEMBERS: 2;
+    GUILD_BANS: 4;
+    GUILD_EMOJIS: 8;
+    GUILD_INTEGRATIONS: 16;
+    GUILD_WEBHOOKS: 32;
+    GUILD_INVITES: 64;
+    GUILD_VOICE_STATES: 128;
+    GUILD_PRESENCES: 256;
+    GUILD_MESSAGES: 512;
+    GUILD_MESSAGE_REACTIONS: 1024;
+    GUILD_MESSAGE_TYPING: 2048;
+    DIRECT_MESSAGES: 4096;
+    DIRECT_MESSAGE_REACTIONS: 8192;
+    DIRECT_MESSAGE_TYPING: 16384;
+  };
+  ChannelTypes: {
+    GUILD_TEXT: 0;
+    DM: 1;
+    GUILD_VOICE: 2;
+    GROUP_DM: 3;
+    GUILD_CATEGORY: 4;
+    GUILD_NEWS: 5;
+    GUILD_STORE: 6;
+    GUILD_NEWS_THREAD: 10;
+    GUILD_PUBLIC_THREAD: 11;
+    GUILD_PRIVATE_THREAD: 12;
+    GUILD_STAGE_VOICE: 13;
+  };
+  MessageComponentTypes: {
+    ACTION_ROW: 1;
+    BUTTON: 2;
+    SELECT_MENU: 3;
+  };
+  InteractionTypes: {
+    PING: 1;
+    APPLICATION_COMMAND: 2;
+    MESSAGE_COMPONENT: 3;
+  };
+  InteractionResponseTypes: {
+    PONG: 1;
+    CHANNEL_MESSAGE_WITH_SOURCE: 4;
+    DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE: 5;
+    DEFERRED_UPDATE_MESSAGE: 6;
+    UPDATE_MESSAGE: 7;
+  };
+  CommandTypes: {
+    CHAT_INPUT: 1;
+    USER: 2;
+    MESSAGE: 3;
+  };
+  CommandOptionTypes: {
+    SUB_COMMAND: 1;
+    SUB_COMMAND_GROUP: 2;
+    STRING:	3;
+    INTEGER: 4;
+    BOOLEAN: 5;
+    USER:	6;
+    CHANNEL: 7;
+    ROLE:	8;
+    MENTIONABLE: 9;
+    NUMBER:	10;
+  };
+  GatewayErrors: {
+    UNKNOWN: 4000;
+    UNKNOWN_OPCODE: 4001;
+    DECODE_ERROR: 4002;
+    NOT_AUTHENTICATED: 4003;
+    AUTHENTICATION_FAILED: 4004;
+    ALREADY_AUTHENTICATED: 4005;
+    INVALID_SEQUENCE: 4007;
+    RATE_LIMITED: 4008;
+    INVALID_SESSION: 4009;
+    INVALID_SHARD: 4010;
+    SHARDING_REQUIRED: 4011;
+    INVALID_API_VERSION: 4012;
+    INVALID_INTENT: 4013;
+    DISALLOWED_INTENT: 4014;
+  };
+  ImageFormats: ["webp", "png", "jpg", "jpeg", "gif"];
+  ImageSizes: [16, 32, 64, 128, 256, 512, 1024, 2048, 4096];
+}
+
 // TODO
 export interface MessageComponents {
-
+  custom_id: string;
 }
 
 export interface MessageAttachments {
@@ -290,7 +411,7 @@ export interface ApplicationCommandOption {
 export interface ApplicationCommandResolve {
   users?: Map<Snowflake, User>;
   members?: Map<Snowflake, Member>;
-  roles?: Map<Snowflake, Role>; // TODO: ROLE
+  roles?: Map<Snowflake, Role>;
   channels?: Map<Snowflake, Channel>;
   messages?: Map<Snowflake, Message>;
 }
@@ -298,33 +419,60 @@ export interface ApplicationCommandResolve {
 export interface ApplicationCommand {
   name: string;
   id: Snowflake;
-  type: ApplicationCommandTypes | "UNKNOWN";
+  type: ApplicationCommandTypes;
   options?: ApplicationCommandOption[];
   default_permission?: boolean;
 }
 
 // Classes
 
+export class RestManager {
+  public constructor(client: Client, options: RestOptions);
+  private handlers: LimitedCollection<string, Bucket>;
+  public options: RestOptions;
+  public client: Client;
+  public userAgent: string;
+  public apiURL: string;
+  // TODO: Better type for api
+  public readonly api: unknown;
+  // TODO: Better type for options
+  public request(method: HTTPMethods, url: string, options: object): void;
+  public routefy(url: string): string;
+  private resolveRequest(method: HTTPMethods, url: string, options: object);
+}
+
+export class Bucket {
+  public constructor(manager: RestManager);
+  private asyncQueue: AsyncQueue;
+  public remaining: number;
+  public reset: Date;
+  public readonly inactive: boolean;
+  public readonly globalLimited: boolean;
+  public readonly localLimited: boolean;
+  // TODO: Better type for options
+  public queueRequest(path: string, options: object, route: string): Promise<unknown>;
+  public executeRequest(path: string, options: object, route: string): Promise<unknown>;
+}
+
 export class Client {
   public constructor(token: string, options: ClientOptions);
   public ws: GatewayManager;
   public rest: RestManager;
   public utils: ClientUtils;
-  public plugins: Array<Plugin>;
-
-  public users: Collection<Snowflake, User>;
-  public channels: Collection<Snowflake, Channel>;
-  public shards: Collection<Snowflake, Shard>;
+  public plugins: string[];
+  public users: UsersCache;
+  public guilds: GuildsCache;
+  public shards: Map<number, Shard>;
   public token: string;
-
+  public channelMap: object;
   public start(): void;
   public getInformation(type: string, id: Snowflake): any;
 }
 
 export class ClientUtils {
   private client: Client;
-  public getChannel(channelId: snowflake): Channel;
-  public image(target: Guild | User): Function // Especificar melhor a callback
+  public getChannel(channelId: Snowflake): Channel;
+  public image(target: Guild | User): () => void; // Especificar melhor a callback
 }
 
 export class Base {
@@ -357,10 +505,10 @@ export class Message extends Base {
   public readonly deletable: boolean;
   public readonly editable: boolean;
   public readonly channel: Channel | null;
-  public readonly guild: Guild | null;  
-  public async delete(): void;
-  public async addReaction(reaction: string): void;
-  public async edit(options: MessageEditOptions): void;
+  public readonly guild: Guild | null;
+  public delete(): Promise<void>;
+  public addReaction(reaction: string): Promise<void>;
+  public edit(options: MessageEditOptions): Promise<void>;
 }
 
 export class Channel extends Base {
@@ -374,8 +522,8 @@ export class BaseGuildChannel extends Channel {
   public parentId: Snowflake;
   public nsfw: boolean;
   public guildId: Snowflake;
-  public type: ChannelType | "UNKNOWN";
-  public messages: Collection<Snowflake, Message>;
+  public type: ChannelType;
+  public messages: LimitedCollection<Snowflake, Message>;
 }
 
 export class TextChannel extends BaseGuildChannel {
@@ -394,24 +542,24 @@ export class Member extends Base {
   public roles?: Snowflake[];
   public permissions?: string[];
   public readonly user: User;
-  public readonly guild: Guild | null;  
+  public readonly guild: Guild | null;
 }
 
 export class Guild extends Base {
   public ownerId: Snowflake;
   public name: string;
   public verificationLevel: GuildVerificationLevel;
-  public members: Collection<Snowflake, Member>;
+  public members: LimitedCollection<Snowflake, Member>;
+  public roles: LimitedCollection<Snowflake, Role>;
+  public channels: LimitedCollection<Snowflake, Channel>;
   public afk?: AFKChannel;
   public widget?: GuildWidget;
-  public roles?: Snowflake[];
   public emojis?: Snowflake[];
   public features?: GuildFeatures[];
   public iconHash?: string;
   public bannerHash: string;
   public description?: string;
   public boost?: GuildBoost;
-  public channels?: Collection<Snowflake, Channel>;
   public readonly owner: User | null;
 }
 
@@ -432,14 +580,58 @@ export class Interaction extends Base {
   public isCommand(): boolean;
   public isSelectMenu(): boolean;
   public isButton(): boolean;
-  public transform(data: object, client: Client): 
+  public transform(data: object, client: Client):
     ApplicationCommandInteraction | MessageComponentInteraction | Interaction;
-  public async reply(options: InteractionMessageCreateOptions): Message;
-  public async createFollowup(options: InteractionMessageCreateOptions): Message
-  public async defer(ephemeral: boolean): Message;
-  public async delete(messageId: string): Promise<void>;
-  public async edit(options: MessageEditOptions | string): Promise<void>;
-  public async getMessage(messageId: string): Message;
+  public reply(options: InteractionMessageCreateOptions): Promise<Message>;
+  public createFollowup(options: InteractionMessageCreateOptions): Promise<Message>;
+  public defer(ephemeral: boolean): Promise<Message>;
+  public delete(messageId: string): Promise<void>;
+  public edit(options: MessageEditOptions | string): Promise<void>;
+  public getMessage(messageId: string): Promise<Message>;
+}
+
+export class Role extends Base {
+  public id: Snowflake;
+}
+
+export class Shard extends EventEmitter {
+  public constructor(manager: GatewayManager, id: number);
+  public id: number;
+  public sessionId: string | null;
+  public reconnectInterval: number;
+  public reconnectAttempts: number;
+  public sequence: number;
+  public lastHeartbeatAcked: boolean;
+  public heartbeatInterval: NodeJS.Timeout;
+  // TODO: Mudar para uma union dentro de um type
+  public status: string;
+  public lastHeartbeatReceived: number;
+  public lastHeartbeatSent: Date;
+  public _remainingGuilds: number;
+  public _guildQueueTimeout: NodeJS.Timeout;
+  private client: Client;
+  private manager: GatewayManager;
+  private connection: WebSocket;
+  public setDefaultProperties(): void;
+  public connect(): void;
+  public isReady(): void;
+  public packetReceive(packet: object): void;
+  public disconnect(reconnect: boolean): void;
+  public sendWebsocketMessage(data: ShardMessageOptions): void;
+  private websocketError(error: Error): void;
+  private websocketMessageReceive(data: object): void;
+  private websocketConnectionOpen(): void;
+  private websocketCloseConnection(): void;
+  private identify(): void;
+  private sendHeartbeat(): void;
+}
+
+export class GatewayManager {
+  private websocketURL: string;
+  private client: Client;
+  private queue: Set<Shard>;
+  public createShardConnection(): void;
+  private connectShard(_shard: Shard | null): void;
 }
 
 export class ApplicationCommandInteraction extends Interaction {
@@ -448,12 +640,12 @@ export class ApplicationCommandInteraction extends Interaction {
   public targetId: Snowflake;
   public targetType: ApplicationCommandTypes;
   public options: ApplicationCommandOptions;
-  public resolveTarget(targetType: "user" | "message" | "member" | "role"): 
+  public resolveTarget(targetType: "user" | "message" | "member" | "role"):
     User[] | Message[] | Member[] | Role[] | Channel[] | null;
 }
 
 export class MessageComponentInteraction extends Interaction {
-  public componentType: MessageComponentTypes | "UNKNOWN";
+  public componentType: MessageComponentTypes;
   public customId: string;
   public values?: string[];
 }
@@ -470,9 +662,36 @@ export class ApplicationCommandOptions {
   public number(optionName: string): boolean;
 }
 
+export class Cache<K, V> {
+  public constructor(cacheOptions: CacheOptions<K, V>);
+  public cache: LimitedCollection<K, V> | Collection<K, V>;
+  public limited: boolean;
+  public get(key: K): V | null;
+  public add(key: K, value: V, extra: unknown[]): V;
+  public filter(callback: (value: V, key: K) => boolean): K[];
+  public find(callback: (value: V, key: K) => boolean): unknown[];
+  public map(callback: (value: V, key: K) => unknown): V[];
+  public remove(key: K): V | null;
+}
+
+export class GuildsCache extends Cache<Snowflake, Guild> {
+  public constructor(client: Client);
+  public fetch(guildId: string): Promise<Guild>;
+}
+
+export class UsersCache extends Cache<Snowflake, User> {
+  public constructor(client: Client);
+  public fetch(userId: string): Promise<User>;
+}
+
 export class Collection<K, V> extends Map<K, V> {
-  public add(id: K, item: V): V;
-  public filter(func: (id: K, item: V) => boolean): Array<V>;
-  public map(func: (item: V) => unknown): Array<V>;
-  public remove(item: K): V | undefined;
+  public add(key: K, value: V, extra: unknown[]): V;
+  public filter(callback: (value: V, key: K) => boolean): K[];
+  public find(callback: (value: V, key: K) => boolean): unknown[];
+  public map(callback: (value: V, key: K) => unknown): V[];
+  public remove(key: K): V | null;
+}
+
+export class LimitedCollection<K, V> extends Collection<K, V> {
+  private sweep(): void;
 }
