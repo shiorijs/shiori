@@ -73,15 +73,19 @@ class ClientUtils {
         resp.on("data", (str) => data += str);
         resp.on("error", reject);
         resp.on("end", () => {
-          return resolve({ data: JSON.parse(data), headers: resp.headers, code: resp.statusCode });
+          const result = data.length ? JSON.parse(data) : { };
+
+          return resolve({ data: result, headers: resp.headers, code: resp.statusCode });
         });
       });
 
-      if (options.data) request.end(JSON.stringify(options.data));
+      if (options.data) request.write(JSON.stringify(options.data));
 
-      const timeout = this.#client.rest.options.timeout;
+      request.end();
 
-      request.setTimeout(timeout, () => {
+      request.on("timeout", () => {
+        const timeout = this.#client.rest.options.timeout;
+
         request.destroy(new Error(`
           Request timed out. More than ${timeout}ms has been passed since the start of the request. 
           
@@ -89,6 +93,17 @@ class ClientUtils {
           Route: ${options.path}
         `));
       });
+
+      /*
+
+      request.setTimeout(timeout, () => {
+        request.destroy(new Error(`
+          Request timed out. More than ${timeout}ms has been passed since the start of the request.
+
+          Method: ${options.method}
+          Route: ${options.path}
+        `));
+      });*/
     });
   }
 

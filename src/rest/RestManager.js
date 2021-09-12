@@ -1,25 +1,20 @@
 const METHODS = ["get", "post", "patch", "put", "delete", "head"];
 
 const Bucket = require("./Bucket");
-const Constants = require("../utils/Constants");
-const Collection = require("../utils/Collection");
+const LimitedCollection = require("../utils/LimitedCollection");
 
 /**
   * Manages all requests.
   */
 class RestManager {
+  #handlers;
+
   /**
    * @param {Client} client Shiori Client
-   * @param {object} [options={}] Options to be used when creating requests.
-   * @param {string} [options.version] Discord API version
-   * @param {boolean} [options.fetchAllUsers] Whether to get all users. Guild Members intent required
+   * @param {RestOptions} options Options to be used when creating requests.
    */
-  constructor (client, options = {}) {
-    this.options = Object.assign({
-      version: Constants.REST.API_VERSION,
-      fetchAllUsers: false,
-      timeout: 15000
-    }, options.rest);
+  constructor (client, options) {
+    this.options = options;
 
     /**
      * The base hitomi client.
@@ -30,11 +25,16 @@ class RestManager {
     Object.defineProperty(this, "client", { value: client });
 
     /**
-     * Handlers used to store buckets.
-     * @name RestManager#handlers
-     * @type {Collection<string, Bucket>}
+     * Collection used to store buckets.
+     * @type {LimitedCollection<string, Bucket>}
      */
-    Object.defineProperty(this, "handlers", { value: new Collection() });
+    this.#handlers = new LimitedCollection({
+      toAdd: () => true,
+      toRemove: (bucket) => bucket.inactive,
+      limit: Infinity,
+      sweep: 10,
+      sweepTimeout: 600000
+    }, Bucket);
 
     /**
      * User Agent to be used on request headers.
@@ -47,20 +47,6 @@ class RestManager {
      * @type {string}
      */
     this.apiURL = `/api/v${this.options.version}`;
-
-    this.#deleteEmptyBuckets();
-  }
-
-  /**
-   * Deletes all buckets that are labeled as inactive.
-   * @returns {void}
-   */
-  #deleteEmptyBuckets () {
-    for (const [route, bucket] of this.handlers.entries()) {
-      if (bucket.inactive) this.handlers.delete(route);
-    }
-
-    setTimeout(() => this.#deleteEmptyBuckets(), 600000); // 10 Minutes
   }
 
   /**
@@ -83,11 +69,11 @@ class RestManager {
   request (method, url, options = {}) {
     const route = this.routefy(url);
 
-    if (!this.handlers.has(route)) this.handlers.add(route, new Bucket(this));
+    if (!this.#handlers.has(route)) this.#handlers.add(route, this);
 
     const { requestOptions, formattedUrl } = this.#resolveRequest(url, method, options);
 
-    return this.handlers.get(route).queueRequest(formattedUrl, requestOptions, route);
+    return this.#handlers.get(route).queueRequest(formattedUrl, requestOptions, route);
   }
 
   /**
@@ -110,6 +96,7 @@ class RestManager {
     const requestOptions = {
       hostname: "discord.com",
       data: options.data,
+      timeout: this.client.rest.options.timeout,
       method,
       headers
     };

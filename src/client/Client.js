@@ -1,50 +1,89 @@
 const EventEmitter = require("events");
-const Collection = require("../utils/Collection");
 const GatewayManager = require("./gateway/GatewayManager");
 const RestManager = require("../rest/RestManager");
 const PluginsManager = require("../managers/PluginsManager");
 
 const Constants = require("../utils/Constants");
 const Option = require("../utils/Option");
+const Collection = require("../utils/Collection");
 const ClientUtils = require("./ClientUtils");
+const UsersCache = require("../cache/UsersCache");
+const GuildsCache = require("../cache/GuildsCache");
+const Shard = require("./gateway/Shard");
 
 class Client extends EventEmitter {
   /**
    * @param {string} token The client token
-   * @param {object} clientOptions The client options
+   * @param {ClientOptions} options The client options
    */
-  constructor (token, clientOptions) {
+  constructor (token, options) {
     super();
 
     if (!token || typeof (token) !== "string") throw new Error("No token was assigned on \"Client\"!");
 
-    this.options = Option.defaultOptions(clientOptions);
+    /**
+     * Client Options
+     * @type {ClientOptions}
+     */
+    this.options = Option.defaultOptions(options);
 
     if (this.options.shardCount <= 0) throw new Error("shardCount cannot be lower or equal to 0");
 
+    /**
+     * Websocket Manager
+     * @type {GatewayManager}
+     */
     this.ws = new GatewayManager(this);
-    this.rest = new RestManager(this, clientOptions);
+
+    /**
+     * Rest Manager that handles https requests
+     * @type {RestManager}
+     */
+    this.rest = new RestManager(this, options.rest);
+
+    /**
+     * Client Utilities functions
+     * @type {ClientUtils}
+     */
     this.utils = new ClientUtils(this);
-    this.plugins = this.options.plugins.map(c => c?.name);
+
+    /**
+     * An array of plugins, mapped by their name
+     * @type {string[]}
+     */
+    this.plugins = this.options.plugins.map(p => p?.name);
+
+    /**
+     * All of the {@link User} objects that have been cached until now
+     * @type {UsersCache}
+     */
+    this.users = new UsersCache(this);
+
+    /**
+     * All of the {@link Guild} objects that have been cached until now
+     * @type {GuildsCache}
+     */
+    this.guilds = new GuildsCache(this);
+
+    /**
+     * A collection that includes all of the client shards
+     * @type {Collection<number, Shard>}
+     */
+    this.shards = new Collection(Shard);
 
     Object.defineProperties(this, {
-      users: { value: new Collection(this.options.cache.users), writable: false },
-      guilds: { value: new Collection(this.options.cache.guilds), writable: false },
-      shards: { value: new Collection(), writable: false },
       token: { value: token, writable: false },
       channelMap: { value: { }, writable: true }
     });
 
-    if ("intents" in this.options) {
-      if (Array.isArray(this.options.intents)) {
-        let bitmask = 0;
+    if (Array.isArray(this.options.intents)) {
+      let bitmask = 0;
 
-        for (const intent of this.options.intents) {
-          if (Constants.INTENTS[intent]) bitmask |= Constants.INTENTS[intent];
-        }
-
-        this.options.intents = bitmask;
+      for (const intent of this.options.intents) {
+        if (Constants.INTENTS[intent]) bitmask |= Constants.INTENTS[intent];
       }
+
+      this.options.intents = bitmask;
     }
   }
 
@@ -67,16 +106,8 @@ class Client extends EventEmitter {
     } catch (error) {
       if (!this.options.autoReconnect) throw error;
 
-      setTimeout(() => this.ws.createShardConnection(), 3000);
+      setTimeout(() => this.ws.createShardConnection(), 5000);
     }
-  }
-
-  /**
-  * @param {string} type Type of the structure to fetch, user, role, channel or guild
-  * @param {string} id ID of an user, role, channel or guild to fetch
-  */
-  getInformation () {
-    return true;
   }
 }
 

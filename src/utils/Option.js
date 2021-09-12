@@ -52,7 +52,9 @@ module.exports = class Option {
         users: { ...cacheOptions },
         guilds: { ...cacheOptions },
         channels: { ...cacheOptions },
-        members: { ...cacheOptions }
+        members: { ...cacheOptions },
+        messages: { ...cacheOptions },
+        roles: { ...cacheOptions }
       }
     };
   }

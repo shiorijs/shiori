@@ -38,8 +38,8 @@ client.on("messageCreate", async (message) => {
     }
 
     client.application.createCommand(command)
-      .then(() => message.addReaction("✅"))
-      .catch(() => message.addRaction("❌"));
+      .then(() => message.react("✅"))
+      .catch(() => message.react("❌"));
   }
 });
 

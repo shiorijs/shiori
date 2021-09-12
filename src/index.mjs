@@ -29,6 +29,7 @@ export const {
   ApplicationCommandPlugin,
 
   // Utilities
+  LimitedCollection,
   Collection,
   Intents,
   Constants
