@@ -170,7 +170,7 @@ class Shard extends EventEmitter {
       type: event.type,
       target: event.target
     });
-    
+
     /**
       * Fired when an error occurs in a shard
       * @event Client#shardError
@@ -187,7 +187,7 @@ class Shard extends EventEmitter {
     */
   #websocketMessageReceive (event) {
     let data = event.data;
-    
+
     if (data instanceof ArrayBuffer) {
       if (Erlpack) data = Buffer.from(data);
     }
