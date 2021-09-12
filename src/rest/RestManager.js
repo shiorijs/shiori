@@ -47,6 +47,14 @@ class RestManager {
      * @type {string}
      */
     this.apiURL = `/api/v${this.options.version}`;
+
+    /**
+     * The token that will be used to create the HTTP requests.
+     * @name RestManager#token
+     * @type {string}
+     * @readonly
+     */
+     Object.defineProperty(this, "token", { value: null, writable: true });
   }
 
   /**
