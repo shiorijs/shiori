@@ -42,6 +42,12 @@ class Shard extends EventEmitter {
       */
     this.reconnectAttempts = 0;
 
+    /**
+      * The current sequence of this shard
+      * @type {number}
+      */
+    this.sequence = -1;
+
     this.setDefaultProperties();
     /**
       * Shiori Client
@@ -73,7 +79,6 @@ class Shard extends EventEmitter {
     * @returns {void}
     */
   setDefaultProperties () {
-    this.sequence = -1;
     this.lastHeartbeatAcked = true;
     this.heartbeatInterval = null;
     /**
@@ -124,17 +129,17 @@ class Shard extends EventEmitter {
         break;
       }
       case GatewayError.AUTHENTICATION_FAILED: {
-        error = new Error(`Authentication failed. A invalid token was provided.`);
+        error = new Error("Authentication failed. A invalid token was provided.");
         reconnect = false;
         break;
       }
       case GatewayError.DISALLOWED_INTENT: {
-        error = new Error(`A disallowed intent was provided, you may have specified an intent that you do not have access to.`)
+        error = new Error("A disallowed intent was provided, you may have specified an intent that you do not have access to.");
         reconnect = false;
         break;
       }
       case GatewayError.INVALID_INTENT: {
-        error = new Error(`A invalid intent was provided. Provided intents: ${this.client.options.intents}`)
+        error = new Error(`A invalid intent was provided. Provided intents: ${this.client.options.intents}`);
         reconnect = false;
         break;
       }
