@@ -1,5 +1,5 @@
 const USER = (userId) => `/users/${userId}`;
-const GUILD = (guildID) => `/guilds/${guildId}`;
+const GUILD = (guildId) => `/guilds/${guildId}`;
 
 module.exports = {
   USER,
