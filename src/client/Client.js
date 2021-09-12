@@ -94,7 +94,7 @@ class Client extends EventEmitter {
     } catch (error) {
       if (!this.options.autoReconnect) throw error;
 
-      setTimeout(() => this.ws.createShardConnection(), 5000);
+      setTimeout(() => this.gateway.connect(), 5000);
     }
   }
 }

@@ -50,19 +50,9 @@ client.on("messageCreate", async (message) => {
     await message.channel.send("Fifth");
     return message.channel.send("Six");
   }
-
-  if (message.content === "mem") {
-    function mem() { return Object.entries(process.memoryUsage()).map(([key, value]) => `${key}: ${value / 1024 / 1024}`).join('\n') };
-
-    console.log(mem())
-  }
 });
 
-<<<<<<< HEAD
 client.once("ready", () => {
-=======
-client.on("ready", () => {
->>>>>>> dev
   write("Ready!");
 });
 client.on("shardError", (error, shardID) => write(`Shard Error: ${error} ID: ${shardID}`));
