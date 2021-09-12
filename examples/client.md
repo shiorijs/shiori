@@ -60,7 +60,7 @@ client.on('messageCreate', async (message) => {
   /* Checks if the message content is 'sendMessage' */
   if (message.content === 'sendMessage') {
     /* Return a message with the reaction */
-    return message.channel.send('This is a message with a reaction!').then((msg) => msg.addReaction('😀'));
+    return message.channel.send('This is a message with a reaction!').then((msg) => msg.react('😀'));
   }
 });
 ```

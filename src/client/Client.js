@@ -9,6 +9,7 @@ const Collection = require("../utils/Collection");
 const ClientUtils = require("./ClientUtils");
 const UsersCache = require("../cache/UsersCache");
 const GuildsCache = require("../cache/GuildsCache");
+const Shard = require("./gateway/Shard");
 
 class Client extends EventEmitter {
   /**
@@ -68,7 +69,7 @@ class Client extends EventEmitter {
      * A collection that includes all of the client shards
      * @type {Collection<number, Shard>}
      */
-    this.shards = new Collection();
+    this.shards = new Collection(Shard);
 
     Object.defineProperties(this, {
       token: { value: token, writable: false },
