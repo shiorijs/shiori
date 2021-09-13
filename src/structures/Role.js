@@ -37,10 +37,10 @@ class Role extends Base {
        * The role tags
        * @type {RoleTags}
        */
-      this.tags = { 
-        botId: data.tags.bot_id, 
+      this.tags = {
+        botId: data.tags.bot_id,
         integrationId: data.tags.integration_id,
-        premiumSubscriber: data.tags.premium_subscriber 
+        premiumSubscriber: data.tags.premium_subscriber
       };
     }
 
