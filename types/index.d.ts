@@ -405,6 +405,7 @@ export interface ApplicationCommandOption {
   required?: boolean;
   choices?: ApplicationCommandOptionChoice[];
   options?: ApplicationCommandOption[];
+  channel_types?: ChannelType[];
 }
 
 // TUDO DEVE SER ALTERADO PARA PARTIAL
