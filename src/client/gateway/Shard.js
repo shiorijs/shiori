@@ -257,8 +257,8 @@ class Shard extends EventEmitter {
         this.heartbeatInterval = setInterval(() => {
           this.#sendHeartbeat();
         }, packet.d.heartbeat_interval);
-        
-        if (this.connectTimeout) 
+
+        if (this.connectTimeout)
           (clearTimeout(this.connectTimeout), this.connectTimeout = null);
 
         if (this.sessionId) {
