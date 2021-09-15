@@ -100,12 +100,12 @@ class Bucket {
           `Must wait ${timeout}ms before proceeding`,
           "",
           "All requests will be blocked during this time"
-        ], "Global Ratelimit")
+        ], "Global Ratelimit");
       } else {
         this.manager.client.debug([
           `Route: ${route}`,
           `Must wait ${timeout}ms before proceeding`
-        ], "Local Ratelimit")
+        ], "Local Ratelimit");
       }
 
       await this.manager.client.utils.delay(timeout);
@@ -142,8 +142,8 @@ class Bucket {
       this.manager.client.debug([
         `A ratelimit happened on the route ${route}`,
         "This happened because this request was not previously stored on the bucket. Probably caused by the bot restarting."
-      ], "Unexpected Ratelimit")
-      
+      ], "Unexpected Ratelimit");
+
       if (this.reset) await this.manager.client.utils.delay(this.reset);
 
       return this.executeRequest(path, options, route);

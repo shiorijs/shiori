@@ -103,7 +103,7 @@ class Client extends EventEmitter {
   debug (message, tag) {
     if (Array.isArray(message)) message = message.join(`\n[${tag}]: `);
 
-    this.emit("debug", `[${tag}]: ${message}`)
+    this.emit("debug", `[${tag}]: ${message}`);
   }
 }
 

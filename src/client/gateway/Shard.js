@@ -342,7 +342,7 @@ class Shard extends EventEmitter {
 
     if (this.lastHeartbeatReceived) {
       this.client.debug([
-        `Sending a heartbeat, enjoy it discord!`,
+        "Sending a heartbeat, enjoy it discord!",
         `Last latency: ${this.lastHeartbeatSent - this.lastHeartbeatReceived}ms`
       ], `SHARD: ${this.id} - HEARTBEAT`);
     }
