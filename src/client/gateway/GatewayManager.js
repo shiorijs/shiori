@@ -46,8 +46,6 @@ class GatewayManager {
       const shard = new Shard(this, id);
 
       if (this.shards.has(0)) await this.client.utils.delay(7500);
-
-      this.firstShardConnected = true;
       this.shards.add(id, shard);
 
       shard.connect();
