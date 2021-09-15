@@ -99,6 +99,12 @@ class Client extends EventEmitter {
       setTimeout(() => this.gateway.connect(), 5000);
     }
   }
+
+  debug (message, tag) {
+    if (Array.isArray(message)) message = message.join(`\n[${tag}]: `);
+
+    this.emit("debug", `[${tag}]: ${message}`)
+  }
 }
 
 module.exports = Client;

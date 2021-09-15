@@ -54,7 +54,7 @@ class RestManager {
      * @type {string}
      * @readonly
      */
-     Object.defineProperty(this, "token", { value: null, writable: true });
+    Object.defineProperty(this, "token", { value: null, writable: true });
   }
 
   /**
