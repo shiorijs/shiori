@@ -1,11 +1,9 @@
-import EventEmitter from "events";
-import WebSocket from "ws";
-import AsyncQueue from "../src/utils/AsyncQueue";
-
 import {
   Snowflake,
   RolePayload
 } from "./payloads";
+
+import EventEmitter from "events";
 
 // Types
 
@@ -112,6 +110,12 @@ export enum ApplicationCommandPermissionTypes {
 }
 
 // Interfaces
+
+export interface ClientEvents {
+  ready: [];
+  messageCreate: [message: Message];
+  interactionCreate: [interaction: Interaction];
+}
 
 export interface WSOptions {
   version: number;
@@ -478,6 +482,14 @@ export class Client {
   public channelMap: object;
   public start(): void;
   public getInformation(type: string, id: Snowflake): any;
+  public emit<K extends keyof ClientEvents>(event: K, ...args: ClientEvents[K]): boolean;
+  public emit(event: string, ...args: any[]): boolean;
+  public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+  public on(event: string, listener: (...args: any[]) => void): this;
+  public once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+  public once(event: string, listener: (...args: any[]) => void): this;
+  public off<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+  public off(event: string, listener: (...args: any[]) => void): this;
 }
 
 export class ClientUtils {
@@ -498,6 +510,11 @@ export class User extends Base {
   public avatarHash?: string;
   public premiumType?: number;
   public flags?: number;
+}
+
+// TODO
+export class AsyncQueue {
+  private promises: Promise[];
 }
 
 export class Message extends Base {
