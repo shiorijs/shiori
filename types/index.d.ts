@@ -2,11 +2,15 @@ import EventEmitter from "events";
 import WebSocket from "ws";
 import AsyncQueue from "../src/utils/AsyncQueue";
 
+import {
+  Snowflake,
+  RolePayload
+} from "./payloads";
+
 // Types
 
 export type HTTPMethods = "get" | "post" | "patch" | "put" | "delete" | "head";
 export type InteractionMessageCreateOptions = Omit<MessageCreateOptions, "file">;
-export type Snowflake = `${bigint}`;
 export type ImageFormats = "webp" | "png" | "jpg" | "jpeg" | "gif";
 export type ImageSizes = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
 export type AllowedMessageMentions = "roles" | "users" | "everyone";
@@ -424,6 +428,12 @@ export interface ApplicationCommand {
   default_permission?: boolean;
 }
 
+export interface RoleTags {
+  botId: Snowflake;
+  integrationId: Snowflake;
+  premiumSubscriber: null;
+}
+
 // Classes
 
 export class RestManager {
@@ -591,7 +601,16 @@ export class Interaction extends Base {
 }
 
 export class Role extends Base {
+  public constructor(data: RolePayload, client: Client);
   public id: Snowflake;
+  public managed: boolean;
+  public tags: RoleTags;
+  public name: string;
+  public color: number;
+  public hoisted: boolean;
+  public position: number;
+  public mentionable: boolean;
+  public permissions: string;
 }
 
 export class Shard extends EventEmitter {
