@@ -1,6 +1,5 @@
 import EventEmitter from "events";
 import WebSocket from "ws";
-import AsyncQueue from "../src/utils/AsyncQueue";
 
 import {
   Snowflake,
@@ -27,26 +26,6 @@ export type GuildFeatures =
   "PRIVATE_THREADS";
 
 // Enums
-
-export enum ChannelType {
-  GUILD_TEXT = 0,
-  DM = 1,
-  GUILD_VOICE = 2,
-  GROUP_DM = 3,
-  GUILD_CATEGORY = 4,
-  GUILD_NEWS = 5,
-  GUILD_STORE = 6,
-  GUILD_NEWS_THREAD = 10,
-  GUILD_PUBLIC_THREAD = 11,
-  GUILD_PRIVATE_THREAD = 12,
-  GUILD_STAGE_VOICE = 13
-}
-
-export enum InteractionTypes {
-  PING = 1,
-  APPLICATION_COMMAND	= 2,
-  MESSAGE_COMPONENT	= 3
-}
 
 export enum MessageType {
   DEFAULT	= 0,
@@ -79,31 +58,6 @@ export enum GuildVerificationLevel {
   MEDIUM = 2,
   HIGH = 3,
   VERY_HIGH = 4
-}
-
-export enum ApplicationCommandOptionTypes {
-  SUB_COMMAND = 1,
-  SUB_COMMAND_GROUP = 2,
-  STRING = 3,
-  INTEGER = 4,
-  BOOLEAN = 5,
-  USER = 6,
-  CHANNEL = 7,
-  ROLE = 8,
-  MENTIONABLE = 9,
-  NUMBER = 10
-}
-
-export enum MessageComponentTypes {
-  ACTION_ROW = 1,
-  BUTTON = 2,
-  SELECT_MENU = 3
-}
-
-export enum ApplicationCommandTypes {
-  CHAT_INPUT = 1,
-  USER = 2,
-  MESSAGE = 3
 }
 
 export enum ApplicationCommandPermissionTypes {
@@ -403,13 +357,13 @@ export interface ApplicationCommandPermission {
 }
 
 export interface ApplicationCommandOption {
-  type: ApplicationCommandOptionTypes;
+  type: Constants["CommandOptionTypes"][keyof Constants["CommandOptionTypes"]];
   name: string;
   description: string;
   required?: boolean;
   choices?: ApplicationCommandOptionChoice[];
   options?: ApplicationCommandOption[];
-  channel_types?: ChannelType[];
+  channel_types?: Constants["ChannelTypes"][keyof Constants["ChannelTypes"]][];
 }
 
 // TUDO DEVE SER ALTERADO PARA PARTIAL
@@ -424,7 +378,7 @@ export interface ApplicationCommandResolve {
 export interface ApplicationCommand {
   name: string;
   id: Snowflake;
-  type: ApplicationCommandTypes;
+  type: Constants["CommandTypes"][keyof Constants["CommandTypes"]];
   options?: ApplicationCommandOption[];
   default_permission?: boolean;
 }
@@ -533,7 +487,7 @@ export class BaseGuildChannel extends Channel {
   public parentId: Snowflake;
   public nsfw: boolean;
   public guildId: Snowflake;
-  public type: ChannelType;
+  public type: Constants["ChannelTypes"][keyof Constants["ChannelTypes"]];
   public messages: LimitedCollection<Snowflake, Message>;
 }
 
@@ -577,7 +531,7 @@ export class Guild extends Base {
 export class Interaction extends Base {
   public id: Snowflake;
   public responded: boolean;
-  public type: InteractionTypes;
+  public type: Constants["InteractionTypes"][keyof Constants["InteractionTypes"]];;
   public applicationId: Snowflake;
   public channelId: Snowflake;
   public guildId: Snowflake;
@@ -612,6 +566,10 @@ export class Role extends Base {
   public position: number;
   public mentionable: boolean;
   public permissions: string;
+}
+
+export class AsyncQueue {
+  private promises: Promise[];
 }
 
 export class Shard extends EventEmitter {
@@ -658,14 +616,14 @@ export class ApplicationCommandInteraction extends Interaction {
   public command: ApplicationCommand;
   public resolved: ApplicationCommandResolve;
   public targetId: Snowflake;
-  public targetType: ApplicationCommandTypes;
+  public targetType: Constants["CommandTypes"][keyof Constants["CommandTypes"]];
   public options: ApplicationCommandOptions;
-  public resolveTarget(targetType: "user" | "message" | "member" | "role"):
+  public resolveTarget(targetType: "user" | "channel" | "message" | "member" | "role"):
     User[] | Message[] | Member[] | Role[] | Channel[] | null;
 }
 
 export class MessageComponentInteraction extends Interaction {
-  public componentType: MessageComponentTypes;
+  public componentType: Constants["MessageComponentTypes"][keyof Constants["MessageComponentTypes"]];
   public customId: string;
   public values?: string[];
 }
@@ -673,13 +631,13 @@ export class MessageComponentInteraction extends Interaction {
 export class ApplicationCommandOptions {
   public subcommand: string | null;
   public subcommandGroup: string | null;
-  public string(optionName: string): boolean;
-  public integer(optionName: string): boolean;
+  public string(optionName: string): string;
+  public integer(optionName: string): number;
   public boolean(optionName: string): boolean;
-  public user(optionName: string, resolve: boolean): boolean;
-  public channel(optionName: string, resolve: boolean): boolean;
-  public role(optionName: string): boolean;
-  public number(optionName: string): boolean;
+  public user(optionName: string, resolve: boolean): Snowflake | User;
+  public channel(optionName: string, resolve: boolean): Snowflake | Channel;
+  public role(optionName: string): Snowflake;
+  public number(optionName: string): number;
 }
 
 export class Cache<K, V> {
