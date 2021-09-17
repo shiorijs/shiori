@@ -1,12 +1,12 @@
 export type Snowflake = `${bigint}`;
 
-export interface APIRoleTags {
+export interface RolePayloadTags {
 	bot_id?: Snowflake;
 	premium_subscriber?: null;
 	integration_id?: Snowflake;
 }
 
-export interface APIRole {
+export interface RolePayload {
 	id: Snowflake;
 	name: string;
 	color: number;
@@ -15,5 +15,5 @@ export interface APIRole {
 	permissions: string;
 	managed: boolean;
 	mentionable: boolean;
-	tags?: APIRoleTags;
+	tags?: RolePayloadTags;
 }

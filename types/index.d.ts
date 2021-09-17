@@ -4,8 +4,8 @@ import AsyncQueue from "../src/utils/AsyncQueue";
 
 import {
   Snowflake,
-  APIRole
-} from "./rawApiData";
+  RolePayload
+} from "./payloads";
 
 // Types
 
@@ -601,7 +601,7 @@ export class Interaction extends Base {
 }
 
 export class Role extends Base {
-  public constructor(data: APIRole, client: Client);
+  public constructor(data: RolePayload, client: Client);
   public id: Snowflake;
   public managed: boolean;
   public tags: RoleTags;
