@@ -531,7 +531,7 @@ export class Guild extends Base {
 export class Interaction extends Base {
   public id: Snowflake;
   public responded: boolean;
-  public type: Constants["InteractionTypes"][keyof Constants["InteractionTypes"]];;
+  public type: Constants["InteractionTypes"][keyof Constants["InteractionTypes"]];
   public applicationId: Snowflake;
   public channelId: Snowflake;
   public guildId: Snowflake;
