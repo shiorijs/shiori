@@ -370,7 +370,7 @@ export interface ApplicationCommandOption {
   channel_types?: ChannelType[];
 }
 
-// TUDO DEVE SER ALTERADO PARA PARTIAL
+// TODO: TUDO DEVE SER ALTERADO PARA PARTIAL
 export interface ApplicationCommandResolve {
   users?: Map<Snowflake, User>;
   members?: Map<Snowflake, Member>;
@@ -643,6 +643,10 @@ export class Message extends Base {
 }
 
 export class Channel extends Base {
+  public id: Snowflake;
+}
+
+export class Role extends Base {
   public id: Snowflake;
 }
 
