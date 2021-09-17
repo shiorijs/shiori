@@ -9,8 +9,6 @@ import EventEmitter from "events";
 
 export type HTTPMethods = "get" | "post" | "patch" | "put" | "delete" | "head";
 export type InteractionMessageCreateOptions = Omit<MessageCreateOptions, "file">;
-export type ImageFormats = "webp" | "png" | "jpg" | "jpeg" | "gif";
-export type ImageSizes = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
 export type AllowedMessageMentions = "roles" | "users" | "everyone";
 export type EmbedType = "rich" | "image" | "video" | "gifv" | "article" | "link";
 
@@ -26,7 +24,7 @@ export type GuildFeatures =
 
 // Enums
 
-export enum ChannelType {
+export enum ChannelTypes {
   GUILD_TEXT = 0,
   DM = 1,
   GUILD_VOICE = 2,
@@ -79,31 +77,6 @@ export enum GuildVerificationLevel {
   VERY_HIGH = 4
 }
 
-export enum ApplicationCommandOptionTypes {
-  SUB_COMMAND = 1,
-  SUB_COMMAND_GROUP = 2,
-  STRING = 3,
-  INTEGER = 4,
-  BOOLEAN = 5,
-  USER = 6,
-  CHANNEL = 7,
-  ROLE = 8,
-  MENTIONABLE = 9,
-  NUMBER = 10
-}
-
-export enum MessageComponentTypes {
-  ACTION_ROW = 1,
-  BUTTON = 2,
-  SELECT_MENU = 3
-}
-
-export enum ApplicationCommandTypes {
-  CHAT_INPUT = 1,
-  USER = 2,
-  MESSAGE = 3
-}
-
 export enum ApplicationCommandPermissionTypes {
   ROLE = 1,
   USER = 2
@@ -139,6 +112,7 @@ export interface ClientCache {
   users: CacheOptions<Snowflake, User>;
   guilds: CacheOptions<Snowflake, Guild>;
   messages: CacheOptions<Snowflake, Message>;
+  members: CacheOptions<Snowflake, Member>;
   roles: CacheOptions<Snowflake, Role>;
 }
 
@@ -152,8 +126,8 @@ export interface ClientOptions {
   connectionTimeout: number;
   plugins: string[];
   cache: ClientCache;
-  defaultFormat: ImageFormats;
-  defaultSize: ImageSizes;
+  defaultFormat: Constants["ImageFormats"][keyof Constants["ImageFormats"]];
+  defaultSize: Constants["ImageSizes"][keyof Constants["ImageSizes"]];
 }
 
 export interface AFKChannel {
@@ -407,7 +381,7 @@ export interface ApplicationCommandPermission {
 }
 
 export interface ApplicationCommandOption {
-  type: ApplicationCommandOptionTypes;
+  type: Constants["CommandOptionTypes"][keyof Constants["CommandOptionTypes"]];
   name: string;
   description: string;
   required?: boolean;
@@ -433,10 +407,158 @@ export interface ApplicationCommand {
   default_permission?: boolean;
 }
 
-export interface RoleTags {
-  botId: Snowflake;
-  integrationId: Snowflake;
-  premiumSubscriber: null;
+export interface Constants {
+  REST: {
+    BASE_URL: "https://discord.com/api";
+    API_VERSION: 9;
+  };
+  OP_CODES: {
+    EVENT: 0;
+    HEARTBEAT: 1;
+    IDENTIFY: 2;
+    STATUS_UPDATE: 3;
+    VOICE_STATE_UPDATE: 4;
+    VOICE_GUILD_PING: 5;
+    RESUME: 6;
+    RECONNECT: 7;
+    REQUEST_GUILD_MEMBERS: 8;
+    INVALID_SESSION: 9;
+    HELLO: 10;
+    HEARTBEAT_ACK: 11;
+  };
+  INTENTS: {
+    GUILDS: 1;
+    GUILD_MEMBERS: 2;
+    GUILD_BANS: 4;
+    GUILD_EMOJIS: 8;
+    GUILD_INTEGRATIONS: 16;
+    GUILD_WEBHOOKS: 32;
+    GUILD_INVITES: 64;
+    GUILD_VOICE_STATES: 128;
+    GUILD_PRESENCES: 256;
+    GUILD_MESSAGES: 512;
+    GUILD_MESSAGE_REACTIONS: 1024;
+    GUILD_MESSAGE_TYPING: 2048;
+    DIRECT_MESSAGES: 4096;
+    DIRECT_MESSAGE_REACTIONS: 8192;
+    DIRECT_MESSAGE_TYPING: 16384;
+  };
+  WSEvents: [
+    "READY",
+    "RESUMED",
+    "APPLICATION_COMMAND_CREATE",
+    "APPLICATION_COMMAND_DELETE",
+    "APPLICATION_COMMAND_UPDATE",
+    "GUILD_CREATE",
+    "GUILD_DELETE",
+    "GUILD_UPDATE",
+    "INVITE_CREATE",
+    "INVITE_DELETE",
+    "GUILD_MEMBER_ADD",
+    "GUILD_MEMBER_REMOVE",
+    "GUILD_MEMBER_UPDATE",
+    "GUILD_MEMBERS_CHUNK",
+    "GUILD_INTEGRATIONS_UPDATE",
+    "GUILD_ROLE_CREATE",
+    "GUILD_ROLE_DELETE",
+    "GUILD_ROLE_UPDATE",
+    "GUILD_BAN_ADD",
+    "GUILD_BAN_REMOVE",
+    "GUILD_EMOJIS_UPDATE",
+    "CHANNEL_CREATE",
+    "CHANNEL_DELETE",
+    "CHANNEL_UPDATE",
+    "CHANNEL_PINS_UPDATE",
+    "MESSAGE_CREATE",
+    "MESSAGE_DELETE",
+    "MESSAGE_UPDATE",
+    "MESSAGE_DELETE_BULK",
+    "MESSAGE_REACTION_ADD",
+    "MESSAGE_REACTION_REMOVE",
+    "MESSAGE_REACTION_REMOVE_ALL",
+    "MESSAGE_REACTION_REMOVE_EMOJI",
+    "THREAD_CREATE",
+    "THREAD_UPDATE",
+    "THREAD_DELETE",
+    "THREAD_LIST_SYNC",
+    "THREAD_MEMBER_UPDATE",
+    "THREAD_MEMBERS_UPDATE",
+    "USER_UPDATE",
+    "PRESENCE_UPDATE",
+    "TYPING_START",
+    "VOICE_STATE_UPDATE",
+    "VOICE_SERVER_UPDATE",
+    "WEBHOOKS_UPDATE",
+    "INTERACTION_CREATE",
+    "STAGE_INSTANCE_CREATE",
+    "STAGE_INSTANCE_UPDATE",
+    "STAGE_INSTANCE_DELETE"
+  ];
+  ChannelTypes: {
+    GUILD_TEXT: 0;
+    DM: 1;
+    GUILD_VOICE: 2;
+    GROUP_DM: 3;
+    GUILD_CATEGORY: 4;
+    GUILD_NEWS: 5;
+    GUILD_STORE: 6;
+    GUILD_NEWS_THREAD: 10;
+    GUILD_PUBLIC_THREAD: 11;
+    GUILD_PRIVATE_THREAD: 12;
+    GUILD_STAGE_VOICE: 13;
+  };
+  MessageComponentTypes: {
+    ACTION_ROW: 1;
+    BUTTON: 2;
+    SELECT_MENU: 3;
+  };
+  InteractionTypes: {
+    PING: 1;
+    APPLICATION_COMMAND: 2;
+    MESSAGE_COMPONENT: 3;
+  };
+  InteractionResponseTypes: {
+    PONG: 1;
+    CHANNEL_MESSAGE_WITH_SOURCE: 4;
+    DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE: 5;
+    DEFERRED_UPDATE_MESSAGE: 6;
+    UPDATE_MESSAGE: 7;
+  };
+  CommandTypes: {
+    CHAT_INPUT: 1;
+    USER: 2;
+    MESSAGE: 3;
+  };
+  CommandOptionTypes: {
+    SUB_COMMAND: 1;
+    SUB_COMMAND_GROUP: 2;
+    STRING:	3;
+    INTEGER: 4;
+    BOOLEAN: 5;
+    USER:	6;
+    CHANNEL: 7;
+    ROLE:	8;
+    MENTIONABLE: 9;
+    NUMBER:	10;
+  };
+  GatewayErrors: {
+    UNKNOWN: 4000;
+    UNKNOWN_OPCODE: 4001;
+    DECODE_ERROR: 4002;
+    NOT_AUTHENTICATED: 4003;
+    AUTHENTICATION_FAILED: 4004;
+    ALREADY_AUTHENTICATED: 4005;
+    INVALID_SEQUENCE: 4007;
+    RATE_LIMITED: 4008;
+    INVALID_SESSION: 4009;
+    INVALID_SHARD: 4010;
+    SHARDING_REQUIRED: 4011;
+    INVALID_API_VERSION: 4012;
+    INVALID_INTENT: 4013;
+    DISALLOWED_INTENT: 4014;
+  };
+  ImageFormats: ["webp", "png", "jpg", "jpeg", "gif"];
+  ImageSizes: [16, 32, 64, 128, 256, 512, 1024, 2048, 4096];
 }
 
 // Classes
@@ -494,8 +616,9 @@ export class Client {
 
 export class ClientUtils {
   private client: Client;
-  public getChannel(channelId: Snowflake): Channel;
-  public image(target: Guild | User): () => void; // Especificar melhor a callback
+  public getChannel(channelId: snowflake): Channel;
+  // TODO: Especificar melhor a callback
+  public image(target: Guild | User): () => void;
 }
 
 export class Base {
@@ -550,8 +673,8 @@ export class BaseGuildChannel extends Channel {
   public parentId: Snowflake;
   public nsfw: boolean;
   public guildId: Snowflake;
-  public type: ChannelType;
-  public messages: LimitedCollection<Snowflake, Message>;
+  public type: ChannelTypes;
+  public messages: Collection<Snowflake, Message>;
 }
 
 export class TextChannel extends BaseGuildChannel {
@@ -608,81 +731,28 @@ export class Interaction extends Base {
   public isCommand(): boolean;
   public isSelectMenu(): boolean;
   public isButton(): boolean;
-  public transform(data: object, client: Client):
+  public static transform(data: object, client: Client):
     ApplicationCommandInteraction | MessageComponentInteraction | Interaction;
-  public reply(options: InteractionMessageCreateOptions): Promise<Message>;
-  public createFollowup(options: InteractionMessageCreateOptions): Promise<Message>;
-  public defer(ephemeral: boolean): Promise<Message>;
-  public delete(messageId: string): Promise<void>;
-  public edit(options: MessageEditOptions | string): Promise<void>;
-  public getMessage(messageId: string): Promise<Message>;
-}
-
-export class Role extends Base {
-  public constructor(data: RolePayload, client: Client);
-  public id: Snowflake;
-  public managed: boolean;
-  public tags: RoleTags;
-  public name: string;
-  public color: number;
-  public hoisted: boolean;
-  public position: number;
-  public mentionable: boolean;
-  public permissions: string;
-}
-
-export class Shard extends EventEmitter {
-  public constructor(manager: GatewayManager, id: number);
-  public id: number;
-  public sessionId: string | null;
-  public reconnectInterval: number;
-  public reconnectAttempts: number;
-  public sequence: number;
-  public lastHeartbeatAcked: boolean;
-  public heartbeatInterval: NodeJS.Timeout;
-  // TODO: Mudar para uma union dentro de um type
-  public status: string;
-  public lastHeartbeatReceived: number;
-  public lastHeartbeatSent: Date;
-  public _remainingGuilds: number;
-  public _guildQueueTimeout: NodeJS.Timeout;
-  private client: Client;
-  private manager: GatewayManager;
-  private connection: WebSocket;
-  public setDefaultProperties(): void;
-  public connect(): void;
-  public isReady(): void;
-  public packetReceive(packet: object): void;
-  public disconnect(reconnect: boolean): void;
-  public sendWebsocketMessage(data: ShardMessageOptions): void;
-  private websocketError(error: Error): void;
-  private websocketMessageReceive(data: object): void;
-  private websocketConnectionOpen(): void;
-  private websocketCloseConnection(): void;
-  private identify(): void;
-  private sendHeartbeat(): void;
-}
-
-export class GatewayManager {
-  private websocketURL: string;
-  private client: Client;
-  private queue: Set<Shard>;
-  public createShardConnection(): void;
-  private connectShard(_shard: Shard | null): void;
+  public async reply(options: MessageCreateOptions): Message;
+  public async createFollowup(options: MessageCreateOptions): Message;
+  public async defer(ephemeral: boolean): Message;
+  public async delete(messageId: string): Promise<void>;
+  public async edit(options: MessageEditOptions | string): Promise<void>;
+  public async getMessage(messageId: string): Message;
 }
 
 export class ApplicationCommandInteraction extends Interaction {
   public command: ApplicationCommand;
   public resolved: ApplicationCommandResolve;
   public targetId: Snowflake;
-  public targetType: ApplicationCommandTypes;
+  public targetType: Constants["CommandTypes"][keyof Constants["CommandTypes"]];
   public options: ApplicationCommandOptions;
-  public resolveTarget(targetType: "user" | "message" | "member" | "role"):
+  public resolveTarget(targetType: "user" | "channel" | "message" | "member" | "role"):
     User[] | Message[] | Member[] | Role[] | Channel[] | null;
 }
 
 export class MessageComponentInteraction extends Interaction {
-  public componentType: MessageComponentTypes;
+  public componentType: Constants["MessageComponentTypes"][keyof Constants["MessageComponentTypes"]];
   public customId: string;
   public values?: string[];
 }
@@ -690,13 +760,13 @@ export class MessageComponentInteraction extends Interaction {
 export class ApplicationCommandOptions {
   public subcommand: string | null;
   public subcommandGroup: string | null;
-  public string(optionName: string): boolean;
-  public integer(optionName: string): boolean;
+  public string(optionName: string): string;
+  public integer(optionName: string): number;
   public boolean(optionName: string): boolean;
-  public user(optionName: string, resolve: boolean): boolean;
-  public channel(optionName: string, resolve: boolean): boolean;
-  public role(optionName: string): boolean;
-  public number(optionName: string): boolean;
+  public user(optionName: string, resolve: boolean): User | Snowflake;
+  public channel(optionName: string, resolve: boolean): Channel | Snowflake;
+  public role(optionName: string): Snowflake;
+  public number(optionName: string): number;
 }
 
 export class Cache<K, V> {
