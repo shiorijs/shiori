@@ -7,11 +7,11 @@ module.exports = class ShioriEvents extends EventEmitter {
 
   async waitFor (event, filter) {
     await new Promise(resolve => {
-      const eventCheck = (...args) => {
+      const eventFilter = (...args) => {
         if (filter(...args)) resolve(args);
       };
 
-      this.on(event, eventCheck);
+      this.on(event, eventFilter);
     });
   }
 };

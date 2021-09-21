@@ -19,7 +19,6 @@ class GatewayManager {
   constructor (client) {
     /**
      * The websocket URL to use
-     * @private
      * @type {string}
      */
     this.websocketURL = `${BASE_URL}?v=${client.options.ws.version}&encoding=${Erlpack ? "etf" : "json"}`;

@@ -626,11 +626,11 @@ export class Shard extends EventEmitter {
 }
 
 export class GatewayManager {
-  public shards: Collection<Snowflake, Shard>;
-  private websocketURL: string;
+  public shards: Collection<number, Shard>;
+  public websocketURL: string;
   private client: Client;
   public connect(): void;
-  private handlePacket(packet: object, shard: Shard): void;
+  public handlePacket(packet: object, shard: Shard): void;
 }
 
 export class ApplicationCommandInteraction extends Interaction {

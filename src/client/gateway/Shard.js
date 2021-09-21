@@ -279,7 +279,7 @@ class Shard extends EventEmitter {
         break;
       }
       case Constants.OP_CODES.RECONNECT: {
-        this.client.emit("Reconnecting due to server request", `SHARD:${this.id}`);
+        this.client.debug("Reconnecting due to server request", `SHARD:${this.id}`);
         this.disconnect(true);
         break;
       }
@@ -395,7 +395,7 @@ class Shard extends EventEmitter {
     if (reconnect === true) {
       setTimeout(() => this.connect(), this.reconnectInterval);
 
-      this.reconnectInterval = this.reconnectInterval + 3000;
+      this.reconnectInterval += 3000;
       this.reconnectAttempts++;
     }
   }
