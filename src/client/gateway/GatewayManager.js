@@ -37,9 +37,9 @@ class GatewayManager {
   }
 
   async connect () {
-    const shards = this.client.options.shardCount;
+    const shardCount = this.client.options.shardCount;
 
-    for (let id = 0; id < shards; id++) {
+    for (let id = 0; id < shardCount; id++) {
       const shard = new Shard(this, id);
 
       if (this.shards.has(0)) await this.client.utils.delay(7500);
