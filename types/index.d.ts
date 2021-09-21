@@ -273,6 +273,10 @@ export interface Constants {
     BASE_URL: "https://discord.com/api";
     API_VERSION: 9;
   };
+  GATEWAY: {
+    BASE_URL: "wss://gateway.discord.gg/";
+    VERSION: 9;
+  };
   OP_CODES: {
     EVENT: 0;
     HEARTBEAT: 1;

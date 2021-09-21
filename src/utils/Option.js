@@ -33,7 +33,7 @@ module.exports = class Option {
 
     return {
       ws: {
-        version: 9
+        version: Constants.GATEWAY.VERSION
       },
       rest: {
         version: Constants.REST.API_VERSION,
