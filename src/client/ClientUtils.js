@@ -93,17 +93,6 @@ class ClientUtils {
           Route: ${options.path}
         `));
       });
-
-      /*
-
-      request.setTimeout(timeout, () => {
-        request.destroy(new Error(`
-          Request timed out. More than ${timeout}ms has been passed since the start of the request.
-
-          Method: ${options.method}
-          Route: ${options.path}
-        `));
-      });*/
     });
   }
 
