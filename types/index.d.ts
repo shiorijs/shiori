@@ -237,6 +237,10 @@ export interface Constants {
     BASE_URL: "https://discord.com/api";
     API_VERSION: 9;
   };
+  GATEWAY: {
+    BASE_URL: "wss://gateway.discord.gg/";
+    VERSION: 9;
+  };
   OP_CODES: {
     EVENT: 0;
     HEARTBEAT: 1;
@@ -427,13 +431,12 @@ export class Bucket {
 
 export class Client {
   public constructor(token: string, options: ClientOptions);
-  public ws: GatewayManager;
+  public gateway: GatewayManager;
   public rest: RestManager;
   public utils: ClientUtils;
   public plugins: string[];
   public users: UsersCache;
   public guilds: GuildsCache;
-  public shards: Map<number, Shard>;
   public token: string;
   public channelMap: object;
   public start(): void;
@@ -619,11 +622,11 @@ export class Shard extends EventEmitter {
 }
 
 export class GatewayManager {
-  private websocketURL: string;
+  public shards: Collection<number, Shard>;
+  public websocketURL: string;
   private client: Client;
-  private queue: Set<Shard>;
-  public createShardConnection(): void;
-  private connectShard(_shard: Shard | null): void;
+  public connect(): void;
+  public handlePacket(packet: object, shard: Shard): void;
 }
 
 export class ApplicationCommandInteraction extends Interaction {

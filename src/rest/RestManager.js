@@ -47,6 +47,23 @@ class RestManager {
      * @type {string}
      */
     this.apiURL = `/api/v${this.options.version}`;
+
+    /**
+     * The token that will be used to create the HTTP requests.
+     * @name RestManager#token
+     * @type {string}
+     * @readonly
+     */
+    Object.defineProperty(this, "token", { value: null, writable: true });
+  }
+
+  /**
+   * Set the token that will be used to create the HTTP requests
+   * @param {string} token The token to be used
+   * @returns {void}
+   */
+  setToken (token) {
+    this.token = token;
   }
 
   /**
@@ -84,7 +101,7 @@ class RestManager {
     const headers = { "User-Agent": this.userAgent, "Content-Type": "application/json" };
 
     if (options.authenticate === undefined) options.authenticate = true;
-    if (options.authenticate) headers.Authorization = `Bot ${this.client.token}`;
+    if (options.authenticate) headers.Authorization = `Bot ${this.token}`;
 
     if (options.data?.reason !== undefined) {
       headers["X-Audit-Log-Reason"] = options.data.reason;
