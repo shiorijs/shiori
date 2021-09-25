@@ -1,4 +1,4 @@
-import EventEmitter from "events";
+import Events from "events";
 import WebSocket from "ws";
 
 import {
@@ -9,7 +9,7 @@ import {
 // Types
 
 export type HTTPMethods = "get" | "post" | "patch" | "put" | "delete" | "head";
-export type InteractionMessageCreateOptions = Omit<MessageCreateOptions, "file">;
+export type InteractionMessageCreateOptions = MessageCreateOptions;
 export type ImageFormats = "webp" | "png" | "jpg" | "jpeg" | "gif";
 export type ImageSizes = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
 export type AllowedMessageMentions = "roles" | "users" | "everyone";
@@ -587,6 +587,10 @@ export class Role extends Base {
 
 export class AsyncQueue {
   private promises: Promise<unknown>[];
+}
+
+export class EventEmitter extends Events {
+  public waitFor<K extends keyof ClientEvents>(event: K, filter: (args: ClientEvents[K]) => boolean): void;
 }
 
 export class Shard extends EventEmitter {
