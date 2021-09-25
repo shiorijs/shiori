@@ -32,7 +32,7 @@ module.exports = class Option {
     };
 
     return {
-      ws: {
+      gateway: {
         version: Constants.GATEWAY.VERSION
       },
       rest: {

@@ -19,7 +19,7 @@ class GatewayManager {
      * The websocket URL to use
      * @type {string}
      */
-    this.websocketURL = `${Constants.GATEWAY.BASE_URL}?v=${client.options.ws.version}&encoding=${Erlpack ? "etf" : "json"}`;
+    this.websocketURL = `${Constants.GATEWAY.BASE_URL}?v=${client.options.gateway.version}&encoding=${Erlpack ? "etf" : "json"}`;
 
     /**
      * A collection that includes all of the gateway shards

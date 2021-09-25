@@ -307,6 +307,7 @@ class Shard extends EventEmitter {
     const d = {
       token: this.client.token,
       intents: this.client.options.intents,
+      v: this.client.options.gateway.version,
       shard: [this.id, shardCount],
       properties: {
         $os: process.platform,
@@ -354,7 +355,7 @@ class Shard extends EventEmitter {
   sendWebsocketMessage (data) {
     const pack = Erlpack ? Erlpack.pack : JSON.stringify;
 
-    if (this.connection.readyState == WebSocket.OPEN)
+    if (this.connection.readyState === WebSocket.OPEN)
       this.connection.send(pack(data), (error) => {
         if (error) this.client.emit("shardError", error, this.id);
       });
