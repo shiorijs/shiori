@@ -429,7 +429,7 @@ export class Bucket {
   public executeRequest(path: string, options: object, route: string): Promise<unknown>;
 }
 
-export class Client {
+export class Client extends EventEmitter {
   public constructor(token: string, options: ClientOptions);
   public gateway: GatewayManager;
   public rest: RestManager;
@@ -590,7 +590,8 @@ export class AsyncQueue {
 }
 
 export class EventEmitter extends Events {
-  public waitFor<K extends keyof ClientEvents>(event: K, filter: (args: ClientEvents[K]) => boolean): void;
+  public waitFor<K extends keyof ClientEvents>(event: K, filter: (...args: ClientEvents[K]) => boolean): void;
+  public waitFor(event: string, filter: (...args: any[]) => boolean): void;
 }
 
 export class Shard extends EventEmitter {
