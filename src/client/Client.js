@@ -1,15 +1,13 @@
-const EventEmitter = require("events");
+const EventEmitter = require("../utils/EventEmitter");
 const GatewayManager = require("./gateway/GatewayManager");
 const RestManager = require("../rest/RestManager");
 const PluginsManager = require("../managers/PluginsManager");
 
 const Constants = require("../utils/Constants");
 const Option = require("../utils/Option");
-const Collection = require("../utils/Collection");
 const ClientUtils = require("./ClientUtils");
 const UsersCache = require("../cache/UsersCache");
 const GuildsCache = require("../cache/GuildsCache");
-const Shard = require("./gateway/Shard");
 
 class Client extends EventEmitter {
   /**
@@ -27,13 +25,13 @@ class Client extends EventEmitter {
      */
     this.options = Option.defaultOptions(options);
 
-    if (this.options.shardCount <= 0) throw new Error("shardCount cannot be lower or equal to 0");
+    if (this.options.shardCount <= 0) this.options.shardCount = 1;
 
     /**
      * Websocket Manager
      * @type {GatewayManager}
      */
-    this.ws = new GatewayManager(this);
+    this.gateway = new GatewayManager(this);
 
     /**
      * Rest Manager that handles https requests
@@ -65,12 +63,6 @@ class Client extends EventEmitter {
      */
     this.guilds = new GuildsCache(this);
 
-    /**
-     * A collection that includes all of the client shards
-     * @type {Collection<number, Shard>}
-     */
-    this.shards = new Collection(Shard);
-
     Object.defineProperties(this, {
       token: { value: token, writable: false },
       channelMap: { value: { }, writable: true }
@@ -95,19 +87,23 @@ class Client extends EventEmitter {
    * client.start();
    */
   start () {
-    const shards = Array.from({ length: this.options.shardCount }, (_, i) => i);
-
-    this.options.shards = [...new Set(shards)];
+    if (this.rest.token == undefined) this.rest.setToken(this.token);
 
     try {
-      this.ws.createShardConnection();
+      this.gateway.connect();
 
       if (this.options.plugins.length) new PluginsManager(this, this.options.plugins);
     } catch (error) {
       if (!this.options.autoReconnect) throw error;
 
-      setTimeout(() => this.ws.createShardConnection(), 5000);
+      setTimeout(() => this.gateway.connect(), 5000);
     }
+  }
+
+  debug (message, tag) {
+    if (Array.isArray(message)) message = message.join(`\n[${tag}]: `);
+
+    this.emit("debug", `[${tag}]: ${message}`);
   }
 }
 
