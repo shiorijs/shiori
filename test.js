@@ -58,7 +58,7 @@ client.on("messageCreate", async (message) => {
   }
 });
 
-client.on("ready", () => {
+client.once("ready", () => {
   write("Ready!");
 });
 client.on("shardError", (error, shardID) => write(`Shard Error: ${error} ID: ${shardID}`));

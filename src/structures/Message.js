@@ -85,7 +85,7 @@ class Message extends Base {
        * @type {MessageMentions}
        */
       this.mentions = {
-        everyone: Boolean(data.mention_everyone) ?? false,
+        everyone: Boolean(data.mention_everyone),
         users: data.mentions || [],
         roles: data.mention_roles || [],
         channels: data.mention_channels || []

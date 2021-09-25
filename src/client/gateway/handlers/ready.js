@@ -6,4 +6,5 @@ module.exports = (client, { d: data }, shard) => {
   }
 
   shard.isReady();
+  client.emit("shardReady", shard.id);
 };

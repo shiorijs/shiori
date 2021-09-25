@@ -3,6 +3,10 @@ module.exports = {
     BASE_URL: "https://discord.com/api",
     API_VERSION: 9
   },
+  GATEWAY: {
+    BASE_URL: "wss://gateway.discord.gg/",
+    VERSION: 9
+  },
   OP_CODES: {
     EVENT: 0,
     HEARTBEAT: 1,
@@ -138,7 +142,7 @@ module.exports = {
     ALREADY_AUTHENTICATED: 4005,
     INVALID_SEQUENCE: 4007,
     RATE_LIMITED: 4008,
-    INVALID_SESSION: 4009,
+    TIMED_OUT: 4009,
     INVALID_SHARD: 4010,
     SHARDING_REQUIRED: 4011,
     INVALID_API_VERSION: 4012,
