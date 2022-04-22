@@ -15,7 +15,7 @@ jobs:
       - run: yarn run lint
   build:
     docker:
-      - image: cimg/node:14.0
+      - image: cimg/node:18.0.0
     steps:
       - run:
           name: Install Dependencies
